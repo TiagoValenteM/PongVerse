@@ -7,6 +7,15 @@ from .powerups import PowerUp
 # Set the game Icon displayed in the dock
 GAME_ICON: any = pygame.image.load("img/ball_avengers.png")
 
+# Set the game title
+GAME_TITLE: str = "The PongVerse"
+
+# Set Colors
+BLACK: tuple = (0, 0, 0)
+WHITE: tuple = (255, 255, 255)
+BLUE: tuple = (37, 150, 190)
+MAGENTA: tuple = (204, 51, 139)
+
 # Set Font Size
 FONT_SIZE: int = 70
 
@@ -17,6 +26,10 @@ WINDOW_HEIGHT: int = 500
 # Set Ball size
 BALL_WIDTH: int = 40
 BALL_HEIGHT: int = 40
+
+# Set Ball size
+POWERUP_WIDTH: int = 60
+POWERUP_HEIGHT: int = 60
 
 # Set Paddles size
 Paddle_WIDTH: int = 10
@@ -30,20 +43,18 @@ POS_SCORE_B = (WINDOW_WIDTH / 2 + FONT_SIZE / 1.7, 15)
 POS_SCORE_A = (WINDOW_WIDTH/2 - FONT_SIZE, 15)
 
 
+
 def play_pong():
     # Initialize pygames
     pygame.init()
     pygame.display.set_icon(GAME_ICON)
     triggered = False
-    # Define some colors
-    BLACK: tuple = (0, 0, 0)
-    WHITE: tuple = (255, 255, 255)
-    BLUE: tuple = (37, 150, 190)
-    MAGENTA: tuple = (204, 51, 139)
+    ball_owner = None
+
     # Open a new window
     size = (WINDOW_WIDTH, WINDOW_HEIGHT)
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("The PongVerse")
+    pygame.display.set_caption(GAME_TITLE)
 
     # LET'S CREATE THE TWO PADDLES AND THE BALL, USING THE BEFORE-CREATED CLASSES
     paddleA = Paddle(BLUE, Paddle_WIDTH, Paddle_HEIGHT)
@@ -165,7 +176,11 @@ def play_pong():
             break
 
         # Detect collisions between the ball and the paddles and change its speed accordingly(use the method we created)
-        if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
+        if pygame.sprite.collide_mask(ball, paddleA):
+            ball_owner = paddleA
+            ball.bounce()
+        if pygame.sprite.collide_mask(ball, paddleB):
+            ball_owner = paddleB
             ball.bounce()
         # --- Drawing code should go here
         # First, clear the screen to black.
