@@ -2,12 +2,13 @@
 import pygame
 from .paddle import Paddle
 from .ball import Ball
+from .powerups import PowerUp
 
 # Set the game Icon displayed in the dock
-GAME_ICON: str = pygame.image.load("img/ball_avengers.png")
+GAME_ICON: any = pygame.image.load("img/ball_avengers.png")
 
 # Set Font Size
-FONT_SIZE = 70
+FONT_SIZE: int = 70
 
 # Set window size
 WINDOW_WIDTH: int = 700
@@ -77,13 +78,13 @@ def play_pong():
     scoreB = 0
 
     def reset():
-        ball.rect.x: float = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
-        ball.rect.y: float = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
+        ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
+        ball.rect.y = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
 
     def show_go_screen():
         screen.fill(BLUE)
         font = pygame.font.SysFont('comicsans', 25)  # creates a font object
-        lastScore = font.render('Best Score: ' + str(scoreA), 1, (255, 255, 255))
+        lastScore = font.render('Best Score: ' + str(scoreA), True, (255, 255, 255))
         screen.blit(lastScore, (700 / 2, 500 / 2))
         pygame.display.flip()
 
