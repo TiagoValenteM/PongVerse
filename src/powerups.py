@@ -1,5 +1,6 @@
 import pygame
 from abc import ABC, abstractmethod
+from .constants import *
 
 BLACK = (0, 0, 0)
 
@@ -22,22 +23,25 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
     def affect_playerB(self):
         pass
 
+    def draw(self, filename, ):
+        self.image = pygame.image.load(filename)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        pygame.draw.rect(self.image, BLACK, [self.width, self.height, 0, 0])
+        return self.image.get_rect()
+
     # TODO: Set timer for the powerups
 
 
-# For the power ups, my idea is to set an interval of random numbers and set the powerups equal to some of these???
-# TODO: Mandatory Power Ups
+# TODO: For the power ups, my idea is to set an interval of random numbers and set the powerups equal to some of
+#  these???
 
 class ShrinkEnlarge(PowerUp):
-    # AntMan: The AntMan "Power-up" makes the player’s Paddle smaller for a certain amount of time while increasing
-    # others size
+    # AntMan: The AntMan "Power-up" makes the player’s Paddle smaller while increasing others size
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
-        self.image = pygame.image.load('img/ball_avengers.png')
-        self.image = pygame.transform.scale(self.image, (width, height))
-        pygame.draw.rect(self.image, BLACK, [width, height, 0, 0])
-        self.rect = self.image.get_rect()
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
 
     def affect_playerA(self):
         pass
@@ -60,11 +64,13 @@ class ShrinkEnlarge(PowerUp):
     pass
 
 
-# Freeze: The Freeze "Power-up" freezes the size of the player’s racket for a very
-# small amount of time
 class Freeze(PowerUp):
+    # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
+
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
 
     def affect_playerA(self):
         pass
@@ -74,8 +80,12 @@ class Freeze(PowerUp):
 
 
 class MultipleBalls(PowerUp):
+    # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
+
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
 
     def affect_playerA(self):
         pass
@@ -94,6 +104,9 @@ class FasterPaddle(PowerUp):
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
+
     def affect_playerA(self):
         pass
 
@@ -102,8 +115,12 @@ class FasterPaddle(PowerUp):
 
 
 class DoubleScore(PowerUp):
+    # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
+
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
 
     def affect_playerA(self):
         pass
@@ -113,8 +130,12 @@ class DoubleScore(PowerUp):
 
 
 class Shield(PowerUp):
+    # Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
+
+        # Set the PowerUp image
+        self.rect = super().draw('img/ball_avengers.png')
 
     def affect_playerA(self):
         pass
