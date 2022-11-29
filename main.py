@@ -1,4 +1,4 @@
-from pong import *
+from src.pong import *
 
 
 def main():
