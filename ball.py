@@ -1,7 +1,7 @@
 import pygame
 from random import randint
 
-BLACK = ('#FF000000')
+BLACK = (0, 0, 0)
 
 
 # let's create the ball class

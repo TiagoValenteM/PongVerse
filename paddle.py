@@ -34,9 +34,9 @@ class Paddle(pygame.sprite.Sprite):
 
         # ONE THAT MOVES IT DOWN
 
-    def moveDown(self, pixels):
+    def moveDown(self, pixels, window_height, paddle_height):
         self.rect.y += pixels
         # preventing going too far
-        if self.rect.y > 400:
-            self.rect.y = 400
+        if self.rect.y > window_height - paddle_height:
+            self.rect.y = window_height - paddle_height
             pass

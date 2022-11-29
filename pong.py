@@ -4,49 +4,53 @@ from paddle import Paddle
 from ball import Ball
 
 # Set the game Icon displayed in the dock
-GameIcon = pygame.image.load("img/ball_avengers.png")
+GAME_ICON: str = pygame.image.load("img/ball_avengers.png")
 
 # Set window size
-WINDOW_WIDTH = 700
-WINDOW_HEIGHT = 500
+WINDOW_WIDTH: int = 700
+WINDOW_HEIGHT: int = 500
 
 # Set Ball size
-BALL_WIDTH = 40
-BALL_HEIGHT = 40
+BALL_WIDTH: int = 40
+BALL_HEIGHT: int = 40
+
+# Set Paddles size
+Paddle_WIDTH: int = 10
+Paddle_HEIGHT: float = WINDOW_HEIGHT / 5
 
 # Set score to win the game
-WIN_SCORE = 10
+WIN_SCORE: int = 10
 
 
 def play_pong():
     # Initialize pygames
     pygame.init()
-    pygame.display.set_icon(GameIcon)
+    pygame.display.set_icon(GAME_ICON)
     triggered = False
     # Define some colors
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    BLUE = (37, 150, 190)
-    MAGENTA = (204, 51, 139)
+    BLACK: tuple = (0, 0, 0)
+    WHITE: tuple = (255, 255, 255)
+    BLUE: tuple = (37, 150, 190)
+    MAGENTA: tuple = (204, 51, 139)
     # Open a new window
     size = (WINDOW_WIDTH, WINDOW_HEIGHT)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("The PongVerse")
 
     # LET'S CREATE THE TWO PADDLES AND THE BALL, USING THE BEFORE-CREATED CLASSES
-    paddleA = Paddle(BLUE, 10, 100)
-    paddleA.rect.x = 20
-    paddleA.rect.y = 200
+    paddleA = Paddle(BLUE, Paddle_WIDTH, Paddle_HEIGHT)
+    paddleA.rect.x = 0 + Paddle_WIDTH * 2
+    paddleA.rect.y = WINDOW_HEIGHT / 2 - Paddle_HEIGHT / 2
 
-    paddleB = Paddle(MAGENTA, 10, 100)
-    paddleB.rect.x = 670
-    paddleB.rect.y = 200
+    paddleB = Paddle(MAGENTA, Paddle_WIDTH, Paddle_HEIGHT)
+    paddleB.rect.x = WINDOW_WIDTH - Paddle_WIDTH * 2
+    paddleB.rect.y = WINDOW_HEIGHT / 2 - Paddle_HEIGHT / 2
 
     # setting up the ball and its position
 
     ball = Ball("img/ball.png", BALL_WIDTH, BALL_HEIGHT)
-    ball.rect.x = WINDOW_WIDTH/2 - BALL_WIDTH/2
-    ball.rect.y = WINDOW_HEIGHT/2 - BALL_HEIGHT/2
+    ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
+    ball.rect.y = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
 
     # This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
@@ -66,8 +70,8 @@ def play_pong():
     scoreB = 0
 
     def reset():
-        ball.rect.x: int = 345
-        ball.rect.y: int = 195
+        ball.rect.x: float = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
+        ball.rect.y: float = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
 
     def show_go_screen():
         screen.fill(BLUE)
@@ -119,13 +123,13 @@ def play_pong():
             paddleA.moveUp(5)
             triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(5)
+            paddleA.moveDown(5, WINDOW_HEIGHT, Paddle_HEIGHT)
             triggered = True
         if keys[pygame.K_UP]:
             paddleB.moveUp(5)
             triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(5)
+            paddleB.moveDown(5, WINDOW_HEIGHT, Paddle_HEIGHT)
             triggered = True
 
             # --- Game logic should go here
@@ -160,7 +164,7 @@ def play_pong():
         screen.fill(BLACK)
 
         # Draw the net A WHITE LINE FROM TOP TO BOTTOM (USE PYGAME BUILT-IN METHOD)
-        pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
+        pygame.draw.line(screen, WHITE, [WINDOW_WIDTH / 2, 0], [WINDOW_WIDTH / 2, WINDOW_HEIGHT], 5)
         # Now let's draw all the sprites in one go. (For now we only have 2 sprites!)
         all_sprites_list.draw(screen)
 
