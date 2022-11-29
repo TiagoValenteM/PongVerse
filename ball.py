@@ -1,31 +1,28 @@
 import pygame
 from random import randint
 
-BLACK = (0, 0, 0)
+BLACK = ('#FF000000')
 
 
-# lets create the ball class
+# let's create the ball class
 class Ball(pygame.sprite.Sprite):
     # This class represents a ball. It derives from the "Sprite" class in Pygame.
-    def __init__(self, color, width, height):
+    def __init__(self, filename, width, height):
         # Call the parent class (Sprite) constructor
         super().__init__()
         # Pass in the color of the ball, its width and height.
         # Set the background color and set it to be transparent
-        self.image = pygame.Surface([width, height])
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
+        self.image = pygame.image.load(filename)
+        self.image = pygame.transform.scale(self.image, (width, height))
         # Draw the ball (a rectangle!)
         # WE NEED TO USE A PYGAME BUILT IN METHOD
-        pygame.draw.rect(self.image, color, [0, 0, width, height])
-
+        pygame.draw.rect(self.image, BLACK, [width, height, 0, 0])
         self.rect = self.image.get_rect()
-
-        # LETS SET THE BALL SPEED ATTRIBUTE, IT WILL HAVE TWO COMPONENTS, Y-SPEED, X-SPEED, BOTH RANDOM,
+        # LET'S SET THE BALL SPEED ATTRIBUTE, IT WILL HAVE TWO COMPONENTS, Y-SPEED, X-SPEED, BOTH RANDOM,
         # CHOOSE CAREFULLY THE INTERVAL
         # setting the ball velocity in the form of [x velocity, y velocity]
         self.velocity = [randint(4, 8), randint(-8, 8)]
-        ## Fetch the rectangle object that has the dimensions of the image.
+        # Fetch the rectangle object that has the dimensions of the image.
 
     # CREATE THE UPDATE METHOD, THAT MODIFIES THE POSITION OF THE BALL ACCORDING TO THE SPEED
     # method that updates the position of the ball

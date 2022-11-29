@@ -3,13 +3,25 @@ import pygame
 from paddle import Paddle
 from ball import Ball
 
+# Set the game Icon displayed in the dock
+GameIcon = pygame.image.load("img/ball_avengers.png")
 
-WIN_SCORE = 5
+# Set window size
+WINDOW_WIDTH = 700
+WINDOW_HEIGHT = 500
+
+# Set Ball size
+BALL_WIDTH = 40
+BALL_HEIGHT = 40
+
+# Set score to win the game
+WIN_SCORE = 10
 
 
 def play_pong():
     # Initialize pygames
     pygame.init()
+    pygame.display.set_icon(GameIcon)
     triggered = False
     # Define some colors
     BLACK = (0, 0, 0)
@@ -17,11 +29,11 @@ def play_pong():
     BLUE = (37, 150, 190)
     MAGENTA = (204, 51, 139)
     # Open a new window
-    size = (700, 500)
+    size = (WINDOW_WIDTH, WINDOW_HEIGHT)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("The PongVerse")
 
-    # LETS CREATE THE TWO PADDLES AND THE BALL, USING THE AFORE-CREATED CLASSES
+    # LET'S CREATE THE TWO PADDLES AND THE BALL, USING THE BEFORE-CREATED CLASSES
     paddleA = Paddle(BLUE, 10, 100)
     paddleA.rect.x = 20
     paddleA.rect.y = 200
@@ -32,9 +44,9 @@ def play_pong():
 
     # setting up the ball and its position
 
-    ball = Ball(WHITE, 14, 14)
-    ball.rect.x = 345
-    ball.rect.y = 195
+    ball = Ball("img/ball.png", BALL_WIDTH, BALL_HEIGHT)
+    ball.rect.x = WINDOW_WIDTH/2 - BALL_WIDTH/2
+    ball.rect.y = WINDOW_HEIGHT/2 - BALL_HEIGHT/2
 
     # This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
@@ -93,7 +105,7 @@ def play_pong():
                 # Flag that we are done so we exit this loop
                 carryOn = False
 
-                # Or he used the key-board
+                # Or he used the keyboard
             elif event.type == pygame.KEYDOWN:
                 # Pressing the x Key will quit the game
                 if event.key == pygame.K_x:
@@ -120,17 +132,17 @@ def play_pong():
         all_sprites_list.update(move=triggered)
 
         # Checking if the ball was scored and changing speed accordingly
-        if ball.rect.x >= 690:
+        if ball.rect.x >= WINDOW_WIDTH + BALL_WIDTH:
             scoreA += 1
             reset()
             triggered = False
             ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.x <= 0:
+        if ball.rect.x <= 0 - BALL_WIDTH:
             scoreB += 1
             reset()
             triggered = False
             ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.y >= 500:
+        if ball.rect.y >= WINDOW_HEIGHT - BALL_HEIGHT:
             ball.bounce_up_down()
         if ball.rect.y <= 0:
             ball.bounce_up_down()
