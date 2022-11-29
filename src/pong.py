@@ -6,6 +6,9 @@ from .ball import Ball
 # Set the game Icon displayed in the dock
 GAME_ICON: str = pygame.image.load("img/ball_avengers.png")
 
+# Set Font Size
+FONT_SIZE = 70
+
 # Set window size
 WINDOW_WIDTH: int = 700
 WINDOW_HEIGHT: int = 500
@@ -20,6 +23,10 @@ Paddle_HEIGHT: float = WINDOW_HEIGHT / 5
 
 # Set score to win the game
 WIN_SCORE: int = 10
+
+# Set score Position
+POS_SCORE_B = (WINDOW_WIDTH / 2 + FONT_SIZE / 1.7, 15)
+POS_SCORE_A = (WINDOW_WIDTH/2 - FONT_SIZE, 15)
 
 
 def play_pong():
@@ -84,19 +91,19 @@ def play_pong():
     def display_scores(font, scoreA, scoreB):
         if scoreA > scoreB:
             text = font.render(str(scoreA), 1, BLUE)
-            screen.blit(text, (250, 10))
+            screen.blit(text, POS_SCORE_A)
             text = font.render(str(scoreB), 1, WHITE)
-            screen.blit(text, (429, 10))
+            screen.blit(text, POS_SCORE_B)
         if scoreA < scoreB:
             text = font.render(str(scoreB), 1, MAGENTA)
-            screen.blit(text, (429, 10))
+            screen.blit(text, POS_SCORE_B)
             text = font.render(str(scoreA), 1, WHITE)
-            screen.blit(text, (250, 10))
+            screen.blit(text, POS_SCORE_A)
         if scoreA == scoreB:
             text = font.render(str(scoreA), 1, WHITE)
-            screen.blit(text, (250, 10))
+            screen.blit(text, POS_SCORE_A)
             text = font.render(str(scoreB), 1, WHITE)
-            screen.blit(text, (429, 10))
+            screen.blit(text, POS_SCORE_B)
 
     # -------- Main Program Loop -----------
     while carryOn:
@@ -170,7 +177,7 @@ def play_pong():
 
         # Display scores:
         # Defines the font used
-        font = pygame.font.Font(None, 74)
+        font = pygame.font.Font(None, FONT_SIZE)
         # Calls display_scores function to manage colors according to who is winning
         display_scores(font, scoreA, scoreB)
 
