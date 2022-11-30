@@ -1,9 +1,12 @@
 # Import the pygame library and initialise the game engine
 import pygame
 from .constants import *
+from random import choices
 from .paddle import Paddle
 from .ball import Ball
 from .powerups import *
+
+powerup_active = False
 
 
 def play_pong():
@@ -49,6 +52,25 @@ def play_pong():
     # Initialise player scores
     scoreA = 0
     scoreB = 0
+
+    # Define when a PowerUp appears
+    # It appears every 3 goals
+    def powerup_appear():
+        global powerup_active
+        # Gets the powerup probability
+        PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
+
+        # It checks if the sum of the scores is divisible by 3
+        if powerup_active is False and (scoreA + scoreB) % 3 == 0 and (scoreA + scoreB) != 0:
+            # It chooses the first chosen random powerup
+            powerup = choices(PowerUps, PowerUps_Probabilities)[0]
+            print(powerup)
+            # It creates the powerup
+            powerup = powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
+            # It adds the powerup to the list of objects
+            all_sprites_list.add(powerup)
+            # It sets the powerup as active
+            powerup_active = True
 
     def reset():
         ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
@@ -158,6 +180,8 @@ def play_pong():
         font = pygame.font.Font(None, FONT_SIZE)
         # Calls display_scores function to manage colors according to who is winning
         display_scores(font, scoreA, scoreB)
+
+        powerup_appear()
 
         # USE PY-GAME BUILT IN METHODS,  SELECT THE POSITION THAT YOU PREFER
 

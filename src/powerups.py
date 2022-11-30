@@ -35,7 +35,13 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
 # TODO: For the power ups, my idea is to set an interval of random numbers and set the powerups equal to some of
 #  these???
 
+# Mandatory PowerUps
+
 class ShrinkEnlarge(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.5
+
     # AntMan: The AntMan "Power-up" makes the player’s Paddle smaller while increasing others size
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -49,22 +55,12 @@ class ShrinkEnlarge(PowerUp):
     def affect_playerB(self):
         pass
 
-    # """def __init__(self, position, velocity=(0, 0), width=POWERUP_SIZE, height=POWERUP_SIZE): super(Shrink,
-    # self).__init__(position, velocity, width, height) self.image = pygame.transform.scale(pygame.image.load(
-    # resources.get_sprite("shrink.png")).convert(), (width, height))
-
-    # def update(self, delta):
-    # pass
-
-    # def apply(self, state, ball):
-    # if ball.owner is not None:
-    # ball.owner.pad.position.y += ball.owner.pad.height * (1 - POWERUP_SHRINK_FACTOR) / 2
-    # ball.owner.pad.height *= POWERUP_SHRINK_FACTOR"""
-
-    pass
-
 
 class Freeze(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.6
+
     # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -80,6 +76,10 @@ class Freeze(PowerUp):
 
 
 class MultipleBalls(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.3
+
     # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -97,9 +97,13 @@ class MultipleBalls(PowerUp):
         pass
 
 
-# TODO: Optional Power ups
+# Optional PowerUps
 
 class FasterPaddle(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.3
+
     # Quicksilver: The Quicksilver "Power-up" increases the speed of the player’s paddle
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -115,6 +119,10 @@ class FasterPaddle(PowerUp):
 
 
 class DoubleScore(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.7
+
     # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -130,6 +138,10 @@ class DoubleScore(PowerUp):
 
 
 class Shield(PowerUp):
+
+    # Set the PowerUp probability
+    probability = 0.5
+
     # Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -137,16 +149,16 @@ class Shield(PowerUp):
         # Set the PowerUp image
         self.rect = super().draw('img/ball_avengers.png')
 
+
     def affect_playerA(self):
         pass
 
     def affect_playerB(self):
         pass
 
-# TODO: Implement different "looks" for different "Power-ups".
 
-# TODO: Implement the appearance of a "Power-up" in the game based on a certain probability.
-
+# Dictionary of PowerUps and their probabilities
+PowerUps = {1: ShrinkEnlarge, 2: Freeze, 3: MultipleBalls, 4: FasterPaddle, 5: DoubleScore, 6: Shield}
 
 # TODO: Implement the necessary visual modifications so it is clear there is a "Power-up" in
 # play and who is benefiting or suffering from it.
