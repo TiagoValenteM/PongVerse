@@ -6,7 +6,7 @@ from .paddle import Paddle
 from .ball import Ball
 from .powerups import *
 
-powerup_active = False
+powerup_active = None
 
 
 def play_pong():
@@ -61,16 +61,13 @@ def play_pong():
         PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
 
         # It checks if the sum of the scores is divisible by 3
-        if powerup_active is False and (scoreA + scoreB) % 3 == 0 and (scoreA + scoreB) != 0:
+        if (scoreA + scoreB) % 3 == 0 and (scoreA + scoreB) != 0:
             # It chooses the first chosen random powerup
             powerup = choices(PowerUps, PowerUps_Probabilities)[0]
-            print(powerup)
             # It creates the powerup
-            powerup = powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
+            powerup_active = powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
-            all_sprites_list.add(powerup)
-            # It sets the powerup as active
-            powerup_active = True
+            all_sprites_list.add(powerup_active)
 
     def reset():
         ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
@@ -181,7 +178,9 @@ def play_pong():
         # Calls display_scores function to manage colors according to who is winning
         display_scores(font, scoreA, scoreB)
 
-        powerup_appear()
+        # Checks if a powerup is active
+        if powerup_active is None:
+            powerup_appear()
 
         # USE PY-GAME BUILT IN METHODS,  SELECT THE POSITION THAT YOU PREFER
 
@@ -192,7 +191,6 @@ def play_pong():
         clock.tick(60)
 
     # Once we have exited the main program loop we can stop the game engine:
-    input('Press any key to exit...')
     pygame.quit()
 
 # TODO: the game starts with white paddle and colors change for the last one that scored

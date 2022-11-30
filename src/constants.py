@@ -23,9 +23,13 @@ WINDOW_HEIGHT: int = 500
 BALL_WIDTH: int = 40
 BALL_HEIGHT: int = 40
 
-# Set Ball size
+# Set PowerUp size
 POWERUP_WIDTH: int = 60
 POWERUP_HEIGHT: int = 60
+
+# Set PowerUp field of view size
+POWERUP_FIELD_WIDTH: int = WINDOW_WIDTH-POWERUP_WIDTH
+POWERUP_FIELD_HEIGHT: int = WINDOW_HEIGHT-POWERUP_HEIGHT
 
 # Set Paddles size
 Paddle_WIDTH: int = 10
