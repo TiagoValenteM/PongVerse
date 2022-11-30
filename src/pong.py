@@ -6,7 +6,10 @@ from .paddle import Paddle
 from .ball import Ball
 from .powerups import *
 
-powerup_active = None
+# Sets if a powerup is active
+powerup_active: any = None
+# Sets the time when the powerup was activated
+powerup_active_time: any = None
 
 
 def play_pong():
@@ -55,19 +58,38 @@ def play_pong():
 
     # Define when a PowerUp appears
     # It appears every 3 goals
-    def powerup_appear():
+    def powerup_visible():
+        # Gets the global variables
         global powerup_active
+        global powerup_active_time
         # Gets the powerup probability
         PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
 
         # It checks if the sum of the scores is divisible by 3
         if (scoreA + scoreB) % 3 == 0 and (scoreA + scoreB) != 0:
             # It chooses the first chosen random powerup
-            powerup = choices(PowerUps, PowerUps_Probabilities)[0]
+            chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
             # It creates the powerup
-            powerup_active = powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
+            powerup = chosen_powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
-            all_sprites_list.add(powerup_active)
+            all_sprites_list.add(powerup)
+            powerup_active = powerup
+            # It sets the powerup timer
+            powerup_active_time = pygame.time.get_ticks()
+        return powerup_active, powerup_active_time
+
+    def powerup_invisible():
+        # Gets the global variables
+        global powerup_active
+        global powerup_active_time
+
+        # It checks if the powerup is active
+        visible = (pygame.time.get_ticks() - powerup_active_time) / 1000
+        if int(visible) == powerup_active.visible_time:
+            powerup_active.kill()
+            powerup_active = None
+            print(powerup_active)
+            powerup_active_time = None
 
     def reset():
         ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
@@ -178,9 +200,18 @@ def play_pong():
         # Calls display_scores function to manage colors according to who is winning
         display_scores(font, scoreA, scoreB)
 
-        # Checks if a powerup is active
+        # Checks if a powerup is invisible
         if powerup_active is None:
-            powerup_appear()
+            # Sets a random powerup to be visible
+            powerup_visible()
+
+        # Checks if a powerup is visible
+        if powerup_active_time is not None:
+            if pygame.sprite.collide_mask(ball, powerup_active):
+                powerup_active.affect_playerA()
+                powerup_active.kill()
+            # Sets the powerup to be invisible
+            powerup_invisible()
 
         # USE PY-GAME BUILT IN METHODS,  SELECT THE POSITION THAT YOU PREFER
 

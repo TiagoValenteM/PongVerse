@@ -28,8 +28,11 @@ POWERUP_WIDTH: int = 60
 POWERUP_HEIGHT: int = 60
 
 # Set PowerUp field of view size
-POWERUP_FIELD_WIDTH: int = WINDOW_WIDTH-POWERUP_WIDTH
-POWERUP_FIELD_HEIGHT: int = WINDOW_HEIGHT-POWERUP_HEIGHT
+POWERUP_FIELD_WIDTH: int = WINDOW_WIDTH - POWERUP_WIDTH*2
+POWERUP_FIELD_HEIGHT: int = WINDOW_HEIGHT - POWERUP_HEIGHT*2
+
+# Set PowerUp visible time in seconds
+POWERUP_VISIBLE_TIME: int = 5
 
 # Set Paddles size
 Paddle_WIDTH: int = 10
@@ -40,4 +43,7 @@ WIN_SCORE: int = 10
 
 # Set score Position
 POS_SCORE_B = (WINDOW_WIDTH / 2 + FONT_SIZE / 1.7, 15)
-POS_SCORE_A = (WINDOW_WIDTH/2 - FONT_SIZE, 15)
+POS_SCORE_A = (WINDOW_WIDTH / 2 - FONT_SIZE, 15)
+
+# TODO: Create a class for the game settings
+# TODO: Create a dictionary for window sizes

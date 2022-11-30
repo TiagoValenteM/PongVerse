@@ -1,6 +1,8 @@
 from random import randint
 import pygame
+import datetime
 from abc import ABC, abstractmethod
+
 from .constants import *
 
 BLACK = (0, 0, 0)
@@ -35,22 +37,20 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
     # TODO: Set timer for the powerups
 
 
-# TODO: For the power ups, my idea is to set an interval of random numbers and set the powerups equal to some of
-#  these???
-
 # Mandatory PowerUps
 
+# AntMan: The AntMan "Power-up" makes the player’s Paddle smaller while increasing others size
 class ShrinkEnlarge(PowerUp):
-
     # Set the PowerUp probability
     probability = 50
 
-    # AntMan: The AntMan "Power-up" makes the player’s Paddle smaller while increasing others size
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_0.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
@@ -59,17 +59,18 @@ class ShrinkEnlarge(PowerUp):
         pass
 
 
+# Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
 class Freeze(PowerUp):
-
     # Set the PowerUp probability
     probability = 60
 
-    # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_1.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
@@ -78,17 +79,18 @@ class Freeze(PowerUp):
         pass
 
 
+# MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
 class MultipleBalls(PowerUp):
-
     # Set the PowerUp probability
     probability = 30
 
-    # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_2.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
@@ -102,17 +104,18 @@ class MultipleBalls(PowerUp):
 
 # Optional PowerUps
 
+# Quicksilver: The Quicksilver "Power-up" increases the speed of the player’s paddle
 class FasterPaddle(PowerUp):
-
     # Set the PowerUp probability
     probability = 30
 
-    # Quicksilver: The Quicksilver "Power-up" increases the speed of the player’s paddle
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_3.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
@@ -121,17 +124,18 @@ class FasterPaddle(PowerUp):
         pass
 
 
+# DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
 class DoubleScore(PowerUp):
-
     # Set the PowerUp probability
     probability = 70
 
-    # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_4.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
@@ -140,17 +144,18 @@ class DoubleScore(PowerUp):
         pass
 
 
+# Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
 class Shield(PowerUp):
-
     # Set the PowerUp probability
     probability = 50
 
-    # Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/ball_avengers.png')
+        super().draw('img/PowerUp_5.png')
+        # Set the PowerUp visible time in seconds
+        self.visible_time = POWERUP_VISIBLE_TIME
 
     def affect_playerA(self):
         pass
