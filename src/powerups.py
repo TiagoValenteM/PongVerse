@@ -41,6 +41,7 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
 # Mandatory PowerUps
 
 class ShrinkEnlarge(PowerUp):
+
     # Set the PowerUp probability
     probability = 50
 
@@ -59,6 +60,7 @@ class ShrinkEnlarge(PowerUp):
 
 
 class Freeze(PowerUp):
+
     # Set the PowerUp probability
     probability = 60
 
@@ -77,6 +79,7 @@ class Freeze(PowerUp):
 
 
 class MultipleBalls(PowerUp):
+
     # Set the PowerUp probability
     probability = 30
 
@@ -100,6 +103,7 @@ class MultipleBalls(PowerUp):
 # Optional PowerUps
 
 class FasterPaddle(PowerUp):
+
     # Set the PowerUp probability
     probability = 30
 
@@ -118,6 +122,7 @@ class FasterPaddle(PowerUp):
 
 
 class DoubleScore(PowerUp):
+
     # Set the PowerUp probability
     probability = 70
 
@@ -136,6 +141,7 @@ class DoubleScore(PowerUp):
 
 
 class Shield(PowerUp):
+
     # Set the PowerUp probability
     probability = 50
 
