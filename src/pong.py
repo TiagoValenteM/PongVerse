@@ -15,29 +15,25 @@ powerup_active_time: any = None
 def play_pong():
     # Initialize pygames
     pygame.init()
-    pygame.display.set_icon(GAME_ICON)
+    pygame.display.set_icon(GameSettings.GAME_ICON)
     triggered = False
     ball_owner = None
 
-    # Open a new window
-    size = (WINDOW_WIDTH, WINDOW_HEIGHT)
-    screen = pygame.display.set_mode(size)
-    pygame.display.set_caption(GAME_TITLE)
+    # Opens a new window
+    screen = pygame.display.set_mode(GameSettings.WINDOW_SIZE)
+    # Set the title of the window/game
+    pygame.display.set_caption(GameSettings.GAME_TITLE)
 
     # LET'S CREATE THE TWO PADDLES AND THE BALL, USING THE BEFORE-CREATED CLASSES
-    paddleA = Paddle(BLUE, Paddle_WIDTH, Paddle_HEIGHT)
-    paddleA.rect.x = 0 + Paddle_WIDTH * 2
-    paddleA.rect.y = WINDOW_HEIGHT / 2 - Paddle_HEIGHT / 2
+    paddleA = Paddle(GameSettings.BLUE, PaddleSettings.PADDLE_WIDTH_A, PaddleSettings.PADDLE_HEIGHT_A)
+    paddleA.rect.x, paddleA.rect.y = (PaddleSettings.INITIAL_POS_X_A, PaddleSettings.INITIAL_POS_Y_A)
 
-    paddleB = Paddle(MAGENTA, Paddle_WIDTH, Paddle_HEIGHT)
-    paddleB.rect.x = WINDOW_WIDTH - Paddle_WIDTH * 2
-    paddleB.rect.y = WINDOW_HEIGHT / 2 - Paddle_HEIGHT / 2
+    paddleB = Paddle(GameSettings.MAGENTA, PaddleSettings.PADDLE_WIDTH_B, PaddleSettings.PADDLE_HEIGHT_B)
+    paddleB.rect.x, paddleB.rect.y = (PaddleSettings.INITIAL_POS_X_B, PaddleSettings.INITIAL_POS_Y_B)
 
-    # setting up the ball and its position
-
-    ball = Ball("img/ball.png", BALL_WIDTH, BALL_HEIGHT)
-    ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
-    ball.rect.y = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
+    # setting up the ball and its initial position
+    ball = Ball("img/ball.png", BallSettings.BALL_WIDTH, BallSettings.BALL_HEIGHT)
+    ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
 
     # This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
@@ -70,7 +66,7 @@ def play_pong():
             # It chooses the first chosen random powerup
             chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
             # It creates the powerup
-            powerup = chosen_powerup(ball_owner, POWERUP_WIDTH, POWERUP_HEIGHT)
+            powerup = ShrinkEnlarge(ball_owner, GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
             all_sprites_list.add(powerup)
             powerup_active = powerup
@@ -88,37 +84,34 @@ def play_pong():
         if int(visible) == powerup_active.visible_time:
             powerup_active.kill()
             powerup_active = None
-            print(powerup_active)
             powerup_active_time = None
 
-    def reset():
-        ball.rect.x = WINDOW_WIDTH / 2 - BALL_WIDTH / 2
-        ball.rect.y = WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
+    # Resets Ball position
+    def reset_ball():
+        # Initial position of the ball
+        ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
 
     def show_go_screen():
-        screen.fill(BLUE)
+        screen.fill(GameSettings.BLUE)
         font = pygame.font.SysFont('comicsans', 25)  # creates a font object
         lastScore = font.render('Best Score: ' + str(scoreA), True, (255, 255, 255))
         screen.blit(lastScore, (700 / 2, 500 / 2))
         pygame.display.flip()
 
     # Function to manage who is winning
-    def display_scores(font, scoreA, scoreB):
-        if scoreA > scoreB:
-            text = font.render(str(scoreA), 1, BLUE)
-            screen.blit(text, POS_SCORE_A)
-            text = font.render(str(scoreB), 1, WHITE)
-            screen.blit(text, POS_SCORE_B)
-        if scoreA < scoreB:
-            text = font.render(str(scoreB), 1, MAGENTA)
-            screen.blit(text, POS_SCORE_B)
-            text = font.render(str(scoreA), 1, WHITE)
-            screen.blit(text, POS_SCORE_A)
-        if scoreA == scoreB:
-            text = font.render(str(scoreA), 1, WHITE)
-            screen.blit(text, POS_SCORE_A)
-            text = font.render(str(scoreB), 1, WHITE)
-            screen.blit(text, POS_SCORE_B)
+    def display_scores(font_Score, score_A, score_B):
+        color_A = GameSettings.WHITE
+        color_B = GameSettings.WHITE
+
+        if score_A > score_B:
+            color_A = GameSettings.BLUE
+        elif score_A < score_B:
+            color_B = GameSettings.MAGENTA
+
+        text_A = font_Score.render(str(score_A), 1, color_A)
+        text_B = font_Score.render(str(score_B), 1, color_B)
+        screen.blit(text_A, GameSettings.POS_SCORE_A)
+        screen.blit(text_B, GameSettings.POS_SCORE_B)
 
     # -------- Main Program Loop -----------
     while carryOn:
@@ -140,41 +133,43 @@ def play_pong():
         # Moving the paddles when the user uses the keys
         keys = pygame.key.get_pressed()  # this built-in method saves the user input from the keyboard
 
-        # moving the paddles when the user hits W/S (player A) or up down for player
+        # moving the paddles when the user hits W/S (player A) or up/down (player B)
         if keys[pygame.K_w]:
             paddleA.moveUp(5)
             triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(5, WINDOW_HEIGHT, Paddle_HEIGHT)
+            paddleA.moveDown(5, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_HEIGHT_A)
             triggered = True
         if keys[pygame.K_UP]:
             paddleB.moveUp(5)
             triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(5, WINDOW_HEIGHT, Paddle_HEIGHT)
+            paddleB.moveDown(5, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_WIDTH_B)
             triggered = True
 
             # --- Game logic should go here
         all_sprites_list.update(move=triggered)
 
         # Checking if the ball was scored and changing speed accordingly
-        if ball.rect.x >= WINDOW_WIDTH + BALL_WIDTH:
+        if ball.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
             scoreA += 1
-            reset()
+            reset_ball()
+            ball_owner = None
             triggered = False
             ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.x <= 0 - BALL_WIDTH:
+        if ball.rect.x <= 0 - BallSettings.BALL_WIDTH:
             scoreB += 1
-            reset()
+            reset_ball()
+            ball_owner = None
             triggered = False
             ball.velocity[0] = -ball.velocity[0]
-        if ball.rect.y >= WINDOW_HEIGHT - BALL_HEIGHT:
+        if ball.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
             ball.bounce_up_down()
         if ball.rect.y <= 0:
             ball.bounce_up_down()
 
         # Detects if a player hits a win score
-        if scoreA >= WIN_SCORE or scoreB >= WIN_SCORE:
+        if scoreA >= GameSettings.WIN_SCORE or scoreB >= GameSettings.WIN_SCORE:
             show_go_screen()
             break
 
@@ -190,13 +185,14 @@ def play_pong():
         screen.fill(BLACK)
 
         # Draw the net A WHITE LINE FROM TOP TO BOTTOM (USE PYGAME BUILT-IN METHOD)
-        pygame.draw.line(screen, WHITE, [WINDOW_WIDTH / 2, 0], [WINDOW_WIDTH / 2, WINDOW_HEIGHT], 5)
+        pygame.draw.line(screen, GameSettings.WHITE, [GameSettings.WINDOW_WIDTH / 2, 0],
+                         [GameSettings.WINDOW_WIDTH / 2, GameSettings.WINDOW_HEIGHT], 5)
         # Now let's draw all the sprites in one go. (For now we only have 2 sprites!)
         all_sprites_list.draw(screen)
 
         # Display scores:
         # Defines the font used
-        font = pygame.font.Font(None, FONT_SIZE)
+        font = pygame.font.Font(None, GameSettings.FONT_SIZE)
         # Calls display_scores function to manage colors according to who is winning
         display_scores(font, scoreA, scoreB)
 
@@ -207,8 +203,11 @@ def play_pong():
 
         # Checks if a powerup is visible
         if powerup_active_time is not None:
-            if pygame.sprite.collide_mask(ball, powerup_active):
-                powerup_active.affect_playerA()
+            # If it is visible, it checks if it collides with the ball
+            if pygame.sprite.collide_mask(ball, powerup_active) and ball_owner is not None:
+                # It activates the powerup
+                powerup_active.run_powerup(paddleA, paddleB, ball)
+                # It kills the activated powerup
                 powerup_active.kill()
             # Sets the powerup to be invisible
             powerup_invisible()
