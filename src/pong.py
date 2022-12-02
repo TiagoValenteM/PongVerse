@@ -176,9 +176,11 @@ def play_pong():
         # Detect collisions between the ball and the paddles and change its speed accordingly(use the method we created)
         if pygame.sprite.collide_mask(ball, paddleA):
             ball_owner = paddleA
+            print(ball_owner)
             ball.bounce()
         if pygame.sprite.collide_mask(ball, paddleB):
             ball_owner = paddleB
+            print(ball_owner)
             ball.bounce()
         # --- Drawing code should go here
         # First, clear the screen to black.
@@ -197,7 +199,7 @@ def play_pong():
         display_scores(font, scoreA, scoreB)
 
         # Checks if a powerup is invisible
-        if powerup_active is None:
+        if powerup_active is None and ball_owner is not None:
             # Sets a random powerup to be visible
             powerup_visible()
 
