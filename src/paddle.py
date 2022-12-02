@@ -1,6 +1,5 @@
 import pygame
 
-# 1
 # color black, rgb scale
 BLACK = (0, 0, 0)
 

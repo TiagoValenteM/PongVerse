@@ -66,7 +66,7 @@ def play_pong():
             # It chooses the first chosen random powerup
             chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
             # It creates the powerup
-            powerup = Shield(ball_owner, GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_HEIGHT)
+            powerup = chosen_powerup(ball_owner, GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
             all_sprites_list.add(powerup)
             powerup_active = powerup

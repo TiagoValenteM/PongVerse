@@ -31,6 +31,10 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
     def run_powerup(self, paddleA, paddleB, ball):
         pass
 
+    @abstractmethod
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
+
     def draw(self, filename, ):
         self.image = pygame.image.load(filename)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
@@ -69,6 +73,9 @@ class ShrinkEnlarge(PowerUp):
         elif self.owner == paddleB:
             self.affect_playerB(paddleB)
 
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
+
 
 # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
 class Freeze(PowerUp):
@@ -90,6 +97,9 @@ class Freeze(PowerUp):
     def run_powerup(self, paddleA, paddleB, ball):
         self.affect_playerA(paddleA)
         self.affect_playerB(paddleB)
+
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
 
 
 # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
@@ -113,6 +123,9 @@ class MultipleBalls(PowerUp):
         pass
 
     def run_powerup(self, paddleA, paddleB, ball):
+        pass
+
+    def revert_powerup(self, paddleA, paddleB, ball):
         pass
 
 
@@ -141,6 +154,9 @@ class FasterPaddle(PowerUp):
         elif self.owner == paddleB:
             self.affect_playerB(paddleB)
 
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
+
 
 # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
 class DoubleScore(PowerUp):
@@ -162,6 +178,9 @@ class DoubleScore(PowerUp):
     def run_powerup(self, paddleA, paddleB, ball):
         pass
 
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
+
 
 # Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
 class Shield(PowerUp):
@@ -175,11 +194,13 @@ class Shield(PowerUp):
         super().draw('img/PowerUp_5.png')
 
     def affect_playerA(self, player_A):
-        player_A.image = pygame.transform.scale(player_A.image, (player_A.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
+        player_A.image = pygame.transform.scale(player_A.image,
+                                                (player_A.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
         player_A.height = GameSettings.WINDOW_HEIGHT
 
     def affect_playerB(self, player_B):
-        player_B.image = pygame.transform.scale(player_B.image, (player_B.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
+        player_B.image = pygame.transform.scale(player_B.image,
+                                                (player_B.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
         player_B.height = GameSettings.WINDOW_HEIGHT
 
     def run_powerup(self, paddleA, paddleB, ball):
@@ -187,6 +208,9 @@ class Shield(PowerUp):
             self.affect_playerA(paddleA)
         elif self.owner == paddleB:
             self.affect_playerB(paddleB)
+
+    def revert_powerup(self, paddleA, paddleB, ball):
+        pass
 
 
 # Dictionary of PowerUps and their probabilities
