@@ -1,6 +1,6 @@
 # Import the pygame library and initialise the game engine
 import pygame
-from .constants import *
+from .config import *
 from random import choices
 from .paddle import Paddle
 from .ball import Ball
@@ -184,7 +184,7 @@ def play_pong():
             ball.bounce()
         # --- Drawing code should go here
         # First, clear the screen to black.
-        screen.fill(BLACK)
+        screen.blit(GameSettings.BACKGROUND_IMG, (0, 0))
 
         # Draw the net A WHITE LINE FROM TOP TO BOTTOM (USE PYGAME BUILT-IN METHOD)
         pygame.draw.line(screen, GameSettings.WHITE, [GameSettings.WINDOW_WIDTH / 2, 0],
@@ -227,3 +227,4 @@ def play_pong():
     pygame.quit()
 
 # TODO: the game starts with white paddle and colors change for the last one that scored
+# TODO: get back to the main menu from the game when it starts

@@ -1,7 +1,7 @@
 from random import randint
 import pygame
 from abc import ABC, abstractmethod
-from .constants import *
+from .config import *
 
 BLACK = (0, 0, 0)
 
