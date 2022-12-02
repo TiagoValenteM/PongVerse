@@ -12,6 +12,8 @@ class Paddle(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         # Call the parent class (Sprite) constructor
         super().__init__()
+        # Sets the height of the paddle
+        self.height = height
         # Pass in the color of the Paddle, its width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.Surface([width, height])
@@ -34,9 +36,9 @@ class Paddle(pygame.sprite.Sprite):
 
         # ONE THAT MOVES IT DOWN
 
-    def moveDown(self, pixels, window_height, paddle_height):
+    def moveDown(self, pixels, window_height):
         self.rect.y += pixels
         # preventing going too far
-        if self.rect.y > window_height - paddle_height:
-            self.rect.y = window_height - paddle_height
+        if self.rect.y > window_height - self.height:
+            self.rect.y = window_height - self.height
             pass

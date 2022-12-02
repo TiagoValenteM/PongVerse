@@ -57,19 +57,17 @@ class ShrinkEnlarge(PowerUp):
 
     def affect_playerA(self, player_A):
         player_A.image = pygame.transform.scale(player_A.image, (player_A.rect.width * 1.5, player_A.rect.height * 2))
-        player_A.height = player_A.image
+        player_A.height = PaddleSettings.PADDLE_HEIGHT_A * 2
 
     def affect_playerB(self, player_B):
         player_B.image = pygame.transform.scale(player_B.image, (player_B.rect.width * 1.5, player_B.rect.height * 2))
-        player_B.height = player_B.image
+        player_B.height = PaddleSettings.PADDLE_HEIGHT_B * 2
 
     def run_powerup(self, paddleA, paddleB, ball):
         if self.owner == paddleA:
             self.affect_playerA(paddleA)
         elif self.owner == paddleB:
             self.affect_playerB(paddleB)
-        else:
-            pass
 
 
 # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
@@ -84,18 +82,10 @@ class Freeze(PowerUp):
         super().draw('img/PowerUp_1.png')
 
     def affect_playerA(self, player_A):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            player_A.moveUp(0)
-        if keys[pygame.K_s]:
-            player_A.moveDown(0, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_HEIGHT)
+        PaddleSettings.PADDLE_SPEED_A = 0
 
     def affect_playerB(self, player_B):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
-            player_B.moveUp(0)
-        if keys[pygame.K_DOWN]:
-            player_B.moveDown(0, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_HEIGHT)
+        PaddleSettings.PADDLE_SPEED_b = 0
 
     def run_powerup(self, paddleA, paddleB, ball):
         self.affect_playerA(paddleA)
@@ -140,13 +130,16 @@ class FasterPaddle(PowerUp):
         super().draw('img/PowerUp_3.png')
 
     def affect_playerA(self, player_A):
-        pass
+        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.PADDLE_SPEED_A * 1.05
 
     def affect_playerB(self, player_B):
-        pass
+        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.PADDLE_SPEED_B * 1.05
 
     def run_powerup(self, paddleA, paddleB, ball):
-        pass
+        if self.owner == paddleA:
+            self.affect_playerA(paddleA)
+        elif self.owner == paddleB:
+            self.affect_playerB(paddleB)
 
 
 # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
@@ -182,13 +175,18 @@ class Shield(PowerUp):
         super().draw('img/PowerUp_5.png')
 
     def affect_playerA(self, player_A):
-        pass
+        player_A.image = pygame.transform.scale(player_A.image, (player_A.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
+        player_A.height = GameSettings.WINDOW_HEIGHT
 
     def affect_playerB(self, player_B):
-        pass
+        player_B.image = pygame.transform.scale(player_B.image, (player_B.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
+        player_B.height = GameSettings.WINDOW_HEIGHT
 
     def run_powerup(self, paddleA, paddleB, ball):
-        pass
+        if self.owner == paddleA:
+            self.affect_playerA(paddleA)
+        elif self.owner == paddleB:
+            self.affect_playerB(paddleB)
 
 
 # Dictionary of PowerUps and their probabilities

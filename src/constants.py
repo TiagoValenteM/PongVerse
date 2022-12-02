@@ -72,4 +72,8 @@ class PaddleSettings:
     INITIAL_POS_X_B: int = GameSettings.WINDOW_WIDTH - PADDLE_WIDTH_B * 2
     INITIAL_POS_Y_B: int = GameSettings.WINDOW_HEIGHT / 2 - PADDLE_HEIGHT_B / 2
 
+    # Set Paddle speed
+    PADDLE_SPEED_A: int = 5
+    PADDLE_SPEED_B: int = 5
+
 # TODO: Create a dictionary for window sizes

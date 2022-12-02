@@ -66,7 +66,7 @@ def play_pong():
             # It chooses the first chosen random powerup
             chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
             # It creates the powerup
-            powerup = ShrinkEnlarge(ball_owner, GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_HEIGHT)
+            powerup = Shield(ball_owner, GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
             all_sprites_list.add(powerup)
             powerup_active = powerup
@@ -135,16 +135,16 @@ def play_pong():
 
         # moving the paddles when the user hits W/S (player A) or up/down (player B)
         if keys[pygame.K_w]:
-            paddleA.moveUp(5)
+            paddleA.moveUp(PaddleSettings.PADDLE_SPEED_A)
             triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(5, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_HEIGHT_A)
+            paddleA.moveDown(PaddleSettings.PADDLE_SPEED_A, GameSettings.WINDOW_HEIGHT)
             triggered = True
         if keys[pygame.K_UP]:
-            paddleB.moveUp(5)
+            paddleB.moveUp(PaddleSettings.PADDLE_SPEED_B)
             triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(5, GameSettings.WINDOW_HEIGHT, PaddleSettings.PADDLE_WIDTH_B)
+            paddleB.moveDown(PaddleSettings.PADDLE_SPEED_B, GameSettings.WINDOW_HEIGHT)
             triggered = True
 
             # --- Game logic should go here
@@ -203,6 +203,7 @@ def play_pong():
             # Sets a random powerup to be visible
             powerup_visible()
 
+        # TODO: Solve the problem of the ball owner being the wrong one
         # Checks if a powerup is visible
         if powerup_active_time is not None:
             # If it is visible, it checks if it collides with the ball
