@@ -1,8 +1,8 @@
-from src.pong import *
+from src.interface import *
 
 
 def main():
-    play_pong()
+    interface()
 
 
 if __name__ == '__main__':

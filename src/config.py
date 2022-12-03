@@ -80,4 +80,6 @@ class PaddleSettings:
     PADDLE_SPEED_A: int = 5
     PADDLE_SPEED_B: int = 5
 
-# TODO: Create a dictionary for window sizes
+
+Screen_Resolution = {1: (640, 360), 2: (854, 480), 3: (960, 540), 4: (1280, 720),
+                     5: (1920, 1080), 6: (2560, 1440), 7: (3840, 2160)}

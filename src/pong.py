@@ -228,3 +228,4 @@ def play_pong():
 
 # TODO: the game starts with white paddle and colors change for the last one that scored
 # TODO: get back to the main menu from the game when it starts
+# TODO: Choose between Vanilla Pong or PowerUps Pong - MUST HAVE INSTRUCTIONS FOR EVERYTHING
