@@ -68,13 +68,16 @@ class ShrinkEnlarge(PowerUp):
         player_B.height = PaddleSettings.PADDLE_HEIGHT_B * 2
 
     def run_powerup(self, paddleA, paddleB, ball):
-        if self.owner == paddleA:
+        if self.owner == 'paddleA':
             self.affect_playerA(paddleA)
-        elif self.owner == paddleB:
+        elif self.owner == 'paddleB':
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
-        pass
+        paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
+        paddleB.height = PaddleSettings.PADDLE_HEIGHT_A
+        paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
+        paddleB.height = PaddleSettings.PADDLE_HEIGHT_B
 
 
 # Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
@@ -95,8 +98,14 @@ class Freeze(PowerUp):
         PaddleSettings.PADDLE_SPEED_b = 0
 
     def run_powerup(self, paddleA, paddleB, ball):
-        self.affect_playerA(paddleA)
-        self.affect_playerB(paddleB)
+        # If the ball is owned by player A
+        if self.owner == 'paddleA':
+            # Freeze player B
+            self.affect_playerA(paddleB)
+            # If the ball is owned by player B
+        elif self.owner == 'paddleB':
+            # Freeze player A
+            self.affect_playerB(paddleA)
 
     def revert_powerup(self, paddleA, paddleB, ball):
         pass
@@ -149,9 +158,9 @@ class FasterPaddle(PowerUp):
         PaddleSettings.PADDLE_SPEED_B = PaddleSettings.PADDLE_SPEED_B * 1.05
 
     def run_powerup(self, paddleA, paddleB, ball):
-        if self.owner == paddleA:
+        if self.owner == 'paddleA':
             self.affect_playerA(paddleA)
-        elif self.owner == paddleB:
+        elif self.owner == 'paddleB':
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
@@ -204,9 +213,9 @@ class Shield(PowerUp):
         player_B.height = GameSettings.WINDOW_HEIGHT
 
     def run_powerup(self, paddleA, paddleB, ball):
-        if self.owner == paddleA:
+        if self.owner == 'paddleA':
             self.affect_playerA(paddleA)
-        elif self.owner == paddleB:
+        elif self.owner == 'paddleB':
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):

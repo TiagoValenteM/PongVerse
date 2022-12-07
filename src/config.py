@@ -1,5 +1,4 @@
 import pygame
-from .ball import Ball
 
 
 # Static Class for the Game Settings
@@ -16,8 +15,9 @@ class GameSettings:
     BLUE: tuple = (37, 150, 190)
     MAGENTA: tuple = (204, 51, 139)
 
-    # Set Font Size
+    # Set Font Size and Type
     FONT_SIZE: int = 70
+    FONT_TYPE: str = "font/default_font.ttf"
 
     # Set window size
     WINDOW_WIDTH: int = 1280
@@ -81,5 +81,6 @@ class PaddleSettings:
     PADDLE_SPEED_B: int = 5
 
 
+# Create a Dictionary of all the screen resolutions
 Screen_Resolution = {1: (640, 360), 2: (854, 480), 3: (960, 540), 4: (1280, 720),
                      5: (1920, 1080), 6: (2560, 1440), 7: (3840, 2160)}

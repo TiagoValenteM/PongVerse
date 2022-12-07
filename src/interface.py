@@ -1,6 +1,6 @@
 import pygame
 import sys
-from .pong import play_pong
+from .pong import PongVerse
 
 
 # Creating a function that creates the GUI
@@ -22,7 +22,7 @@ def interface():
     # saving the screen sizes
     width = screen.get_width()
     height = screen.get_height()
-    # creating some textlabels
+    # creating some text-labels
     corbelfont = pygame.font.SysFont('Corbel', 50)
     game1_text = corbelfont.render('pong', True, blue)
     game2_text = corbelfont.render('game2', True, blue)
@@ -40,18 +40,16 @@ def interface():
                 pygame.quit()
             # press on quit button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[
-                    1] <= 5 * height / 6 + 60:
+                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[1] <= 5 * height / 6 + 60:
                     pygame.quit()
             # press the credits button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 4 * height / 6 <= mouse[
-                    1] <= 4 * height / 6 + 60:
+                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 4 * height / 6 <= mouse[1] <= 4 * height / 6 + 60:
                     credits_()
             # pressing the pong button
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if width / 8 <= mouse[0] <= width / 8 + 140 and height / 3 <= mouse[1] <= height / 3 + 60:
-                    play_pong()
+                    PongVerse().play()
         # setting the background color as black
         screen.fill(black)
         # print the buttons text and the box(color changing)
@@ -122,8 +120,7 @@ def credits_():
                 pygame.quit()
             # press on quit button
             if ev.type == pygame.MOUSEBUTTONDOWN:
-                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[
-                    1] <= 5 * height / 6 + 60:
+                if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[1] <= 5 * height / 6 + 60:
                     interface()
         screen.fill((0, 0, 0))
         # credits text
