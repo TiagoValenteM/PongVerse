@@ -3,13 +3,12 @@ import pygame
 from abc import ABC, abstractmethod
 from .config import *
 
-BLACK = (0, 0, 0)
-
 
 class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visible game objects
 
     # Set the PowerUp visible time in seconds
-    visible_time: int = GameSettings.POWERUP_VISIBLE_TIME
+    visible_time: int = PowerUpSettings.POWERUP_VISIBLE_TIME
+    active_time: int = PowerUpSettings.POWERUP_ACTIVE_TIME
 
     def __init__(self, ball_owner, width, height):
         # Call the parent class (Sprite) constructor
@@ -35,13 +34,13 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
     def revert_powerup(self, paddleA, paddleB, ball):
         pass
 
-    def draw(self, filename, ):
+    def draw(self, filename):
         self.image = pygame.image.load(filename)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
-        pygame.draw.rect(self.image, BLACK, [self.width, self.height, 0, 0])
+        pygame.draw.rect(self.image, GameSettings.BLACK, [self.width, self.height, 0, 0])
         self.rect = self.image.get_rect()
-        self.rect.y = randint(GameSettings.POWERUP_HEIGHT, GameSettings.POWERUP_FIELD_HEIGHT)
-        self.rect.x = randint(GameSettings.POWERUP_WIDTH, GameSettings.POWERUP_FIELD_WIDTH)
+        self.rect.y = randint(PowerUpSettings.POWERUP_HEIGHT, PowerUpSettings.POWERUP_FIELD_HEIGHT)
+        self.rect.x = randint(PowerUpSettings.POWERUP_WIDTH, PowerUpSettings.POWERUP_FIELD_WIDTH)
 
     # TODO: Set timer for the powerups
 
@@ -52,6 +51,8 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
 class ShrinkEnlarge(PowerUp):
     # Set the PowerUp probability
     probability: int = 50
+    # Set the PowerUp name
+    name: str = 'Ant-Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -60,10 +61,12 @@ class ShrinkEnlarge(PowerUp):
         super().draw('img/PowerUp_0.png')
 
     def affect_playerA(self, player_A):
+        player_A.border_radius = 12
         player_A.image = pygame.transform.scale(player_A.image, (player_A.rect.width * 1.5, player_A.rect.height * 2))
         player_A.height = PaddleSettings.PADDLE_HEIGHT_A * 2
 
     def affect_playerB(self, player_B):
+        player_B.border_radius = 12
         player_B.image = pygame.transform.scale(player_B.image, (player_B.rect.width * 1.5, player_B.rect.height * 2))
         player_B.height = PaddleSettings.PADDLE_HEIGHT_B * 2
 
@@ -74,8 +77,10 @@ class ShrinkEnlarge(PowerUp):
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
+        paddleA.border_radius, paddleB.border_radius = PaddleSettings.PADDLE_ROUND_CORNERS_A, \
+                                                                 PaddleSettings.PADDLE_ROUND_CORNERS_B
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
-        paddleB.height = PaddleSettings.PADDLE_HEIGHT_A
+        paddleA.height = PaddleSettings.PADDLE_HEIGHT_A
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
         paddleB.height = PaddleSettings.PADDLE_HEIGHT_B
 
@@ -84,6 +89,8 @@ class ShrinkEnlarge(PowerUp):
 class Freeze(PowerUp):
     # Set the PowerUp probability
     probability: int = 60
+    # Set the PowerUp name
+    name: str = 'Freeze-Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -95,7 +102,7 @@ class Freeze(PowerUp):
         PaddleSettings.PADDLE_SPEED_A = 0
 
     def affect_playerB(self, player_B):
-        PaddleSettings.PADDLE_SPEED_b = 0
+        PaddleSettings.PADDLE_SPEED_B = 0
 
     def run_powerup(self, paddleA, paddleB, ball):
         # If the ball is owned by player A
@@ -108,13 +115,16 @@ class Freeze(PowerUp):
             self.affect_playerB(paddleA)
 
     def revert_powerup(self, paddleA, paddleB, ball):
-        pass
+        PaddleSettings.PADDLE_SPEED_A = 5
+        PaddleSettings.PADDLE_SPEED_B = 5
 
 
 # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
 class MultipleBalls(PowerUp):
     # Set the PowerUp probability
     probability: int = 30
+    # Set the PowerUp name
+    name: str = 'Multiple-Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -144,6 +154,8 @@ class MultipleBalls(PowerUp):
 class FasterPaddle(PowerUp):
     # Set the PowerUp probability
     probability: int = 30
+    # Set the PowerUp name
+    name: str = 'Quicksilver'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -164,13 +176,16 @@ class FasterPaddle(PowerUp):
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
-        pass
+        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.PADDLE_SPEED_A * 0.95
+        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.PADDLE_SPEED_B * 0.95
 
 
 # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
 class DoubleScore(PowerUp):
     # Set the PowerUp probability
     probability: int = 70
+    # Set the PowerUp name
+    name: str = 'Double-Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -179,22 +194,27 @@ class DoubleScore(PowerUp):
         super().draw('img/PowerUp_4.png')
 
     def affect_playerA(self, player_A):
-        pass
+        GameSettings.SCORE_ADDER_A = 2
 
     def affect_playerB(self, player_B):
-        pass
+        GameSettings.SCORE_ADDER_B = 2
 
     def run_powerup(self, paddleA, paddleB, ball):
-        pass
+        if self.owner == 'paddleA':
+            self.affect_playerA(paddleA)
+        elif self.owner == 'paddleB':
+            self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
-        pass
+        GameSettings.SCORE_ADDER_A, GameSettings.SCORE_ADDER_B = 1, 1
 
 
 # Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
 class Shield(PowerUp):
     # Set the PowerUp probability
     probability: int = 50
+    # Set the PowerUp name
+    name: str = 'Iron-Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
@@ -203,11 +223,13 @@ class Shield(PowerUp):
         super().draw('img/PowerUp_5.png')
 
     def affect_playerA(self, player_A):
+        player_A.border_radius = 0
         player_A.image = pygame.transform.scale(player_A.image,
                                                 (player_A.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
         player_A.height = GameSettings.WINDOW_HEIGHT
 
     def affect_playerB(self, player_B):
+        player_B.border_radius = 0
         player_B.image = pygame.transform.scale(player_B.image,
                                                 (player_B.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
         player_B.height = GameSettings.WINDOW_HEIGHT
@@ -219,7 +241,11 @@ class Shield(PowerUp):
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB, ball):
-        pass
+        paddleA.border_radius, paddleB.border_radius = PaddleSettings.PADDLE_ROUND_CORNERS_A, \
+                                                                 PaddleSettings.PADDLE_ROUND_CORNERS_B
+        paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
+        paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
+        paddleA.height, paddleB.height = PaddleSettings.PADDLE_HEIGHT_A, PaddleSettings.PADDLE_HEIGHT_B
 
 
 # Dictionary of PowerUps and their probabilities

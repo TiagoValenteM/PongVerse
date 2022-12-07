@@ -13,7 +13,7 @@ class Ball(pygame.sprite.Sprite):
         # Pass in the color of the ball, its width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load(filename)
-        self.image = pygame.transform.scale(self.image, (width, height))
+        self.image = pygame.transform.smoothscale(self.image, (width, height))
         # Draw the ball (a rectangle!)
         # WE NEED TO USE A PYGAME BUILT IN METHOD
         pygame.draw.rect(self.image, BLACK, [width, height, 0, 0])

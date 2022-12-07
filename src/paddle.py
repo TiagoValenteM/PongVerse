@@ -8,18 +8,19 @@ BLACK = (0, 0, 0)
 class Paddle(pygame.sprite.Sprite):
     # SARA : sprites are visible game objects. they have appearance measures/ characteristics
     # This class represents a paddle. It derives from the "Sprite" class in Pygame.
-    def __init__(self, color, width, height):
+    def __init__(self, color, width, height, border_radius):
         # Call the parent class (Sprite) constructor
         super().__init__()
         # Sets the height of the paddle
         self.height = height
+        self.border_radius = border_radius
         # Pass in the color of the Paddle, its width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.Surface([width, height])
         self.image.fill(BLACK)
         self.image.set_colorkey(BLACK)
         # Draw the paddle (a rectangle!)
-        pygame.draw.rect(self.image, color, [0, 0, width, height])
+        pygame.draw.rect(self.image, color, [0, 0, width, height], border_radius=border_radius)
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
