@@ -39,10 +39,8 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         pygame.draw.rect(self.image, GameSettings.BLACK, [self.width, self.height, 0, 0])
         self.rect = self.image.get_rect()
-        self.rect.y = randint(PowerUpSettings.POWERUP_HEIGHT, PowerUpSettings.POWERUP_FIELD_HEIGHT)
-        self.rect.x = randint(PowerUpSettings.POWERUP_WIDTH, PowerUpSettings.POWERUP_FIELD_WIDTH)
-
-    # TODO: Set timer for the powerups
+        self.rect.y = randint(PowerUpSettings.POWERUP_FIELD_HEIGHT[0], PowerUpSettings.POWERUP_FIELD_HEIGHT[1])
+        self.rect.x = randint(PowerUpSettings.POWERUP_FIELD_WIDTH[0], PowerUpSettings.POWERUP_FIELD_WIDTH[1])
 
 
 # Mandatory PowerUps
@@ -78,7 +76,7 @@ class ShrinkEnlarge(PowerUp):
 
     def revert_powerup(self, paddleA, paddleB, ball):
         paddleA.border_radius, paddleB.border_radius = PaddleSettings.PADDLE_ROUND_CORNERS_A, \
-                                                                 PaddleSettings.PADDLE_ROUND_CORNERS_B
+            PaddleSettings.PADDLE_ROUND_CORNERS_B
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
         paddleA.height = PaddleSettings.PADDLE_HEIGHT_A
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
@@ -108,11 +106,11 @@ class Freeze(PowerUp):
         # If the ball is owned by player A
         if self.owner == 'paddleA':
             # Freeze player B
-            self.affect_playerA(paddleB)
+            self.affect_playerB(paddleB)
             # If the ball is owned by player B
         elif self.owner == 'paddleB':
             # Freeze player A
-            self.affect_playerB(paddleA)
+            self.affect_playerA(paddleA)
 
     def revert_powerup(self, paddleA, paddleB, ball):
         PaddleSettings.PADDLE_SPEED_A = 5
@@ -242,7 +240,7 @@ class Shield(PowerUp):
 
     def revert_powerup(self, paddleA, paddleB, ball):
         paddleA.border_radius, paddleB.border_radius = PaddleSettings.PADDLE_ROUND_CORNERS_A, \
-                                                                 PaddleSettings.PADDLE_ROUND_CORNERS_B
+            PaddleSettings.PADDLE_ROUND_CORNERS_B
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
         paddleA.height, paddleB.height = PaddleSettings.PADDLE_HEIGHT_A, PaddleSettings.PADDLE_HEIGHT_B

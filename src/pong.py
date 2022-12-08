@@ -17,13 +17,17 @@ class PongVerse:
         self.powerup_visible_time: any = None
         # Set the time a powerup affects a player
         self.powerup_active_time: any = None
+        # Set the ball owner
+        self.ball_owner: any = None
         # Opens a new window
         self.screen = pygame.display.set_mode(GameSettings.WINDOW_SIZE)
         # Set the Default Font
-        self.default_font = pygame.font.Font(GameSettings.FONT_TYPE, GameSettings.FONT_SIZE)
+        self.default_font = pygame.font.Font(GameSettings.FONT_TYPE, GameSettings.FONT_SIZE_DEFAULT)
+        # Set the PowerUp Font
+        self.powerup_font = pygame.font.Font(GameSettings.FONT_TYPE, GameSettings.FONT_SIZE_POWERUP)
 
     # Define when a PowerUp appears, and it appears every 3 goals
-    def set_powerup_visible(self, scoreA, scoreB, ball_owner, all_sprites_list):
+    def set_powerup_visible(self, scoreA, scoreB, all_sprites_list):
         # Gets the powerup probability
         PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
 
@@ -32,25 +36,26 @@ class PongVerse:
             # It chooses the first chosen random powerup
             chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
             # It creates the powerup
-            powerup = ShrinkEnlarge(ball_owner, PowerUpSettings.POWERUP_WIDTH, PowerUpSettings.POWERUP_HEIGHT)
+            powerup = chosen_powerup(self.ball_owner, PowerUpSettings.POWERUP_WIDTH, PowerUpSettings.POWERUP_HEIGHT)
             # It adds the powerup to the list of objects
             all_sprites_list.add(powerup)
-            # It sets the powerup as active
-            self.powerup_visible = powerup
-            # It sets the powerup timer
-            self.powerup_visible_time = pygame.time.get_ticks()
+            # It sets the powerup as visible and sets the powerup visible timer
+            self.powerup_visible, self.powerup_visible_time = powerup, pygame.time.get_ticks()
 
     # Define when a PowerUp icon disappears
     def set_powerup_invisible(self):
+        # It erases the powerup icon
         self.powerup_visible.kill()
-        self.powerup_visible = None
-        self.powerup_visible_time = None
+        # It sets the powerup as invisible
+        self.powerup_visible, self.powerup_visible_time = None, None
 
     # Define when a PowerUp becomes active
     def set_powerup_active(self, paddleA, paddleB, ball):
+        # It sets the collided powerup as the active powerup
         self.powerup_active = self.powerup_visible
+        # It erases the powerup icon
         self.powerup_visible.kill()
-        # It activates the powerup
+        # It activates the powerup and sets the powerup active timer
         self.powerup_active.run_powerup(paddleA, paddleB, ball)
         self.powerup_active_time = pygame.time.get_ticks()
 
@@ -59,14 +64,43 @@ class PongVerse:
         # It reverts the powerup effect
         self.powerup_active.revert_powerup(paddleA, paddleB, ball)
         # It sets the powerup as inactive
-        self.powerup_active = None
-        self.powerup_active_time = None
+        self.powerup_active, self.powerup_active_time = None, None
 
-    # Resets Ball position
-    @staticmethod
-    def reset_ball(ball):
-        # Initial position of the ball
-        ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
+    # Handles the visible powerup to turn it off after a certain time or activate it
+    def handle_visible_powerup(self, ball, paddleA, paddleB):
+        # Checks if a powerup is visible
+        if self.powerup_visible_time is not None:
+            # Creates a variable that stores the time the powerup has been visible
+            visible = (pygame.time.get_ticks() - self.powerup_visible_time) / 1000
+            # It checks if the visible time is not over
+            if int(visible) < self.powerup_visible.visible_time:
+                # If it is visible, it checks if it collides with the ball
+                if pygame.sprite.collide_mask(ball, self.powerup_visible) and self.ball_owner is not None:
+                    # If it collides, it sets the powerup to be active
+                    self.set_powerup_active(paddleA, paddleB, ball)
+            else:
+                # If the visible time is over, it sets the powerup to be invisible
+                self.set_powerup_invisible()
+
+    # Handles the active powerup to turn it off after a certain time
+    def handle_active_powerup(self, ball, paddleA, paddleB):
+        # Checks if a powerup is active
+        if self.powerup_active_time is not None:
+            # Creates a variable that stores the time the powerup has been active
+            activated = (pygame.time.get_ticks() - self.powerup_active_time) / 1000
+            # It checks if the visible time for the name of the active powerup's name is not over
+            if int(activated) < PowerUpSettings.POWERUP_NAME_VISIBLE_TIME:
+                # Displays the powerup active name
+                display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), True, GameSettings.RED)
+                # Gets the rectangle of the powerup name
+                display_powerup_name_rect = display_powerup_name.get_rect()
+                self.screen.blit(display_powerup_name, (
+                    GameSettings.WINDOW_WIDTH / 2 - display_powerup_name_rect.center[0],
+                    GameSettings.WINDOW_HEIGHT * 0.85))
+            # It checks if the active time is over
+            if int(activated) == self.powerup_active.active_time:
+                # If it is over, it sets the powerup to be inactive
+                self.set_powerup_inactive(paddleA, paddleB, ball)
 
     # Function to manage who is winning
     def display_scores(self, score_A, score_B):
@@ -83,6 +117,12 @@ class PongVerse:
         self.screen.blit(text_A, GameSettings.POS_SCORE_A)
         self.screen.blit(text_B, GameSettings.POS_SCORE_B)
 
+    # Resets Ball position
+    @staticmethod
+    def reset_ball(ball):
+        # Initial position of the ball
+        ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
+
     def play(self):
         # Initialize pygame
         pygame.init()
@@ -91,7 +131,6 @@ class PongVerse:
         # Set the game icon
         pygame.display.set_icon(GameSettings.GAME_ICON)
         triggered = False
-        ball_owner = None
 
         # Set the title of the window/game
         pygame.display.set_caption(GameSettings.GAME_TITLE)
@@ -176,13 +215,13 @@ class PongVerse:
             if ball.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
                 scoreA += GameSettings.SCORE_ADDER_A
                 self.reset_ball(ball)
-                ball_owner = None
+                self.ball_owner = None
                 triggered = False
                 ball.velocity[0] = -ball.velocity[0]
             if ball.rect.x <= 0 - BallSettings.BALL_WIDTH:
                 scoreB += GameSettings.SCORE_ADDER_B
                 self.reset_ball(ball)
-                ball_owner = None
+                self.ball_owner = None
                 triggered = False
                 ball.velocity[0] = -ball.velocity[0]
             if ball.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
@@ -197,10 +236,10 @@ class PongVerse:
 
             # Detect collisions between the ball and the paddles and change its speed accordingly
             if pygame.sprite.collide_mask(ball, paddleA):
-                ball_owner = 'paddleA'
+                self.ball_owner = 'paddleA'
                 ball.bounce()
             if pygame.sprite.collide_mask(ball, paddleB):
-                ball_owner = 'paddleB'
+                self.ball_owner = 'paddleB'
                 ball.bounce()
 
             # Set the screen background image
@@ -213,8 +252,8 @@ class PongVerse:
             self.screen.blit(GameSettings.PLAYER_B_ICON, GameSettings.PLAYER_B_ICON_POS)
 
             # Draw the net A WHITE LINE FROM TOP TO BOTTOM (USE PYGAME BUILT-IN METHOD)
-            pygame.draw.line(self.screen, GameSettings.WHITE, [GameSettings.WINDOW_WIDTH / 2, 0],
-                             [GameSettings.WINDOW_WIDTH / 2, GameSettings.WINDOW_HEIGHT], 5)
+            pygame.draw.line(self.screen, GameSettings.WHITE, GameSettings.FIELD_DIVIDER_INITIAL_POS,
+                             GameSettings.FIELD_DIVIDER_MAX_POS, 5)
 
             # Set all the game objects (sprites) to be drawn on the screen
             all_sprites_list.draw(self.screen)
@@ -224,32 +263,18 @@ class PongVerse:
             self.display_scores(scoreA, scoreB)
 
             # Checks if a powerup is invisible and inactive and if there is a ball owner
-            if self.powerup_visible is None and self.powerup_active is None and ball_owner is not None:
+            if self.powerup_visible is None and self.powerup_active is None and self.ball_owner is not None:
                 # Sets a random powerup to be visible
-                self.set_powerup_visible(scoreA, scoreB, ball_owner, all_sprites_list)
+                self.set_powerup_visible(scoreA, scoreB, all_sprites_list)
 
-            # Checks if a powerup is visible
-            if self.powerup_visible_time is not None:
-                visible = (pygame.time.get_ticks() - self.powerup_visible_time) / 1000
-                if int(visible) < self.powerup_visible.visible_time:
-                    # If it is visible, it checks if it collides with the ball
-                    if pygame.sprite.collide_mask(ball, self.powerup_visible) and ball_owner is not None:
-                        self.set_powerup_active(paddleA, paddleB, ball)
-                else:
-                    self.set_powerup_invisible()
+            # Handles the visible powerup to turn it off after a certain time or activate it
+            self.handle_visible_powerup(ball, paddleA, paddleB)
 
-            # Checks if a powerup is active
-            if self.powerup_active_time is not None:
-                # Creates a variable that stores the time the powerup has been active
-                activated = (pygame.time.get_ticks() - self.powerup_active_time) / 1000
-                # It checks if the active time is over
-                if int(activated) == self.powerup_active.active_time:
-                    self.set_powerup_inactive(paddleA, paddleB, ball)
-
-            # USE PY-GAME BUILT IN METHODS,  SELECT THE POSITION THAT YOU PREFER
+            # Handles the active powerup to turn it off after a certain time
+            self.handle_active_powerup(ball, paddleA, paddleB)
 
             # --- Go ahead and update the screen with what we've drawn.
-            pygame.display.flip()
+            pygame.display.update()
 
             # --- Limit to 60 frames per second
             clock.tick(60)
@@ -257,10 +282,7 @@ class PongVerse:
         # Once we have exited the main program loop we can stop the game engine:
         pygame.quit()
 
+# TODO: Solve problem with ball owner
 # TODO: the game starts with white paddle and colors change for the last one that scored
 # TODO: get back to the main menu from the game when it starts
 # TODO: Choose between Vanilla Pong or PowerUps Pong - MUST HAVE INSTRUCTIONS FOR EVERYTHING
-
-
-# powerup_name = self.default_font.render(str(self.powerup_active.name), True, GameSettings.WHITE)
-# self.screen.blit(powerup_name, GameSettings.POS_SCORE_A)

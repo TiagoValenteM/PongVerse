@@ -34,10 +34,12 @@ class GameSettings:
     WHITE: tuple = (255, 255, 255)
     BLUE: tuple = (71, 94, 126)
     GOLDEN: tuple = (209, 165, 91)
+    RED: tuple = (183, 39, 30)
 
     # Set Font Size and Type
-    FONT_SIZE: int = 70
     FONT_TYPE: str = "font/default_font_pong.ttf"
+    FONT_SIZE_DEFAULT: int = int(WINDOW_WIDTH / 17)
+    FONT_SIZE_POWERUP: int = int(WINDOW_WIDTH / 23)
 
     # Set background Image
     BACKGROUND_IMG_LOAD: any = pygame.image.load("img/background.jpg")
@@ -47,12 +49,16 @@ class GameSettings:
     WIN_SCORE: int = 10
 
     # Set score Position
-    POS_SCORE_B: float = (WINDOW_WIDTH / 2 + FONT_SIZE / 1.7, 15)
-    POS_SCORE_A: float = (WINDOW_WIDTH / 2 - FONT_SIZE, 15)
+    POS_SCORE_B: float = (WINDOW_WIDTH / 2 + FONT_SIZE_DEFAULT / 1.7, 15)
+    POS_SCORE_A: float = (WINDOW_WIDTH / 2 - FONT_SIZE_DEFAULT, 15)
 
     # Set score adder
     SCORE_ADDER_A: int = 1
     SCORE_ADDER_B: int = 1
+
+    # Set the Field Divider Height
+    FIELD_DIVIDER_INITIAL_POS: tuple = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.03)
+    FIELD_DIVIDER_MAX_POS: tuple = (WINDOW_WIDTH / 2, WINDOW_HEIGHT - WINDOW_HEIGHT * 0.03)
 
 
 # Static Class for the Ball Settings
@@ -81,7 +87,7 @@ class PaddleSettings:
     INITIAL_POS_Y_A: int = GameSettings.WINDOW_HEIGHT / 2 - PADDLE_HEIGHT_A / 2
 
     # Set PaddleB initial position
-    INITIAL_POS_X_B: int = GameSettings.WINDOW_WIDTH - PADDLE_WIDTH_B * 2
+    INITIAL_POS_X_B: int = GameSettings.WINDOW_WIDTH - PADDLE_WIDTH_B * 3
     INITIAL_POS_Y_B: int = GameSettings.WINDOW_HEIGHT / 2 - PADDLE_HEIGHT_B / 2
 
     # Set Paddle speed
@@ -99,11 +105,16 @@ class PowerUpSettings:
     POWERUP_HEIGHT: int = GameSettings.WINDOW_HEIGHT / 10
 
     # Set PowerUp field of view size
-    POWERUP_FIELD_WIDTH: int = GameSettings.WINDOW_WIDTH - POWERUP_WIDTH * 2.5
-    POWERUP_FIELD_HEIGHT: int = GameSettings.WINDOW_HEIGHT - POWERUP_HEIGHT * 2.5
+    POWERUP_FIELD_WIDTH: tuple = (
+        int(GameSettings.WINDOW_WIDTH * 0.17), int(GameSettings.WINDOW_WIDTH - GameSettings.WINDOW_WIDTH * 0.17))
+    POWERUP_FIELD_HEIGHT: tuple = (
+        int(GameSettings.WINDOW_HEIGHT * 0.17), int(GameSettings.WINDOW_HEIGHT - GameSettings.WINDOW_HEIGHT * 0.17))
 
     # Set PowerUp visible time in seconds
     POWERUP_VISIBLE_TIME: int = 5
 
     # Set PowerUp active time in seconds
     POWERUP_ACTIVE_TIME: int = 5
+
+    # Set PowerUp Name visible time in seconds
+    POWERUP_NAME_VISIBLE_TIME: int = 2
