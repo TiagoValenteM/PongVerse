@@ -6,7 +6,9 @@ from .powerups import *
 
 
 class PongVerse:
-    def __init__(self):
+    def __init__(self, vanilla):
+        # Set the game version
+        self.vanilla = vanilla
         # Set if a powerup is visible
         self.powerup_visible: any = None
         # Set if a powerup is active
@@ -204,14 +206,19 @@ class PongVerse:
                         self.play()
                     if event.key == pygame.K_ESCAPE:
                         instructionsON = False
+            if self.vanilla:
+                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
+                pass
 
-            self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
-            instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
-            instructions_rect = instructions.get_rect()
-            self.screen.blit(instructions, (GameSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
-                                            GameSettings.WINDOW_HEIGHT * 0.85))
-            pygame.display.update()
-            self.clock.tick(60)
+            if not self.vanilla:
+                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
+                self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
+                instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
+                instructions_rect = instructions.get_rect()
+                self.screen.blit(instructions, (GameSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
+                                                GameSettings.WINDOW_HEIGHT * 0.85))
+                pygame.display.update()
+                self.clock.tick(60)
 
     # Screen when a player wins
     def win_screen(self):
@@ -232,8 +239,13 @@ class PongVerse:
             self.clock.tick(60)
 
     def play(self):
+
         # Set the title of the window/game
-        pygame.display.set_caption(GameSettings.GAME_TITLE)
+        if self.vanilla:
+            pygame.display.set_caption(GameSettings.GAME_TITLE_VANILLA)
+        else:
+            pygame.display.set_caption(GameSettings.GAME_TITLE)
+
         # Set the game icon
         pygame.display.set_icon(GameSettings.GAME_ICON)
 
@@ -310,17 +322,16 @@ class PongVerse:
             # Calls a function to display the score
             self.display_scores()
 
-            # Calls a function that sets a random powerup to be visible
-            self.set_powerup_visible()
-
-            # Calls a function to Handle the visible powerup
-            self.handle_visible_powerup(ball, paddleA, paddleB)
-
-            # Calls a function to Handle the active powerup
-            self.handle_active_powerup(paddleA, paddleB)
-
-            # Calls a function to handle multiple balls on the screen
-            self.handle_multiple_balls(paddleA, paddleB)
+            # If is not vanilla mode, display the powerup
+            if not self.vanilla:
+                # Calls a function that sets a random powerup to be visible
+                self.set_powerup_visible()
+                # Calls a function to Handle the visible powerup
+                self.handle_visible_powerup(ball, paddleA, paddleB)
+                # Calls a function to Handle the active powerup
+                self.handle_active_powerup(paddleA, paddleB)
+                # Calls a function to handle multiple balls on the screen
+                self.handle_multiple_balls(paddleA, paddleB)
 
             # --- Update the screen with what was drawn
             pygame.display.update()

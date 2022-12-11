@@ -12,6 +12,7 @@ class GameSettings:
 
     # Set the game title
     GAME_TITLE: str = "The PongVerse"
+    GAME_TITLE_VANILLA: str = "The PongVerse (Vanilla Edition)"
 
     # Set window size
     WINDOW_WIDTH: int = Screen_Resolution['720p'][0]
@@ -49,7 +50,7 @@ class GameSettings:
     BACKGROUND_IMG: any = pygame.transform.scale(BACKGROUND_IMG_LOAD, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     # Set score to win the game
-    WIN_SCORE: int = 2
+    WIN_SCORE: int = 10
 
     # Set score Position
     POS_SCORE_B: float = (WINDOW_WIDTH / 2 + FONT_SIZE_DEFAULT / 1.7, 15)
@@ -66,9 +67,15 @@ class GameSettings:
 
 # Static Class for Instructions Settings
 class InstructionsSettings:
+    # Set background Image
+
     BACKGROUND_IMG_LOAD: any = pygame.image.load("img/instructions_background.jpg")
     BACKGROUND_IMG: any = pygame.transform.scale(BACKGROUND_IMG_LOAD, (GameSettings.WINDOW_WIDTH,
                                                                        GameSettings.WINDOW_HEIGHT))
+
+    # Set the game title
+    INSTRUCTIONS_TITLE: str = "Instructions"
+    INSTRUCTIONS_TITLE_VANILLA: str = "Instructions (Vanilla Edition)"
 
 
 # Static Class for the Ball Settings
