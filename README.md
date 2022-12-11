@@ -1,2 +1,2 @@
-# The-PongVerse
+# PongVerse
 Pong game using PyGames inspired by Marvel World.
