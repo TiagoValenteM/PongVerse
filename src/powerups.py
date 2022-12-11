@@ -56,7 +56,7 @@ class ShrinkEnlarge(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_0.png')
+        super().draw('img/icons/PowerUp_0.png')
 
     def affect_playerA(self, player_A):
         player_A.border_radius = 12
@@ -96,7 +96,7 @@ class Freeze(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_1.png')
+        super().draw('img/icons/PowerUp_1.png')
 
     def affect_playerA(self, player_A):
         PaddleSettings.PADDLE_SPEED_A = 0
@@ -122,7 +122,7 @@ class Freeze(PowerUp):
 # MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
 class MultipleBalls(PowerUp):
     # Set PowerUp active time in seconds
-    active_time: int = 15
+    active_time: int = 30
     # Set the PowerUp probability
     probability: int = 30
     # Set the PowerUp name
@@ -132,7 +132,7 @@ class MultipleBalls(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_2.png')
+        super().draw('img/icons/PowerUp_2.png')
 
     def affect_playerA(self, player_A):
         pass
@@ -162,13 +162,13 @@ class FasterPaddle(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_3.png')
+        super().draw('img/icons/PowerUp_3.png')
 
     def affect_playerA(self, player_A):
-        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.PADDLE_SPEED_A * 1.05
+        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.FASTER_PADDLE_SPEED
 
     def affect_playerB(self, player_B):
-        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.PADDLE_SPEED_B * 1.05
+        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.FASTER_PADDLE_SPEED
 
     def run_powerup(self, paddleA, paddleB):
         if self.owner == 'paddleA':
@@ -177,8 +177,8 @@ class FasterPaddle(PowerUp):
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB):
-        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.PADDLE_SPEED_A * 0.95
-        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.PADDLE_SPEED_B * 0.95
+        PaddleSettings.PADDLE_SPEED_A = PaddleSettings.DEFAULT_PADDLE_SPEED
+        PaddleSettings.PADDLE_SPEED_B = PaddleSettings.DEFAULT_PADDLE_SPEED
 
 
 # DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
@@ -194,7 +194,7 @@ class DoubleScore(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_4.png')
+        super().draw('img/icons/PowerUp_4.png')
 
     def affect_playerA(self, player_A):
         GameSettings.SCORE_ADDER_A = 2
@@ -225,19 +225,19 @@ class Shield(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/PowerUp_5.png')
+        super().draw('img/icons/PowerUp_5.png')
 
     def affect_playerA(self, player_A):
         player_A.border_radius = 0
         player_A.image = pygame.transform.scale(player_A.image,
-                                                (player_A.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
-        player_A.height = GameSettings.WINDOW_HEIGHT
+                                                (player_A.rect.width * 1.15, InterfaceSettings.WINDOW_HEIGHT))
+        player_A.height = InterfaceSettings.WINDOW_HEIGHT
 
     def affect_playerB(self, player_B):
         player_B.border_radius = 0
         player_B.image = pygame.transform.scale(player_B.image,
-                                                (player_B.rect.width * 1.15, GameSettings.WINDOW_HEIGHT))
-        player_B.height = GameSettings.WINDOW_HEIGHT
+                                                (player_B.rect.width * 1.15, InterfaceSettings.WINDOW_HEIGHT))
+        player_B.height = InterfaceSettings.WINDOW_HEIGHT
 
     def run_powerup(self, paddleA, paddleB):
         if self.owner == 'paddleA':
@@ -255,5 +255,3 @@ class Shield(PowerUp):
 
 # Dictionary of PowerUps and their probabilities
 PowerUps = {0: ShrinkEnlarge, 1: Freeze, 2: MultipleBalls, 3: FasterPaddle, 4: DoubleScore, 5: Shield}
-
-# TODO: Solve the problem with the faster paddle not reversing the speed

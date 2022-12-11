@@ -26,7 +26,7 @@ class PongVerse:
         # Set the powerup owner
         self.powerup_owner: any = None
         # Opens a new window
-        self.screen = pygame.display.set_mode(GameSettings.WINDOW_SIZE)
+        self.screen = pygame.display.set_mode(InterfaceSettings.WINDOW_SIZE)
         # Create a clock that controls FPS
         self.clock = pygame.time.Clock()
         # Set the Default Font
@@ -46,13 +46,13 @@ class PongVerse:
             paddleA.moveUp(PaddleSettings.PADDLE_SPEED_A)
             self.triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(PaddleSettings.PADDLE_SPEED_A, GameSettings.WINDOW_HEIGHT)
+            paddleA.moveDown(PaddleSettings.PADDLE_SPEED_A, InterfaceSettings.WINDOW_HEIGHT)
             self.triggered = True
         if keys[pygame.K_UP]:
             paddleB.moveUp(PaddleSettings.PADDLE_SPEED_B)
             self.triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(PaddleSettings.PADDLE_SPEED_B, GameSettings.WINDOW_HEIGHT)
+            paddleB.moveDown(PaddleSettings.PADDLE_SPEED_B, InterfaceSettings.WINDOW_HEIGHT)
             self.triggered = True
 
     # Define when a PowerUp appears, and it appears every 3 goals
@@ -127,8 +127,8 @@ class PongVerse:
                 # Gets the rectangle of the powerup name
                 display_powerup_name_rect = display_powerup_name.get_rect()
                 self.screen.blit(display_powerup_name, (
-                    GameSettings.WINDOW_WIDTH / 2 - display_powerup_name_rect.center[0],
-                    GameSettings.WINDOW_HEIGHT * 0.85))
+                    InterfaceSettings.WINDOW_WIDTH / 2 - display_powerup_name_rect.center[0],
+                    InterfaceSettings.WINDOW_HEIGHT * 0.85))
             # It checks if the active time is over
             if int(activated) == self.powerup_active.active_time:
                 # If it is over, it sets the powerup to be inactive
@@ -188,13 +188,14 @@ class PongVerse:
     @staticmethod
     def instance_new_ball():
         # Creates a new ball with width and height
-        ball = Ball("img/ball.png", BallSettings.BALL_WIDTH, BallSettings.BALL_HEIGHT)
+        ball = Ball("img/icons/ball.png", BallSettings.BALL_WIDTH, BallSettings.BALL_HEIGHT)
         # Sets the initial position of the ball
         ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
         return ball
 
     def instructions(self):
-        instructionsON = True
+        # Create a loop that carries on until the user exits the win screen
+        instructionsON: bool = True
         while instructionsON:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -206,36 +207,77 @@ class PongVerse:
                         self.play()
                     if event.key == pygame.K_ESCAPE:
                         instructionsON = False
+
+            # Set the title of the window/game
             if self.vanilla:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
-                pass
-
-            if not self.vanilla:
+            else:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
-                self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
-                instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
-                instructions_rect = instructions.get_rect()
-                self.screen.blit(instructions, (GameSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
-                                                GameSettings.WINDOW_HEIGHT * 0.85))
-                pygame.display.update()
-                self.clock.tick(60)
+
+            pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
+            self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
+            instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
+            instructions_rect = instructions.get_rect()
+            self.screen.blit(instructions, (InterfaceSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
+                                            InterfaceSettings.WINDOW_HEIGHT * 0.85))
+
+            # --- Update the screen with what was drawn
+            pygame.display.update()
+
+            # --- Limit the game to 60 frames per second
+            self.clock.tick(60)
 
     # Screen when a player wins
     def win_screen(self):
-        win_screenON = True
+        # Create a loop that carries on until the user exits the win screen
+        win_screenON: bool = True
+        # Set the winner
+        winner: any = None
+        # Set the winner score
+        winner_score: int = 0
+
+        # -------- Main Program Loop -----------
         while win_screenON:
+
+            # --- Main event loop
             for event in pygame.event.get():
+
+                # If user clicked close
                 if event.type == pygame.QUIT:
+                    # Flag that we are done so we exit this loop
+                    win_screenON = False
+                    # Close the window and quit
                     pygame.quit()
+
+                # Or they used the keyboard
                 if event.type == pygame.KEYDOWN:
+                    # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
+                        # Quit the loop
                         win_screenON = False
 
-            self.screen.fill(GameSettings.BLUE)
-            font = pygame.font.SysFont(GameSettings.FONT_TYPE_DEFAULT, 25)  # creates a font object
-            lastScore = font.render('Best Score: ' + str(self.scoreA), True, (255, 255, 255))
+            if self.scoreA > self.scoreB:
+                winner = "Captain America"
+                winner_score = self.scoreA
+                self.screen.blit(GameSettings.WIN_SCREEN_A_IMG, (0, 0))
+                self.screen.blit(GameSettings.WINNER_ICON_A,
+                                 (InterfaceSettings.WINDOW_WIDTH * 0.15, InterfaceSettings.WINDOW_HEIGHT * 0.7))
+            elif self.scoreA < self.scoreB:
+                winner = 'Iron Man'
+                winner_score = self.scoreB
+                self.screen.blit(GameSettings.WIN_SCREEN_B_IMG, (0, 0))
+                self.screen.blit(GameSettings.WINNER_ICON_B,
+                                 (InterfaceSettings.WINDOW_WIDTH * 0.3, InterfaceSettings.WINDOW_HEIGHT * 0.7))
+
+            winner_text = self.default_font.render(winner + " your team wins!", True, GameSettings.WHITE)
+            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), True, (255, 255, 255))
             self.screen.blit(lastScore, (700 / 2, 500 / 2))
+            self.screen.blit(winner_text, (700 / 3, 500 / 3))
+
+            # --- Update the screen with what was drawn
             pygame.display.update()
+
+            # --- Limit the game to 60 frames per second
             self.clock.tick(60)
 
     def play(self):
@@ -262,7 +304,7 @@ class PongVerse:
         self.all_sprites_list.add(paddleA, paddleB, ball)
 
         # Create a loop that carries on until the user exits the game
-        carryOn = True
+        carryOn: bool = True
 
         # -------- Main Program Loop -----------
         while carryOn:
@@ -274,7 +316,7 @@ class PongVerse:
                 if event.type == pygame.QUIT:
                     # Flag that we are done so we exit this loop
                     carryOn = False
-                    # Close the window and quit.
+                    # Close the window and quit
                     pygame.quit()
 
                     # Or they used the keyboard
@@ -336,5 +378,4 @@ class PongVerse:
             # --- Limit the game to 60 frames per second
             self.clock.tick(60)
 
-# TODO: the game starts with white paddle and colors change for the last one that scored
 # TODO: Solve problem with ball owner

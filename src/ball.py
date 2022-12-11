@@ -1,6 +1,6 @@
 import pygame
 from random import randint
-from .config import GameSettings, BallSettings
+from .config import InterfaceSettings, GameSettings, BallSettings
 
 
 # let's create the ball class
@@ -60,7 +60,7 @@ class Ball(pygame.sprite.Sprite):
 
     # Handles the ball motion in the screen
     def handle_ball_motion(self, scoreA, scoreB, ball_owner, triggered):
-        if self.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
+        if self.rect.x >= InterfaceSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
             scoreA += GameSettings.SCORE_ADDER_A
             self.reset_ball()
             ball_owner = None
@@ -72,7 +72,7 @@ class Ball(pygame.sprite.Sprite):
             ball_owner = None
             triggered = False
             self.velocity[0] = - self.velocity[0]
-        if self.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
+        if self.rect.y >= InterfaceSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
             self.bounce_up_down()
         if self.rect.y <= 0:
             self.bounce_up_down()
@@ -81,7 +81,7 @@ class Ball(pygame.sprite.Sprite):
     # Handles multiple balls motion in the screen
     def handle_multiple_balls_motion(self, powerup_owner, scoreA, scoreB):
         should_kill = False
-        if self.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
+        if self.rect.x >= InterfaceSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
             if powerup_owner == 'paddleA':
                 scoreA += GameSettings.SCORE_ADDER_A
             should_kill = True
@@ -91,7 +91,7 @@ class Ball(pygame.sprite.Sprite):
                 scoreB += GameSettings.SCORE_ADDER_B
             should_kill = True
             self.kill()
-        if self.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
+        if self.rect.y >= InterfaceSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
             self.bounce_up_down()
         if self.rect.y <= 0:
             self.bounce_up_down()
