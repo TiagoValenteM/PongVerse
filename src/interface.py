@@ -45,7 +45,7 @@ class Interface:
                 # pressing the pong button
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     if width / 8 <= mouse[0] <= width / 8 + 140 and height / 3 <= mouse[1] <= height / 3 + 60:
-                        PongVerse().play()
+                        PongVerse().instructions()
             # setting the background color as black
             self.screen.fill(GameSettings.BLACK)
             # print the buttons text and the box(color changing)

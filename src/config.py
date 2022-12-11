@@ -49,7 +49,7 @@ class GameSettings:
     BACKGROUND_IMG: any = pygame.transform.scale(BACKGROUND_IMG_LOAD, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     # Set score to win the game
-    WIN_SCORE: int = 10
+    WIN_SCORE: int = 2
 
     # Set score Position
     POS_SCORE_B: float = (WINDOW_WIDTH / 2 + FONT_SIZE_DEFAULT / 1.7, 15)
@@ -62,6 +62,13 @@ class GameSettings:
     # Set the Field Divider Height
     FIELD_DIVIDER_INITIAL_POS: tuple = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.03)
     FIELD_DIVIDER_MAX_POS: tuple = (WINDOW_WIDTH / 2, WINDOW_HEIGHT - WINDOW_HEIGHT * 0.03)
+
+
+# Static Class for Instructions Settings
+class InstructionsSettings:
+    BACKGROUND_IMG_LOAD: any = pygame.image.load("img/instructions_background.jpg")
+    BACKGROUND_IMG: any = pygame.transform.scale(BACKGROUND_IMG_LOAD, (GameSettings.WINDOW_WIDTH,
+                                                                       GameSettings.WINDOW_HEIGHT))
 
 
 # Static Class for the Ball Settings

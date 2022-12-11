@@ -25,14 +25,17 @@ class PongVerse:
         self.powerup_owner: any = None
         # Opens a new window
         self.screen = pygame.display.set_mode(GameSettings.WINDOW_SIZE)
+        # Create a clock that controls FPS
+        self.clock = pygame.time.Clock()
         # Set the Default Font
         self.default_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_DEFAULT)
         # Set the PowerUp Font
         self.powerup_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_POWERUP)
         # Set scores to 0
-        self.scoreA, self.scoreB = 0, 0
+        self.scoreA: int = 0
+        self.scoreB: int = 0
         # Set trigger for the ball to be reset
-        self.triggered = False
+        self.triggered: bool = False
 
     # Set what keys are used to move the paddles
     def pressed_keys(self, keys, paddleA, paddleB):
@@ -188,13 +191,45 @@ class PongVerse:
         ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
         return ball
 
+    def instructions(self):
+        instructionsON = True
+        while instructionsON:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    instructionsON = False
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        instructionsON = False
+                        self.play()
+                    if event.key == pygame.K_ESCAPE:
+                        instructionsON = False
+
+            self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
+            instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
+            instructions_rect = instructions.get_rect()
+            self.screen.blit(instructions, (GameSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
+                                            GameSettings.WINDOW_HEIGHT * 0.85))
+            pygame.display.update()
+            self.clock.tick(60)
+
     # Screen when a player wins
     def win_screen(self):
-        self.screen.fill(GameSettings.BLUE)
-        font = pygame.font.SysFont(GameSettings.FONT_TYPE_DEFAULT, 25)  # creates a font object
-        lastScore = font.render('Best Score: ' + str(self.scoreA), True, (255, 255, 255))
-        self.screen.blit(lastScore, (700 / 2, 500 / 2))
-        pygame.display.update()
+        win_screenON = True
+        while win_screenON:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        win_screenON = False
+
+            self.screen.fill(GameSettings.BLUE)
+            font = pygame.font.SysFont(GameSettings.FONT_TYPE_DEFAULT, 25)  # creates a font object
+            lastScore = font.render('Best Score: ' + str(self.scoreA), True, (255, 255, 255))
+            self.screen.blit(lastScore, (700 / 2, 500 / 2))
+            pygame.display.update()
+            self.clock.tick(60)
 
     def play(self):
         # Set the title of the window/game
@@ -220,9 +255,6 @@ class PongVerse:
         # Create a loop that carries on until the user exits the game
         carryOn = True
 
-        # Create a clock that controls FPS
-        clock = pygame.time.Clock()
-
         # -------- Main Program Loop -----------
         while carryOn:
 
@@ -242,6 +274,13 @@ class PongVerse:
                     if event.key == pygame.K_ESCAPE:
                         # Quit the loop
                         carryOn = False
+
+                # Detects if a player hits a win score
+                elif self.scoreA >= GameSettings.WIN_SCORE or self.scoreB >= GameSettings.WIN_SCORE:
+                    # Quit the loop
+                    carryOn = False
+                    # Calls the win screen
+                    self.win_screen()
 
             # --- Game logic starts here
 
@@ -283,15 +322,11 @@ class PongVerse:
             # Calls a function to handle multiple balls on the screen
             self.handle_multiple_balls(paddleA, paddleB)
 
-            # Detects if a player hits a win score
-            if self.scoreA >= GameSettings.WIN_SCORE or self.scoreB >= GameSettings.WIN_SCORE:
-                self.win_screen()
-
             # --- Update the screen with what was drawn
             pygame.display.update()
 
             # --- Limit the game to 60 frames per second
-            clock.tick(60)
+            self.clock.tick(60)
 
 # TODO: the game starts with white paddle and colors change for the last one that scored
 # TODO: Choose between Vanilla Pong or PowerUps Pong - MUST HAVE INSTRUCTIONS FOR EVERYTHING
