@@ -5,11 +5,14 @@ Screen_Resolution = {'360p': (640, 360), '480p': (854, 480), '540p': (960, 540),
                      '1080p': (1920, 1080), '1440p': (2560, 1440), '2160p': (3840, 2160)}
 
 
+# Static Class for the Interface Settings
+class InterfaceSettings:
+    # Set the game Icon displayed in the dock
+    ICON: any = pygame.image.load("img/ball_avengers.png")
+
+
 # Static Class for the Game Settings
 class GameSettings:
-    # Set the game Icon displayed in the dock
-    GAME_ICON: any = pygame.image.load("img/ball_avengers.png")
-
     # Set the game title
     GAME_TITLE: str = "The PongVerse"
     GAME_TITLE_VANILLA: str = "The PongVerse (Vanilla Edition)"

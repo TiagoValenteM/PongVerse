@@ -6,6 +6,8 @@ class Interface:
     def __init__(self):
         # initiating pygames
         pygame.init()
+        # Set the Game icon
+        pygame.display.set_icon(InterfaceSettings.ICON)
         # Opens a new window
         self.screen = pygame.display.set_mode(GameSettings.WINDOW_SIZE)
         # Set the Default Font

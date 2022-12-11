@@ -246,9 +246,6 @@ class PongVerse:
         else:
             pygame.display.set_caption(GameSettings.GAME_TITLE)
 
-        # Set the game icon
-        pygame.display.set_icon(GameSettings.GAME_ICON)
-
         # Create Player A paddle
         paddleA = Paddle(GameSettings.BLUE, PaddleSettings.PADDLE_WIDTH_A, PaddleSettings.PADDLE_HEIGHT_A,
                          PaddleSettings.PADDLE_ROUND_CORNERS_A)
@@ -340,5 +337,4 @@ class PongVerse:
             self.clock.tick(60)
 
 # TODO: the game starts with white paddle and colors change for the last one that scored
-# TODO: Choose between Vanilla Pong or PowerUps Pong - MUST HAVE INSTRUCTIONS FOR EVERYTHING
 # TODO: Solve problem with ball owner
