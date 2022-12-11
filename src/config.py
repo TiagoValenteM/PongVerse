@@ -35,11 +35,14 @@ class GameSettings:
     BLUE: tuple = (71, 94, 126)
     GOLDEN: tuple = (209, 165, 91)
     RED: tuple = (183, 39, 30)
+    GREEN: tuple = (175, 225, 175)
 
     # Set Font Size and Type
-    FONT_TYPE: str = "font/default_font_pong.ttf"
+    FONT_TYPE_DEFAULT: str = "font/default_font_pong.ttf"
+    FONT_TYPE_MENU: str = "font/menu_font.ttf"
     FONT_SIZE_DEFAULT: int = int(WINDOW_WIDTH / 17)
     FONT_SIZE_POWERUP: int = int(WINDOW_WIDTH / 23)
+    FONT_SIZE_MENU: int = int(WINDOW_WIDTH / 40)
 
     # Set background Image
     BACKGROUND_IMG_LOAD: any = pygame.image.load("img/background.jpg")
@@ -70,6 +73,9 @@ class BallSettings:
     # Set ball initial position
     INITIAL_POS_X: int = GameSettings.WINDOW_WIDTH / 2 - BALL_WIDTH / 2
     INITIAL_POS_Y: int = GameSettings.WINDOW_HEIGHT / 2 - BALL_HEIGHT / 2
+
+    MIN_ADDITIONAL_BALLS: int = 2
+    MAX_ADDITIONAL_BALLS: int = 4
 
 
 # Static Class for the Paddle Settings
@@ -112,9 +118,6 @@ class PowerUpSettings:
 
     # Set PowerUp visible time in seconds
     POWERUP_VISIBLE_TIME: int = 5
-
-    # Set PowerUp active time in seconds
-    POWERUP_ACTIVE_TIME: int = 5
 
     # Set PowerUp Name visible time in seconds
     POWERUP_NAME_VISIBLE_TIME: int = 2

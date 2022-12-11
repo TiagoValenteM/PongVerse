@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+from .config import GameSettings, BallSettings
 
 BLACK = (0, 0, 0)
 
@@ -21,7 +22,7 @@ class Ball(pygame.sprite.Sprite):
         # LET'S SET THE BALL SPEED ATTRIBUTE, IT WILL HAVE TWO COMPONENTS, Y-SPEED, X-SPEED, BOTH RANDOM,
         # CHOOSE CAREFULLY THE INTERVAL
         # setting the ball velocity in the form of [x velocity, y velocity]
-        self.velocity = [randint(4, 8), randint(-8, 8)]
+        self.velocity = [randint(6, 10), randint(-10, 10)]
         # Fetch the rectangle object that has the dimensions of the image.
 
     # CREATE THE UPDATE METHOD, THAT MODIFIES THE POSITION OF THE BALL ACCORDING TO THE SPEED
@@ -43,3 +44,57 @@ class Ball(pygame.sprite.Sprite):
         # x will not be affected
         # y will need to change to the opposite direction
         self.velocity[1] = -self.velocity[1]
+
+    # Detect collisions between the ball and the paddles and change its speed accordingly
+    def handle_ball_collision(self, ball_owner, paddleA, paddleB):
+        if pygame.sprite.collide_mask(self, paddleA):
+            ball_owner = 'paddleA'
+            self.bounce()
+        if pygame.sprite.collide_mask(self, paddleB):
+            ball_owner = 'paddleB'
+            self.bounce()
+        return ball_owner
+
+    # Resets Ball position
+    def reset_ball(self):
+        # Initial position of the ball
+        self.rect.x, self.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
+
+    # Handles the ball motion in the screen
+    def handle_ball_motion(self, scoreA, scoreB, ball_owner, triggered):
+        if self.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
+            scoreA += GameSettings.SCORE_ADDER_A
+            self.reset_ball()
+            ball_owner = None
+            triggered = False
+            self.velocity[0] = - self.velocity[0]
+        if self.rect.x <= 0 - BallSettings.BALL_WIDTH:
+            scoreB += GameSettings.SCORE_ADDER_B
+            self.reset_ball()
+            ball_owner = None
+            triggered = False
+            self.velocity[0] = - self.velocity[0]
+        if self.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
+            self.bounce_up_down()
+        if self.rect.y <= 0:
+            self.bounce_up_down()
+        return scoreA, scoreB, ball_owner, triggered
+
+    # Handles multiple balls motion in the screen
+    def handle_multiple_balls_motion(self, powerup_owner, scoreA, scoreB):
+        should_kill = False
+        if self.rect.x >= GameSettings.WINDOW_WIDTH + BallSettings.BALL_WIDTH:
+            if powerup_owner == 'paddleA':
+                scoreA += GameSettings.SCORE_ADDER_A
+            should_kill = True
+            self.kill()
+        if self.rect.x <= 0 - BallSettings.BALL_WIDTH:
+            if powerup_owner == 'paddleB':
+                scoreB += GameSettings.SCORE_ADDER_B
+            should_kill = True
+            self.kill()
+        if self.rect.y >= GameSettings.WINDOW_HEIGHT - BallSettings.BALL_HEIGHT:
+            self.bounce_up_down()
+        if self.rect.y <= 0:
+            self.bounce_up_down()
+        return scoreA, scoreB, should_kill
