@@ -1,8 +1,9 @@
-from src.interface import *
+from src.interface import Interface
 
 
 def main():
-    interface()
+    interface = Interface()
+    interface.mainMenu()
 
 
 if __name__ == '__main__':
