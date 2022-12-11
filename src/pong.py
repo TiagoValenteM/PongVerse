@@ -34,6 +34,22 @@ class PongVerse:
         # Set trigger for the ball to be reset
         self.triggered = False
 
+    # Set what keys are used to move the paddles
+    def pressed_keys(self, keys, paddleA, paddleB):
+        # Move the paddles when the user hits W/S (player A) or up/down (player B)
+        if keys[pygame.K_w]:
+            paddleA.moveUp(PaddleSettings.PADDLE_SPEED_A)
+            self.triggered = True
+        if keys[pygame.K_s]:
+            paddleA.moveDown(PaddleSettings.PADDLE_SPEED_A, GameSettings.WINDOW_HEIGHT)
+            self.triggered = True
+        if keys[pygame.K_UP]:
+            paddleB.moveUp(PaddleSettings.PADDLE_SPEED_B)
+            self.triggered = True
+        if keys[pygame.K_DOWN]:
+            paddleB.moveDown(PaddleSettings.PADDLE_SPEED_B, GameSettings.WINDOW_HEIGHT)
+            self.triggered = True
+
     # Define when a PowerUp appears, and it appears every 3 goals
     def set_powerup_visible(self):
         # Checks if a powerup is invisible and inactive and if there is a ball owner
@@ -166,7 +182,9 @@ class PongVerse:
     # Creates the ball
     @staticmethod
     def instance_new_ball():
+        # Creates a new ball with width and height
         ball = Ball("img/ball.png", BallSettings.BALL_WIDTH, BallSettings.BALL_HEIGHT)
+        # Sets the initial position of the ball
         ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
         return ball
 
@@ -184,72 +202,59 @@ class PongVerse:
         # Set the game icon
         pygame.display.set_icon(GameSettings.GAME_ICON)
 
-        # Let's create two paddles
-        # Player A paddle
+        # Create Player A paddle
         paddleA = Paddle(GameSettings.BLUE, PaddleSettings.PADDLE_WIDTH_A, PaddleSettings.PADDLE_HEIGHT_A,
                          PaddleSettings.PADDLE_ROUND_CORNERS_A)
         paddleA.rect.x, paddleA.rect.y = (PaddleSettings.INITIAL_POS_X_A, PaddleSettings.INITIAL_POS_Y_A)
-        # Player B paddle
+        # Create Player B paddle
         paddleB = Paddle(GameSettings.GOLDEN, PaddleSettings.PADDLE_WIDTH_B, PaddleSettings.PADDLE_HEIGHT_B,
                          PaddleSettings.PADDLE_ROUND_CORNERS_B)
         paddleB.rect.x, paddleB.rect.y = (PaddleSettings.INITIAL_POS_X_B, PaddleSettings.INITIAL_POS_Y_B)
 
-        # Set the ball and its initial position
+        # Call a function to create the ball
         ball = self.instance_new_ball()
 
-        # Add the 2 paddles and the ball to the list of objects
-        self.all_sprites_list.add(paddleA)
-        self.all_sprites_list.add(paddleB)
-        self.all_sprites_list.add(ball)
+        # Adds the paddles and the ball to the list of objects
+        self.all_sprites_list.add(paddleA, paddleB, ball)
 
-        # The loop will carry on until the user exits the game (e.g. clicks the close button).
+        # Create a loop that carries on until the user exits the game
         carryOn = True
 
-        # The clock will be used to control how fast the screen updates
+        # Create a clock that controls FPS
         clock = pygame.time.Clock()
 
         # -------- Main Program Loop -----------
         while carryOn:
+
             # --- Main event loop
-            # User did something
             for event in pygame.event.get():
 
                 # If user clicked close
                 if event.type == pygame.QUIT:
                     # Flag that we are done so we exit this loop
                     carryOn = False
+                    # Close the window and quit.
+                    pygame.quit()
 
-                    # Or he used the keyboard
+                    # Or they used the keyboard
                 elif event.type == pygame.KEYDOWN:
-                    # Pressing the Escape Key will quit the game
+                    # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
-                        # quit the loop
+                        # Quit the loop
                         carryOn = False
 
-            # Moving the paddles when the user uses the keys
-            keys = pygame.key.get_pressed()  # this built-in method saves the user input from the keyboard
+            # --- Game logic starts here
 
-            # moving the paddles when the user hits W/S (player A) or up/down (player B)
-            if keys[pygame.K_w]:
-                paddleA.moveUp(PaddleSettings.PADDLE_SPEED_A)
-                self.triggered = True
-            if keys[pygame.K_s]:
-                paddleA.moveDown(PaddleSettings.PADDLE_SPEED_A, GameSettings.WINDOW_HEIGHT)
-                self.triggered = True
-            if keys[pygame.K_UP]:
-                paddleB.moveUp(PaddleSettings.PADDLE_SPEED_B)
-                self.triggered = True
-            if keys[pygame.K_DOWN]:
-                paddleB.moveDown(PaddleSettings.PADDLE_SPEED_B, GameSettings.WINDOW_HEIGHT)
-                self.triggered = True
+            # Built-in method to save user input on the keyboard
+            keys = pygame.key.get_pressed()
+            # Calls the function to move the paddles
+            self.pressed_keys(keys, paddleA, paddleB)
 
-                # --- Game logic should go here
+            # Calls a function to display static elements on the screen
+            self.set_static_elements()
+
             # Controls the ball movement
             self.all_sprites_list.update(move=self.triggered)
-
-            # Detects if a player hits a win score
-            if self.scoreA >= GameSettings.WIN_SCORE or self.scoreB >= GameSettings.WIN_SCORE:
-                self.win_screen()
 
             # Detect collisions between the ball and the paddles and change its speed accordingly
             self.ball_owner = ball.handle_ball_collision(self.ball_owner, paddleA, paddleB)
@@ -259,9 +264,6 @@ class PongVerse:
                                                                                                 self.scoreB,
                                                                                                 self.ball_owner,
                                                                                                 self.triggered)
-
-            # Calls a function to display static elements on the screen
-            self.set_static_elements()
 
             # Set all the game objects (sprites) to be drawn on the screen
             self.all_sprites_list.draw(self.screen)
@@ -281,10 +283,14 @@ class PongVerse:
             # Calls a function to handle multiple balls on the screen
             self.handle_multiple_balls(paddleA, paddleB)
 
-            # --- Go ahead and update the screen with what we've drawn.
+            # Detects if a player hits a win score
+            if self.scoreA >= GameSettings.WIN_SCORE or self.scoreB >= GameSettings.WIN_SCORE:
+                self.win_screen()
+
+            # --- Update the screen with what was drawn
             pygame.display.update()
 
-            # --- Limit to 60 frames per second
+            # --- Limit the game to 60 frames per second
             clock.tick(60)
 
 # TODO: the game starts with white paddle and colors change for the last one that scored

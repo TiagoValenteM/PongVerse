@@ -2,8 +2,6 @@ import pygame
 from random import randint
 from .config import GameSettings, BallSettings
 
-BLACK = (0, 0, 0)
-
 
 # let's create the ball class
 class Ball(pygame.sprite.Sprite):
@@ -17,7 +15,7 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(self.image, (width, height))
         # Draw the ball (a rectangle!)
         # WE NEED TO USE A PYGAME BUILT IN METHOD
-        pygame.draw.rect(self.image, BLACK, [width, height, 0, 0])
+        pygame.draw.rect(self.image, GameSettings.BLACK, [width, height, 0, 0])
         self.rect = self.image.get_rect()
         # LET'S SET THE BALL SPEED ATTRIBUTE, IT WILL HAVE TWO COMPONENTS, Y-SPEED, X-SPEED, BOTH RANDOM,
         # CHOOSE CAREFULLY THE INTERVAL

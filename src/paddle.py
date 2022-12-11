@@ -1,7 +1,5 @@
 import pygame
-
-# color black, rgb scale
-BLACK = (0, 0, 0)
+from .config import GameSettings
 
 
 # let's create the paddle class
@@ -17,8 +15,8 @@ class Paddle(pygame.sprite.Sprite):
         # Pass in the color of the Paddle, its width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.Surface([width, height])
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
+        self.image.fill(GameSettings.BLACK)
+        self.image.set_colorkey(GameSettings.BLACK)
         # Draw the paddle (a rectangle!)
         pygame.draw.rect(self.image, color, [0, 0, width, height], border_radius=border_radius)
 
