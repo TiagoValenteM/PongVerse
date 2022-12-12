@@ -21,8 +21,6 @@ class Interface:
 
     # Creating a function that creates the GUI
     def mainMenu(self):
-        # Set the title of the window
-        pygame.display.set_caption(InterfaceSettings.MENU_TITLE)
 
         # saving the screen sizes
         width = self.screen.get_width()
@@ -65,9 +63,10 @@ class Interface:
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     if width / 8 <= mouse[0] <= width / 8 + 140 and 4 * height / 6 <= mouse[1] <= 4 * height / 6 + 60:
                         self.settings()
-
-            # setting the background color as black
-            self.screen.fill(GameSettings.BLACK)
+            # Set the title of the window
+            pygame.display.set_caption(InterfaceSettings.MENU_TITLE)
+            # background image
+            self.screen.blit(GameSettings.BACKGROUND_IMG, (0, 0))
             # print the buttons text and the box(color changing)
             # game 1 text
             # when the mouse is on the box it changes color
@@ -112,8 +111,6 @@ class Interface:
             pygame.display.update()
 
     def credits(self):
-        # Set the title of the window
-        pygame.display.set_caption(InterfaceSettings.CREDITS_TITLE)
 
         width = self.screen.get_width()
         height = self.screen.get_height()
@@ -134,6 +131,9 @@ class Interface:
                         1] <= 5 * height / 6 + 60:
                         self.mainMenu()
 
+            # Set the title of the window
+            pygame.display.set_caption(InterfaceSettings.CREDITS_TITLE)
+
             self.screen.fill((0, 0, 0))
             # credits text
             self.screen.blit(line1_text, (0, 0))
@@ -149,8 +149,6 @@ class Interface:
             pygame.display.update()
 
     def settings(self):
-        # Set the title of the window
-        pygame.display.set_caption(InterfaceSettings.SETTINGS_TITLE)
         oi = False
         back_text = self.menu_font.render('  back', True, GameSettings.BLUE)
 
@@ -168,6 +166,9 @@ class Interface:
                         self.mainMenu()
 
             self.screen.fill((0, 0, 0))
+
+            # Set the title of the window
+            pygame.display.set_caption(InterfaceSettings.SETTINGS_TITLE)
 
             # Set height position for Resolutions
             resolutions_pos_y = self.height * 0.2

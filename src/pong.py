@@ -214,7 +214,6 @@ class PongVerse:
             else:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
 
-            pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
             self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
             instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
             instructions_rect = instructions.get_rect()
@@ -282,12 +281,6 @@ class PongVerse:
 
     def play(self):
 
-        # Set the title of the window/game
-        if self.vanilla:
-            pygame.display.set_caption(GameSettings.GAME_TITLE_VANILLA)
-        else:
-            pygame.display.set_caption(GameSettings.GAME_TITLE)
-
         # Create Player A paddle
         paddleA = Paddle(GameSettings.BLUE, PaddleSettings.PADDLE_WIDTH_A, PaddleSettings.PADDLE_HEIGHT_A,
                          PaddleSettings.PADDLE_ROUND_CORNERS_A)
@@ -334,6 +327,12 @@ class PongVerse:
                     self.win_screen()
 
             # --- Game logic starts here
+
+            # Set the title of the window/game
+            if self.vanilla:
+                pygame.display.set_caption(GameSettings.GAME_TITLE_VANILLA)
+            else:
+                pygame.display.set_caption(GameSettings.GAME_TITLE)
 
             # Built-in method to save user input on the keyboard
             keys = pygame.key.get_pressed()
