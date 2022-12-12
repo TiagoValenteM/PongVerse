@@ -14,24 +14,30 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
         # Set PowerUp width and height
         self.width = width
         self.height = height
+        # Set the ball owner to affect a certain player
         self.owner = ball_owner
 
+    # Function that affects player A
     @abstractmethod
     def affect_playerA(self, player_A):
         pass
 
+    # Function that affects player B
     @abstractmethod
     def affect_playerB(self, player_B):
         pass
 
+    # Function that runs the powerup
     @abstractmethod
     def run_powerup(self, paddleA, paddleB):
         pass
 
+    # Function that reverts the powerup
     @abstractmethod
     def revert_powerup(self, paddleA, paddleB):
         pass
 
+    # Function that draws the powerup icon on the screen
     def draw(self, filename):
         self.image = pygame.image.load(filename)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
