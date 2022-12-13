@@ -443,4 +443,3 @@ class PongVerse:
             self.clock.tick(60)
 
 # TODO: Solve problem with ball owner
-# TODO: Solve problem with fps ( image loader in loop and smooth-scale)
