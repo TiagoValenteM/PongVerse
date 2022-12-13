@@ -7,8 +7,6 @@ Screen_Resolution = {'360p': (640, 360), '480p': (854, 480), '540p': (960, 540),
 
 # Static Class for the Interface Settings
 class InterfaceSettings:
-    # Set the game Icon displayed in the dock
-    ICON: any = pygame.image.load("img/icons/main_icon.png")
 
     # Set interface titles
     MENU_TITLE: str = "Main Menu"
@@ -30,10 +28,6 @@ class GameSettings:
     # Set Players Icons size
     PLAYER_ICON_SIZE: tuple = (InterfaceSettings.WINDOW_WIDTH / 17, InterfaceSettings.WINDOW_WIDTH / 17)
 
-    # Set Players Icons
-    PLAYER_A_ICON: any = pygame.transform.smoothscale(pygame.image.load("img/icons/playerA_icon.png"), PLAYER_ICON_SIZE)
-    PLAYER_B_ICON: any = pygame.transform.smoothscale(pygame.image.load("img/icons/playerB_icon.png"), PLAYER_ICON_SIZE)
-
     # Set PLayers Icons Position
     PLAYER_A_ICON_POS: tuple = (InterfaceSettings.WINDOW_WIDTH / 12, 20)
     PLAYER_B_ICON_POS: tuple = (
@@ -54,20 +48,8 @@ class GameSettings:
     FONT_SIZE_POWERUP: int = int(InterfaceSettings.WINDOW_WIDTH / 23)
     FONT_SIZE_MENU: int = int(InterfaceSettings.WINDOW_WIDTH / 40)
 
-    # Set background Image
-    BACKGROUND_IMG: any = pygame.transform.scale(pygame.image.load("img/background/background.jpg"),
-                                                 (InterfaceSettings.WINDOW_WIDTH, InterfaceSettings.WINDOW_HEIGHT))
-
-    # Set Background Image for Win Screen
-    WIN_SCREEN_A_IMG: any = pygame.transform.scale(pygame.image.load("img/background/background_winA.jpg"),
-                                                   (InterfaceSettings.WINDOW_WIDTH, InterfaceSettings.WINDOW_HEIGHT))
-    WIN_SCREEN_B_IMG: any = pygame.transform.scale(pygame.image.load("img/background/background_winB.jpg"),
-                                                   (InterfaceSettings.WINDOW_WIDTH, InterfaceSettings.WINDOW_HEIGHT))
-
-    # Set Winner Icon
+    # Set Winner Icon Size
     WINNER_ICON_SIZE: tuple = (InterfaceSettings.WINDOW_WIDTH / 6, InterfaceSettings.WINDOW_WIDTH / 6)
-    WINNER_ICON_A: any = pygame.transform.smoothscale(pygame.image.load("img/icons/winner_iconA.png"), WINNER_ICON_SIZE)
-    WINNER_ICON_B: any = pygame.transform.smoothscale(pygame.image.load("img/icons/winner_iconB.png"), WINNER_ICON_SIZE)
 
     # Set score to win the game
     WIN_SCORE: int = 10
@@ -90,13 +72,26 @@ class GameSettings:
 class InstructionsSettings:
     # Set background Image
 
-    BACKGROUND_IMG_LOAD: any = pygame.image.load("img/background/instructions_background.jpg")
-    BACKGROUND_IMG: any = pygame.transform.scale(BACKGROUND_IMG_LOAD, (InterfaceSettings.WINDOW_WIDTH,
-                                                                       InterfaceSettings.WINDOW_HEIGHT))
+    BACKGROUND_IMG: any = pygame.transform.scale(pygame.image.load("img/background/background_instructions.jpg"),
+                                                 (InterfaceSettings.WINDOW_WIDTH,
+                                                  InterfaceSettings.WINDOW_HEIGHT))
 
     # Set the game title
     INSTRUCTIONS_TITLE: str = "Instructions"
     INSTRUCTIONS_TITLE_VANILLA: str = "Instructions (Vanilla Edition)"
+
+    # Set Font Size
+    TITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 25)
+    SUBTITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 43)
+    BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 53)
+
+    # Set PowerUp icon Instructions size
+    POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 9
+    POWERUP_HEIGHT: int = InterfaceSettings.WINDOW_HEIGHT / 9
+
+    # Set Screen Alignments
+    RIGHT_X_ALIGNMENT = (InterfaceSettings.WINDOW_WIDTH * 0.07)
+    SECOND_RIGHT_X_ALIGNMENT = (InterfaceSettings.WINDOW_WIDTH * 0.37)
 
 
 # Static Class for the Ball Settings
@@ -138,12 +133,13 @@ class PaddleSettings:
     FASTER_PADDLE_SPEED: float = 6.3
 
     # Set Rounder Corners of the Paddle
-    PADDLE_ROUND_CORNERS_A: int = 7
-    PADDLE_ROUND_CORNERS_B: int = 7
+    PADDLE_ROUND_CORNERS_A: int = 5
+    PADDLE_ROUND_CORNERS_B: int = 5
+    PADDLE_ROUND_CORNERS_SHIELD: int = 0
 
 
 class PowerUpSettings:
-    # Set PowerUp size
+    # Set PowerUp icon size
     POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 8
     POWERUP_HEIGHT: int = InterfaceSettings.WINDOW_HEIGHT / 8
 

@@ -123,7 +123,7 @@ class PongVerse:
             # It checks if the visible time for the name of the active powerup's name is not over
             if int(activated) < PowerUpSettings.POWERUP_NAME_VISIBLE_TIME:
                 # Displays the powerup active name
-                display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), True, GameSettings.RED)
+                display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), False, GameSettings.RED)
                 # Gets the rectangle of the powerup name
                 display_powerup_name_rect = display_powerup_name.get_rect()
                 self.screen.blit(display_powerup_name, (
@@ -167,19 +167,22 @@ class PongVerse:
         elif self.scoreA < self.scoreB:
             color_B = GameSettings.GOLDEN
 
-        text_A = self.default_font.render(str(self.scoreA), True, color_A)
-        text_B = self.default_font.render(str(self.scoreB), True, color_B)
+        text_A = self.default_font.render(str(self.scoreA), False, color_A)
+        text_B = self.default_font.render(str(self.scoreB), False, color_B)
         self.screen.blit(text_A, GameSettings.POS_SCORE_A)
         self.screen.blit(text_B, GameSettings.POS_SCORE_B)
 
     # Set and display static elements
-    def set_static_elements(self):
-        # background image
-        self.screen.blit(GameSettings.BACKGROUND_IMG, (0, 0))
+    def set_static_elements(self, background_img, playerA_icon, playerB_icon):
+        # Scale the background image
+        background: any = pygame.transform.scale(background_img, [InterfaceSettings.WINDOW_WIDTH,
+                                                                  InterfaceSettings.WINDOW_HEIGHT])
+        # Display background image
+        self.screen.blit(background, (0, 0))
         # Player A icon
-        self.screen.blit(GameSettings.PLAYER_A_ICON, GameSettings.PLAYER_A_ICON_POS)
+        self.screen.blit(playerA_icon, GameSettings.PLAYER_A_ICON_POS)
         # Player B icon
-        self.screen.blit(GameSettings.PLAYER_B_ICON, GameSettings.PLAYER_B_ICON_POS)
+        self.screen.blit(playerB_icon, GameSettings.PLAYER_B_ICON_POS)
         # Field divider
         pygame.draw.line(self.screen, GameSettings.WHITE, GameSettings.FIELD_DIVIDER_INITIAL_POS,
                          GameSettings.FIELD_DIVIDER_MAX_POS, 5)
@@ -195,30 +198,67 @@ class PongVerse:
 
     def instructions(self):
         # Create a loop that carries on until the user exits the win screen
-        instructionsON: bool = True
+        instructionsON: int = 1
+
+        # Set Instructions Fonts
+        title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.TITLE_SIZE)
+        subtitle_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
+                                                      InstructionsSettings.SUBTITLE_SIZE)
+        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.BODY_SIZE)
+
+        # -------- Main Program Loop -----------
         while instructionsON:
+
+            # --- Main event loop
             for event in pygame.event.get():
+
+                # If user clicked close
                 if event.type == pygame.QUIT:
-                    instructionsON = False
+                    # Flag that we are done so we exit this loop
+                    instructionsON = 0
+                    # Close the window and quit
                     pygame.quit()
+
+                # Or they used the keyboard
                 if event.type == pygame.KEYDOWN:
+                    # Pressing the Space key will start the game
                     if event.key == pygame.K_SPACE:
-                        instructionsON = False
+                        # Quit the loop
+                        instructionsON = 0
+                        # Start the game
                         self.play()
+
+                    # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
-                        instructionsON = False
+                        # Quit the loop
+                        instructionsON = 0
 
             # Set the title of the window/game
             if self.vanilla:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
+                title = title_font.render('Instructions - Vanilla Edition', False, GameSettings.WHITE)
+
             else:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
+                title = title_font.render('Instructions', False, GameSettings.WHITE)
 
             self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
-            instructions = self.default_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
+            instructions = subtitle_font.render("Press SPACE to start the game", False, GameSettings.WHITE)
             instructions_rect = instructions.get_rect()
             self.screen.blit(instructions, (InterfaceSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
-                                            InterfaceSettings.WINDOW_HEIGHT * 0.85))
+                                            InterfaceSettings.WINDOW_HEIGHT * 0.9))
+            self.screen.blit(title, (InterfaceSettings.WINDOW_WIDTH * 0.07, InterfaceSettings.WINDOW_HEIGHT * 0.05))
+            powerup_class_title = subtitle_font.render('Powerups', False, GameSettings.WHITE)
+            self.screen.blit(powerup_class_title,
+                             (InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.2))
+            for powerup in PowerUps.values():
+                powerup_icon = pygame.transform.smoothscale(pygame.image.load(powerup.icon),
+                                                            (InstructionsSettings.POWERUP_WIDTH,
+                                                             InstructionsSettings.POWERUP_HEIGHT))
+                powerup_name = subtitle_font.render(str(powerup.name), False, GameSettings.WHITE)
+                self.screen.blit(powerup_icon, powerup.instructions_icon_pos)
+                self.screen.blit(powerup_name, [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
+                                                powerup.instructions_icon_pos[1]])
 
             # --- Update the screen with what was drawn
             pygame.display.update()
@@ -229,11 +269,27 @@ class PongVerse:
     # Screen when a player wins
     def win_screen(self):
         # Create a loop that carries on until the user exits the win screen
-        win_screenON: bool = True
+        win_screenON: int = 1
         # Set the winner
         winner: any = None
         # Set the winner score
         winner_score: int = 0
+
+        # Set Background Image for Win Screen
+        backgroundA_img_load: pygame.image = pygame.image.load("img/background/background_winA.jpg").convert()
+        backgroundA_img: pygame.transform = pygame.transform.scale(backgroundA_img_load,
+                                                                   (InterfaceSettings.WINDOW_WIDTH,
+                                                                    InterfaceSettings.WINDOW_HEIGHT))
+        backgroundB_img_load: pygame.image = pygame.image.load("img/background/background_winB.jpg").convert()
+        backgroundB_img: pygame.transform = pygame.transform.scale(backgroundB_img_load,
+                                                                   (InterfaceSettings.WINDOW_WIDTH,
+                                                                    InterfaceSettings.WINDOW_HEIGHT))
+
+        # Set Icons for each winner
+        winnerA_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconA.png").convert_alpha()
+        winnerA_icon: pygame.transform = pygame.transform.scale(winnerA_icon_load, GameSettings.WINNER_ICON_SIZE)
+        winnerB_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconB.png").convert_alpha()
+        winnerB_icon: pygame.transform = pygame.transform.scale(winnerB_icon_load, GameSettings.WINNER_ICON_SIZE)
 
         # -------- Main Program Loop -----------
         while win_screenON:
@@ -244,7 +300,7 @@ class PongVerse:
                 # If user clicked close
                 if event.type == pygame.QUIT:
                     # Flag that we are done so we exit this loop
-                    win_screenON = False
+                    win_screenON = 0
                     # Close the window and quit
                     pygame.quit()
 
@@ -253,23 +309,23 @@ class PongVerse:
                     # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
                         # Quit the loop
-                        win_screenON = False
+                        win_screenON = 0
 
             if self.scoreA > self.scoreB:
                 winner = "Captain America"
                 winner_score = self.scoreA
-                self.screen.blit(GameSettings.WIN_SCREEN_A_IMG, (0, 0))
-                self.screen.blit(GameSettings.WINNER_ICON_A,
+                self.screen.blit(backgroundA_img, (0, 0))
+                self.screen.blit(winnerA_icon,
                                  (InterfaceSettings.WINDOW_WIDTH * 0.15, InterfaceSettings.WINDOW_HEIGHT * 0.7))
             elif self.scoreA < self.scoreB:
                 winner = 'Iron Man'
                 winner_score = self.scoreB
-                self.screen.blit(GameSettings.WIN_SCREEN_B_IMG, (0, 0))
-                self.screen.blit(GameSettings.WINNER_ICON_B,
+                self.screen.blit(backgroundB_img, (0, 0))
+                self.screen.blit(winnerB_icon,
                                  (InterfaceSettings.WINDOW_WIDTH * 0.3, InterfaceSettings.WINDOW_HEIGHT * 0.7))
 
-            winner_text = self.default_font.render(winner + " your team wins!", True, GameSettings.WHITE)
-            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), True, (255, 255, 255))
+            winner_text = self.default_font.render(winner + " your team wins!", False, GameSettings.WHITE)
+            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), False, (255, 255, 255))
             self.screen.blit(lastScore, (700 / 2, 500 / 2))
             self.screen.blit(winner_text, (700 / 3, 500 / 3))
 
@@ -296,8 +352,17 @@ class PongVerse:
         # Adds the paddles and the ball to the list of objects
         self.all_sprites_list.add(paddleA, paddleB, ball)
 
+        # Load Background Image
+        background_img_load = pygame.image.load("img/background/background_pong.jpg").convert()
+
+        # Load and set Players Icons
+        playerA_icon_load: pygame.image = pygame.image.load("img/icons/playerA_icon.png").convert_alpha()
+        playerA_icon: any = pygame.transform.scale(playerA_icon_load, GameSettings.PLAYER_ICON_SIZE)
+        playerB_icon_load: pygame.image = pygame.image.load("img/icons/playerB_icon.png").convert_alpha()
+        playerB_icon: any = pygame.transform.scale(playerB_icon_load, GameSettings.PLAYER_ICON_SIZE)
+
         # Create a loop that carries on until the user exits the game
-        carryOn: bool = True
+        carryOn: int = 1
 
         # -------- Main Program Loop -----------
         while carryOn:
@@ -308,7 +373,7 @@ class PongVerse:
                 # If user clicked close
                 if event.type == pygame.QUIT:
                     # Flag that we are done so we exit this loop
-                    carryOn = False
+                    carryOn = 0
                     # Close the window and quit
                     pygame.quit()
 
@@ -317,12 +382,12 @@ class PongVerse:
                     # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
                         # Quit the loop
-                        carryOn = False
+                        carryOn = 0
 
                 # Detects if a player hits a win score
                 elif self.scoreA >= GameSettings.WIN_SCORE or self.scoreB >= GameSettings.WIN_SCORE:
                     # Quit the loop
-                    carryOn = False
+                    carryOn = 0
                     # Calls the win screen
                     self.win_screen()
 
@@ -340,7 +405,7 @@ class PongVerse:
             self.pressed_keys(keys, paddleA, paddleB)
 
             # Calls a function to display static elements on the screen
-            self.set_static_elements()
+            self.set_static_elements(background_img_load, playerA_icon, playerB_icon)
 
             # Controls the ball movement
             self.all_sprites_list.update(move=self.triggered)
@@ -378,3 +443,4 @@ class PongVerse:
             self.clock.tick(60)
 
 # TODO: Solve problem with ball owner
+# TODO: Solve problem with fps ( image loader in loop and smooth-scale)

@@ -6,14 +6,19 @@ class Interface:
     def __init__(self):
         # initiating pygames
         pygame.init()
-        # Set the Game icon
-        pygame.display.set_icon(InterfaceSettings.ICON)
         # Opens a new window
         self.screen = pygame.display.set_mode(InterfaceSettings.WINDOW_SIZE)
         # Set width of the screen
         self.width = self.screen.get_width()
         # Set height of the screen
         self.height = self.screen.get_height()
+        # Set the Game icon
+        icon: pygame.image = pygame.image.load("img/icons/main_icon.png").convert_alpha()
+        pygame.display.set_icon(icon)
+        # Set background Image
+        background_img_load: any = pygame.image.load("img/background/background_interface.jpg").convert()
+        self.background_img: any = pygame.transform.scale(background_img_load, (InterfaceSettings.WINDOW_WIDTH,
+                                                                                InterfaceSettings.WINDOW_HEIGHT))
         # Set the Default Font
         self.default_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_DEFAULT)
         # Set the font for the menu options
@@ -66,7 +71,7 @@ class Interface:
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.MENU_TITLE)
             # background image
-            self.screen.blit(GameSettings.BACKGROUND_IMG, (0, 0))
+            self.screen.blit(self.background_img, (0, 0))
             # print the buttons text and the box(color changing)
             # game 1 text
             # when the mouse is on the box it changes color
@@ -134,7 +139,8 @@ class Interface:
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.CREDITS_TITLE)
 
-            self.screen.fill((0, 0, 0))
+            # background image
+            self.screen.blit(self.background_img, (0, 0))
             # credits text
             self.screen.blit(line1_text, (0, 0))
             self.screen.blit(line2_text, (0, 25))
@@ -165,7 +171,8 @@ class Interface:
                         1] <= 5 * self.height / 6 + 60:
                         self.mainMenu()
 
-            self.screen.fill((0, 0, 0))
+            # background image
+            self.screen.blit(self.background_img, (0, 0))
 
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.SETTINGS_TITLE)
@@ -174,7 +181,7 @@ class Interface:
             resolutions_pos_y = self.height * 0.2
             if not oi:
                 for resolution_name, resolution in Screen_Resolution.items():
-                    print(resolution[0],resolution[1])
+                    print(resolution[0], resolution[1])
                     resolutions_pos_y += self.height * 0.07
                     screen_resolution = self.menu_font.render(resolution_name, True, GameSettings.WHITE)
                     screen_resolution_rect = screen_resolution.get_rect()

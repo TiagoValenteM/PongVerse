@@ -57,12 +57,16 @@ class ShrinkEnlarge(PowerUp):
     probability: int = 50
     # Set the PowerUp name
     name: str = 'Ant-Man'
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup5.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.3]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup5.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
         player_A.border_radius = 12
@@ -97,12 +101,16 @@ class Freeze(PowerUp):
     probability: int = 60
     # Set the PowerUp name
     name: str = 'Black Widow'
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup3.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.5]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup3.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
         PaddleSettings.PADDLE_SPEED_A = 0
@@ -133,12 +141,16 @@ class MultipleBalls(PowerUp):
     probability: int = 30
     # Set the PowerUp name
     name: str = 'Scarlet Witch'
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup6.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.7]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup6.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
         pass
@@ -163,12 +175,16 @@ class FasterPaddle(PowerUp):
     probability: int = 30
     # Set the PowerUp name
     name: str = 'Quicksilver'
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup1.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.SECOND_RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.3]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup1.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
         PaddleSettings.PADDLE_SPEED_A = PaddleSettings.FASTER_PADDLE_SPEED
@@ -195,12 +211,16 @@ class DoubleScore(PowerUp):
     probability: int = 70
     # Set the PowerUp name
     name: str = 'Iron Man'
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup4.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.SECOND_RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.5]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup4.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
         GameSettings.SCORE_ADDER_A = 2
@@ -226,21 +246,25 @@ class Shield(PowerUp):
     probability: int = 50
     # Set the PowerUp name
     name: str = 'Captain America'
+    # Set the description of the powerup
+    description: str = ''
+    # Set the path to the Icon
+    icon: str = 'img/icons/powerup2.png'
+    # set the position of the icon in instructions
+    instructions_icon_pos: list = [InstructionsSettings.SECOND_RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.7]
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/powerup2.png')
+        super().draw(self.icon)
 
     def affect_playerA(self, player_A):
-        player_A.border_radius = 0
         player_A.image = pygame.transform.scale(player_A.image,
                                                 (player_A.rect.width * 1.15, InterfaceSettings.WINDOW_HEIGHT))
         player_A.height = InterfaceSettings.WINDOW_HEIGHT
 
     def affect_playerB(self, player_B):
-        player_B.border_radius = 0
         player_B.image = pygame.transform.scale(player_B.image,
                                                 (player_B.rect.width * 1.15, InterfaceSettings.WINDOW_HEIGHT))
         player_B.height = InterfaceSettings.WINDOW_HEIGHT
@@ -252,8 +276,6 @@ class Shield(PowerUp):
             self.affect_playerB(paddleB)
 
     def revert_powerup(self, paddleA, paddleB):
-        paddleA.border_radius, paddleB.border_radius = PaddleSettings.PADDLE_ROUND_CORNERS_A, \
-            PaddleSettings.PADDLE_ROUND_CORNERS_B
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
         paddleA.height, paddleB.height = PaddleSettings.PADDLE_HEIGHT_A, PaddleSettings.PADDLE_HEIGHT_B
