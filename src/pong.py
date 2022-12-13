@@ -106,7 +106,7 @@ class PongVerse:
             if int(visible) < self.powerup_visible.visible_time:
                 # If it is visible, it checks if it collides with the ball
                 if pygame.sprite.collide_mask(ball, self.powerup_visible) and self.ball_owner is not None:
-                    # Set the powerup owner
+                    # Set the powerup owner, that does not change when hitting a paddle
                     self.powerup_owner = self.ball_owner
                     # If it collides, it sets the powerup to be active
                     self.set_powerup_active(paddleA, paddleB)

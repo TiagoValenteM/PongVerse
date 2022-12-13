@@ -144,8 +144,8 @@ class PaddleSettings:
 
 class PowerUpSettings:
     # Set PowerUp size
-    POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 10
-    POWERUP_HEIGHT: int = InterfaceSettings.WINDOW_HEIGHT / 10
+    POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 8
+    POWERUP_HEIGHT: int = InterfaceSettings.WINDOW_HEIGHT / 8
 
     # Set PowerUp field of view size
     POWERUP_FIELD_WIDTH: tuple = (

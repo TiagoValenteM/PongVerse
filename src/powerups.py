@@ -62,7 +62,7 @@ class ShrinkEnlarge(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_0.png')
+        super().draw('img/icons/powerup5.png')
 
     def affect_playerA(self, player_A):
         player_A.border_radius = 12
@@ -89,20 +89,20 @@ class ShrinkEnlarge(PowerUp):
         paddleB.height = PaddleSettings.PADDLE_HEIGHT_B
 
 
-# Freeze: The Freeze "Power-up" freezes the position of the player’s paddle
+# Black Widow: The Black Widow "Power-up" freezes the position of the player’s paddle
 class Freeze(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 3
     # Set the PowerUp probability
     probability: int = 60
     # Set the PowerUp name
-    name: str = 'Freeze-Man'
+    name: str = 'Black Widow'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_1.png')
+        super().draw('img/icons/powerup3.png')
 
     def affect_playerA(self, player_A):
         PaddleSettings.PADDLE_SPEED_A = 0
@@ -125,20 +125,20 @@ class Freeze(PowerUp):
         PaddleSettings.PADDLE_SPEED_B = 5
 
 
-# MultipleBalls: The MultipleBalls "Power-up" creates a second ball that moves in the opposite direction
+# Scarlet Witch: The Scarlet Witch "Power-up" creates a second ball that moves in the opposite direction
 class MultipleBalls(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 30
     # Set the PowerUp probability
     probability: int = 30
     # Set the PowerUp name
-    name: str = 'Multiple-Man'
+    name: str = 'Scarlet Witch'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_2.png')
+        super().draw('img/icons/powerup6.png')
 
     def affect_playerA(self, player_A):
         pass
@@ -168,7 +168,7 @@ class FasterPaddle(PowerUp):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_3.png')
+        super().draw('img/icons/powerup1.png')
 
     def affect_playerA(self, player_A):
         PaddleSettings.PADDLE_SPEED_A = PaddleSettings.FASTER_PADDLE_SPEED
@@ -187,20 +187,20 @@ class FasterPaddle(PowerUp):
         PaddleSettings.PADDLE_SPEED_B = PaddleSettings.DEFAULT_PADDLE_SPEED
 
 
-# DoubleScore: The DoubleScore "Power-up" doubles the score of the player that hits the ball
+# Iron Man: The Iron Man "Power-up" doubles the score of the player that hits the ball
 class DoubleScore(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 10
     # Set the PowerUp probability
     probability: int = 70
     # Set the PowerUp name
-    name: str = 'Double-Man'
+    name: str = 'Iron Man'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_4.png')
+        super().draw('img/icons/powerup4.png')
 
     def affect_playerA(self, player_A):
         GameSettings.SCORE_ADDER_A = 2
@@ -218,20 +218,20 @@ class DoubleScore(PowerUp):
         GameSettings.SCORE_ADDER_A, GameSettings.SCORE_ADDER_B = 1, 1
 
 
-# Shield: The Shield "Power-up" creates a shield that protects the player’s paddle from the ball
+# Captain America: The Captain America "Power-up" creates a shield that protects the player’s paddle from the ball
 class Shield(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 6
     # Set the PowerUp probability
     probability: int = 50
     # Set the PowerUp name
-    name: str = 'Iron-Man'
+    name: str = 'Captain America'
 
     def __init__(self, ball_owner, width, height):
         super().__init__(ball_owner, width, height)
 
         # Set the PowerUp image
-        super().draw('img/icons/PowerUp_5.png')
+        super().draw('img/icons/powerup2.png')
 
     def affect_playerA(self, player_A):
         player_A.border_radius = 0
