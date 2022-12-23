@@ -1,8 +1,8 @@
-from src.interface import Interface
+import src.interface
 
 
 def main():
-    interface = Interface()
+    interface = src.interface.Interface()
     interface.mainMenu()
 
 

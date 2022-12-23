@@ -24,6 +24,11 @@ class InterfaceSettings:
     SMALL_BUTTON_HEIGHT: int = int(WINDOW_HEIGHT * 0.06)
     BUTTON_GAP: int = int(BUTTON_HEIGHT * 2)
 
+    # Set NovaIMS icon size and load
+    NOVAIMS_ICON_SIZE: tuple = (WINDOW_WIDTH * 0.07, WINDOW_WIDTH * 0.07)
+    NOVAIMS_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/novaims_logo.png"),
+                                                                  NOVAIMS_ICON_SIZE)
+
 
 # Static Class for the Game Settings
 class GameSettings:
@@ -48,6 +53,7 @@ class GameSettings:
     RED: tuple = (183, 39, 30)
     GREEN: tuple = (175, 225, 175)
     PURPLE: tuple = (87, 18, 199)
+    GRAY: tuple = (44, 44, 44)
 
     # Set Font Size and Type
     FONT_TYPE_DEFAULT: str = "font/default_font_pong.ttf"
