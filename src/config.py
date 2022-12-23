@@ -37,9 +37,11 @@ class GameSettings:
     BLACK: tuple = (0, 0, 0)
     WHITE: tuple = (255, 255, 255)
     BLUE: tuple = (71, 94, 126)
+    LIGHT_BLUE: tuple = (202, 230, 250)
     GOLDEN: tuple = (209, 165, 91)
     RED: tuple = (183, 39, 30)
     GREEN: tuple = (175, 225, 175)
+    PURPLE: tuple = (87, 18, 199)
 
     # Set Font Size and Type
     FONT_TYPE_DEFAULT: str = "font/default_font_pong.ttf"
@@ -83,7 +85,7 @@ class InstructionsSettings:
     # Set Font Size
     TITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 25)
     SUBTITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 43)
-    BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 53)
+    BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 75)
 
     # Set PowerUp icon Instructions size
     POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 9

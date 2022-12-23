@@ -3,6 +3,7 @@ from random import choices
 from .paddle import Paddle
 from .ball import Ball
 from .powerups import *
+import sys
 
 
 class PongVerse:
@@ -197,14 +198,14 @@ class PongVerse:
         return ball
 
     def instructions(self):
-        # Create a loop that carries on until the user exits the win screen
+        # Create a loop that carries on until the user exits the instructions screen
         instructionsON: int = 1
 
         # Set Instructions Fonts
         title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.TITLE_SIZE)
         subtitle_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
                                                       InstructionsSettings.SUBTITLE_SIZE)
-        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.BODY_SIZE)
+        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE)
 
         # -------- Main Program Loop -----------
         while instructionsON:
@@ -214,10 +215,8 @@ class PongVerse:
 
                 # If user clicked close
                 if event.type == pygame.QUIT:
-                    # Flag that we are done so we exit this loop
-                    instructionsON = 0
                     # Close the window and quit
-                    pygame.quit()
+                    pygame.quit(), sys.exit()
 
                 # Or they used the keyboard
                 if event.type == pygame.KEYDOWN:
@@ -236,35 +235,36 @@ class PongVerse:
             # Set the title of the window/game
             if self.vanilla:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
-                title = title_font.render('Instructions - Vanilla Edition', False, GameSettings.WHITE)
+                title = title_font.render('Instructions - Vanilla Edition', True, GameSettings.WHITE)
 
             else:
                 pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
-                title = title_font.render('Instructions', False, GameSettings.WHITE)
+                title = title_font.render('Instructions', True, GameSettings.WHITE)
 
             self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
-            instructions = subtitle_font.render("Press SPACE to start the game", False, GameSettings.WHITE)
+            instructions = body_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
             instructions_rect = instructions.get_rect()
             self.screen.blit(instructions, (InterfaceSettings.WINDOW_WIDTH / 2 - instructions_rect.center[0],
                                             InterfaceSettings.WINDOW_HEIGHT * 0.9))
             self.screen.blit(title, (InterfaceSettings.WINDOW_WIDTH * 0.07, InterfaceSettings.WINDOW_HEIGHT * 0.05))
-            powerup_class_title = subtitle_font.render('Powerups', False, GameSettings.WHITE)
+            powerup_class_title = subtitle_font.render('Powerups', True, GameSettings.LIGHT_BLUE)
             self.screen.blit(powerup_class_title,
                              (InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.2))
             for powerup in PowerUps.values():
                 powerup_icon = pygame.transform.smoothscale(pygame.image.load(powerup.icon),
                                                             (InstructionsSettings.POWERUP_WIDTH,
                                                              InstructionsSettings.POWERUP_HEIGHT))
-                powerup_name = subtitle_font.render(str(powerup.name), False, GameSettings.WHITE)
+                powerup_name = subtitle_font.render(powerup.name, True, GameSettings.GOLDEN)
+                powerup_description = body_font.render(powerup.description, True, GameSettings.WHITE)
                 self.screen.blit(powerup_icon, powerup.instructions_icon_pos)
                 self.screen.blit(powerup_name, [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
                                                 powerup.instructions_icon_pos[1]])
+                self.screen.blit(powerup_description,
+                                 [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
+                                  powerup.instructions_icon_pos[1] + PowerUpSettings.POWERUP_WIDTH * 0.5])
 
             # --- Update the screen with what was drawn
             pygame.display.update()
-
-            # --- Limit the game to 60 frames per second
-            self.clock.tick(60)
 
     # Screen when a player wins
     def win_screen(self):
@@ -299,10 +299,8 @@ class PongVerse:
 
                 # If user clicked close
                 if event.type == pygame.QUIT:
-                    # Flag that we are done so we exit this loop
-                    win_screenON = 0
                     # Close the window and quit
-                    pygame.quit()
+                    pygame.quit(), sys.exit()
 
                 # Or they used the keyboard
                 if event.type == pygame.KEYDOWN:
@@ -331,9 +329,6 @@ class PongVerse:
 
             # --- Update the screen with what was drawn
             pygame.display.update()
-
-            # --- Limit the game to 60 frames per second
-            self.clock.tick(60)
 
     def play(self):
 
@@ -372,10 +367,8 @@ class PongVerse:
 
                 # If user clicked close
                 if event.type == pygame.QUIT:
-                    # Flag that we are done so we exit this loop
-                    carryOn = 0
                     # Close the window and quit
-                    pygame.quit()
+                    pygame.quit(), sys.exit()
 
                     # Or they used the keyboard
                 elif event.type == pygame.KEYDOWN:
@@ -441,5 +434,3 @@ class PongVerse:
 
             # --- Limit the game to 60 frames per second
             self.clock.tick(60)
-
-# TODO: Solve problem with ball owner

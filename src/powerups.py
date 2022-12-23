@@ -39,7 +39,7 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
 
     # Function that draws the powerup icon on the screen
     def draw(self, filename):
-        self.image = pygame.image.load(filename)
+        self.image = pygame.image.load(filename).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         pygame.draw.rect(self.image, GameSettings.BLACK, [self.width, self.height, 0, 0])
         self.rect = self.image.get_rect()
@@ -54,9 +54,11 @@ class ShrinkEnlarge(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 5
     # Set the PowerUp probability
-    probability: int = 50
+    probability: int = 15
     # Set the PowerUp name
     name: str = 'Ant-Man'
+    # Set the description of the powerup
+    description: str = 'Enlarges your paddle size'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup5.png'
     # set the position of the icon in instructions
@@ -98,9 +100,11 @@ class Freeze(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 3
     # Set the PowerUp probability
-    probability: int = 60
+    probability: int = 20
     # Set the PowerUp name
     name: str = 'Black Widow'
+    # Set the description of the powerup
+    description: str = 'Freezes your opponent paddle'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup3.png'
     # set the position of the icon in instructions
@@ -133,14 +137,16 @@ class Freeze(PowerUp):
         PaddleSettings.PADDLE_SPEED_B = 5
 
 
-# Scarlet Witch: The Scarlet Witch "Power-up" creates a second ball that moves in the opposite direction
+# Scarlet Witch: The Scarlet Witch "Power-up" creates multiple balls that move in the different directions
 class MultipleBalls(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 30
     # Set the PowerUp probability
-    probability: int = 30
+    probability: int = 10
     # Set the PowerUp name
     name: str = 'Scarlet Witch'
+    # Set the description of the powerup
+    description: str = 'Creates multiple balls'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup6.png'
     # set the position of the icon in instructions
@@ -172,9 +178,11 @@ class FasterPaddle(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 6
     # Set the PowerUp probability
-    probability: int = 30
+    probability: int = 15
     # Set the PowerUp name
     name: str = 'Quicksilver'
+    # Set the description of the powerup
+    description: str = 'Increases your paddle speed'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup1.png'
     # set the position of the icon in instructions
@@ -208,9 +216,11 @@ class DoubleScore(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 10
     # Set the PowerUp probability
-    probability: int = 70
+    probability: int = 25
     # Set the PowerUp name
     name: str = 'Iron Man'
+    # Set the description of the powerup
+    description: str = 'Doubles your score when hit the ball'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup4.png'
     # set the position of the icon in instructions
@@ -243,11 +253,11 @@ class Shield(PowerUp):
     # Set PowerUp active time in seconds
     active_time: int = 6
     # Set the PowerUp probability
-    probability: int = 50
+    probability: int = 15
     # Set the PowerUp name
     name: str = 'Captain America'
     # Set the description of the powerup
-    description: str = ''
+    description: str = 'Creates a shield on your paddle'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup2.png'
     # set the position of the icon in instructions
