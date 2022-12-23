@@ -1,8 +1,8 @@
 import pygame
 
 # Create a Dictionary of all the screen resolutions
-Screen_Resolution = {'360p': (640, 360), '480p': (854, 480), '540p': (960, 540), '720p': (1280, 720),
-                     '1080p': (1920, 1080), '1440p': (2560, 1440), '2160p': (3840, 2160)}
+Screen_Resolution = {'480p': (854, 480), '720p': (1280, 720), '1080p': (1920, 1080), '1440p': (2560, 1440),
+                     '2160p': (3840, 2160)}
 
 
 # Static Class for the Interface Settings

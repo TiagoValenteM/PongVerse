@@ -321,15 +321,31 @@ class Interface:
         settingsOn: int = 1
 
         # Create text-labels and get their rectangle
-
         # Title
         text_title, title_rect = self.setTitle('Settings')
 
-        # Return
+        # Return text
         return_text = self.menu_font.render('Return', True, GameSettings.WHITE)
         return_text_rect = return_text.get_rect()
         return_rect = self.drawRect(GameSettings.GRAY, InterfaceSettings.WINDOW_WIDTH * 0.85,
                                     InterfaceSettings.WINDOW_HEIGHT * 0.88, False)
+
+        def getResolutionDict():
+            # Set height position for Resolutions
+            resolution_rect_list = []
+            resolution_pos_height = InterfaceSettings.WINDOW_HEIGHT * 0.18
+            for resolution_name, resolution in Screen_Resolution.items():
+                resolution_text = self.menu_font.render(resolution_name, True, GameSettings.WHITE)
+                resolution_text_rect = resolution_text.get_rect()
+                resolution_rect = self.drawRect(GameSettings.GRAY, self.button_width_center,
+                                                self.button_height_pos, True)
+                resolution_pos_height += InterfaceSettings.BUTTON_GAP
+                resolution_rect_list.append(
+                    (resolution_text, resolution_text_rect, resolution_rect, resolution_pos_height))
+            return resolution_rect_list
+
+        resolutions_rect_list = getResolutionDict()
+        print(resolutions_rect_list)
 
         # -------- Main Program Loop -----------
         while settingsOn:
@@ -342,27 +358,23 @@ class Interface:
 
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.SETTINGS_TITLE)
-
             # Display the title of the game
             self.screen.blit(text_title, (
                 InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
                 InterfaceSettings.WINDOW_HEIGHT * 0.05))
 
-            # Set height position for Resolutions
-            resolutions_pos_y = self.height * 0.2
-            for resolution_name, resolution in Screen_Resolution.items():
-                resolutions_pos_y += self.height * 0.07
-                screen_resolution = self.menu_font.render(resolution_name, True, GameSettings.WHITE)
-                screen_resolution_rect = screen_resolution.get_rect()
-                resolution_final = self.screen.blit(screen_resolution, (
-                    self.width / 2 - screen_resolution_rect.center[0], resolutions_pos_y))
+            for screen_resolution_text, screen_resolution_text_rect, screen_resolution_rect, screen_resolution_pos_height in resolutions_rect_list:
+                if screen_resolution_rect.collidepoint(mouse_pos):
+                    print('collide')
+                    self.drawRect(GameSettings.BLUE, self.button_width_center, screen_resolution_pos_height, True)
+                else:
+                    self.drawRect(GameSettings.GRAY, self.button_width_center, screen_resolution_pos_height, True)
+                self.screen.blit(screen_resolution_text, (
+                    self.width_center - screen_resolution_text_rect.center[0],
+                    screen_resolution_pos_height + InterfaceSettings.BUTTON_GAP * 0.05))
 
-                for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        if resolution_final.collidepoint(mouse_pos):
-                            self.width, InterfaceSettings.WINDOW_WIDTH = resolution[0], resolution[0]
-                            self.height, InterfaceSettings.WINDOW_HEIGHT = resolution[1], resolution[1]
-                            self.screen = pygame.display.set_mode((self.width, self.height))
+            # InterfaceSettings.WINDOW_WIDTH = resolution[0]
+            # InterfaceSettings.WINDOW_HEIGHT = resolution[1]
 
             # Quit Button
             self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)
