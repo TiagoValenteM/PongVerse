@@ -30,12 +30,10 @@ class Interface:
         self.menu_font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, GameSettings.FONT_SIZE_MENU)
 
     def drawRect(self, color, width, height):
-        # Define rectangle width and height
-        rectangle_width = InterfaceSettings.WINDOW_WIDTH * 0.3
-        rectangle_height = InterfaceSettings.WINDOW_HEIGHT * 0.05
         # Draw the rectangle with position and size
         return pygame.draw.rect(self.screen, color,
-                                [width, height, rectangle_width, rectangle_height], border_radius=15)
+                                [width, height, InterfaceSettings.BUTTON_WIDTH, InterfaceSettings.BUTTON_HEIGHT],
+                                border_radius=15)
 
     # Creating a function that creates the GUI
     def mainMenu(self):
@@ -43,25 +41,29 @@ class Interface:
         mainMenuOn: int = 1
 
         # Creating Screen positions and Sizes
-        width_center = InterfaceSettings.WINDOW_WIDTH * 0.5
-        height_start_menu = InterfaceSettings.WINDOW_HEIGHT * 0.25
+        button_width_center: int = int(InterfaceSettings.WINDOW_WIDTH * 0.5 - InterfaceSettings.BUTTON_WIDTH * 0.5)
+        button_height_pos: int = int(InterfaceSettings.WINDOW_HEIGHT * 0.3)
 
         # Create text-labels and get their rectangle
         # PongVerse
         text_play_pongVerse = self.menu_font.render('The PongVerse', True, GameSettings.BLUE)
-        play_pongVerse_rect = self.drawRect(GameSettings.WHITE, width_center, height_start_menu)
+        play_pongVerse_rect = self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos)
         # PongVerse Vanilla Edition
         text_play_pongVerse_vanilla = self.menu_font.render('Vanilla Pong', True, GameSettings.BLUE)
-        play_pongVerse_vanilla_rect = self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 50)
+        play_pongVerse_vanilla_rect = self.drawRect(GameSettings.WHITE, button_width_center,
+                                                    button_height_pos + InterfaceSettings.BUTTON_GAP)
         # Settings
         text_settings = self.menu_font.render('Settings', True, GameSettings.BLUE)
-        settings_rect = self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 100)
+        settings_rect = self.drawRect(GameSettings.WHITE, button_width_center,
+                                      button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
         # Creators
         text_creators = self.menu_font.render('Creators', True, GameSettings.BLUE)
-        creators_rect = self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 150)
+        creators_rect = self.drawRect(GameSettings.WHITE, button_width_center,
+                                      button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
         # Quit
         text_quit = self.menu_font.render('Quit', True, GameSettings.BLUE)
-        quit_rect = self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 200)
+        quit_rect = self.drawRect(GameSettings.WHITE, button_width_center,
+                                  button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
         # Title
         text_title = self.default_font.render('The PongVerse - OOP PyGame', True, GameSettings.LIGHT_BLUE)
         title_rect = text_title.get_rect()
@@ -101,38 +103,44 @@ class Interface:
             # On Hover, button changes color
             # Play PongVerse Button
             if play_pongVerse_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, width_center, height_start_menu)
+                self.drawRect(GameSettings.GREEN, button_width_center, button_height_pos)
             else:
-                self.drawRect(GameSettings.WHITE, width_center, height_start_menu)
-            self.screen.blit(text_play_pongVerse, (width_center, height_start_menu))
+                self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos)
+            self.screen.blit(text_play_pongVerse, (button_width_center, button_height_pos))
             # Play PongVerse Vanilla Edition Button
             if play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, width_center, height_start_menu + 50)
+                self.drawRect(GameSettings.GREEN, button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP)
             else:
-                self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 50)
+                self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP)
             self.screen.blit(text_play_pongVerse_vanilla,
-                             (width_center, height_start_menu + 50))
+                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP))
             # Enter Settings Button
             if settings_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, width_center, height_start_menu + 100)
+                self.drawRect(GameSettings.GREEN, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
             else:
-                self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 100)
+                self.drawRect(GameSettings.WHITE, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
             self.screen.blit(text_settings,
-                             (width_center, height_start_menu + 100))
+                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 2))
             # Enter Creators Button
             if creators_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, width_center, height_start_menu + 150)
+                self.drawRect(GameSettings.GREEN, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
             else:
-                self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 150)
+                self.drawRect(GameSettings.WHITE, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
             self.screen.blit(text_creators,
-                             (width_center, height_start_menu + 150))
+                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 3))
             # Quit Button
             if quit_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, width_center, height_start_menu + 200)
+                self.drawRect(GameSettings.GREEN, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
             else:
-                self.drawRect(GameSettings.WHITE, width_center, height_start_menu + 200)
+                self.drawRect(GameSettings.WHITE, button_width_center,
+                              button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
             self.screen.blit(text_quit,
-                             (width_center, height_start_menu + 200))
+                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 4))
 
             # TITLE TEXT
             # pygame.draw.rect(screen, color_dark, [52, 0, 612, 100])

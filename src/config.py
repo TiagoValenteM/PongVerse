@@ -7,16 +7,20 @@ Screen_Resolution = {'360p': (640, 360), '480p': (854, 480), '540p': (960, 540),
 
 # Static Class for the Interface Settings
 class InterfaceSettings:
-
     # Set interface titles
     MENU_TITLE: str = "Main Menu"
     SETTINGS_TITLE: str = "Settings"
-    CREDITS_TITLE: str = "Credits"
+    CREDITS_TITLE: str = "Creators"
 
     # Set window size
     WINDOW_WIDTH: int = Screen_Resolution['720p'][0]
     WINDOW_HEIGHT: int = Screen_Resolution['720p'][1]
     WINDOW_SIZE: tuple = (WINDOW_WIDTH, WINDOW_HEIGHT)
+
+    # Set Menu Buttons size
+    BUTTON_WIDTH: int = int(WINDOW_WIDTH * 0.3)
+    BUTTON_HEIGHT: int = int(WINDOW_HEIGHT * 0.06)
+    BUTTON_GAP: int = int(BUTTON_HEIGHT * 2)
 
 
 # Static Class for the Game Settings
@@ -73,7 +77,6 @@ class GameSettings:
 # Static Class for Instructions Settings
 class InstructionsSettings:
     # Set background Image
-
     BACKGROUND_IMG: any = pygame.transform.scale(pygame.image.load("img/background/background_instructions.jpg"),
                                                  (InterfaceSettings.WINDOW_WIDTH,
                                                   InterfaceSettings.WINDOW_HEIGHT))
@@ -83,17 +86,51 @@ class InstructionsSettings:
     INSTRUCTIONS_TITLE_VANILLA: str = "Instructions (Vanilla Edition)"
 
     # Set Font Size
-    TITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 25)
-    SUBTITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 43)
-    BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 75)
+    TITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 28)
+    SUBTITLE_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 46)
+    BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 78)
+    SMALL_BODY_SIZE: int = int(InterfaceSettings.WINDOW_WIDTH / 90)
 
     # Set PowerUp icon Instructions size
-    POWERUP_WIDTH: int = InterfaceSettings.WINDOW_HEIGHT / 9
-    POWERUP_HEIGHT: int = InterfaceSettings.WINDOW_HEIGHT / 9
+    POWERUP_WIDTH: float = InterfaceSettings.WINDOW_HEIGHT / 11
+    POWERUP_HEIGHT: float = InterfaceSettings.WINDOW_HEIGHT / 11
 
     # Set Screen Alignments
-    RIGHT_X_ALIGNMENT = (InterfaceSettings.WINDOW_WIDTH * 0.07)
-    SECOND_RIGHT_X_ALIGNMENT = (InterfaceSettings.WINDOW_WIDTH * 0.37)
+    RIGHT_X_ALIGNMENT: float = (InterfaceSettings.WINDOW_WIDTH * 0.07)
+    SECOND_RIGHT_X_ALIGNMENT: float = (InterfaceSettings.WINDOW_WIDTH * 0.37)
+    LEFT_X_ALIGNMENT: float = (InterfaceSettings.WINDOW_WIDTH * 0.75)
+
+    # Set Player keys icon size
+    PLAYER_KEYS_WIDTH: float = InterfaceSettings.WINDOW_HEIGHT / 20
+    PLAYER_KEYS_HEIGHT: float = InterfaceSettings.WINDOW_HEIGHT / 20
+
+    # Set Player keys icon and position
+    PLAYER_A_UP: pygame.transform = (
+        pygame.transform.smoothscale(pygame.image.load("img/icons/playerA_up.png"),
+                                     (PLAYER_KEYS_WIDTH,
+                                      PLAYER_KEYS_HEIGHT)))
+    PLAYER_A_DOWN: pygame.transform = (
+        pygame.transform.smoothscale(pygame.image.load("img/icons/playerA_down.png"),
+                                     (PLAYER_KEYS_WIDTH,
+                                      PLAYER_KEYS_HEIGHT)))
+    PLAYER_B_UP: pygame.transform = (
+        pygame.transform.smoothscale(pygame.image.load("img/icons/playerB_up.png"),
+                                     (PLAYER_KEYS_WIDTH,
+                                      PLAYER_KEYS_HEIGHT)))
+    PLAYER_B_DOWN: pygame.transform = (
+        pygame.transform.smoothscale(pygame.image.load("img/icons/playerB_down.png"),
+                                     (PLAYER_KEYS_WIDTH,
+                                      PLAYER_KEYS_HEIGHT)))
+
+    # Set Escape key icon size
+    ESCAPE_KEY_WIDTH: float = InterfaceSettings.WINDOW_HEIGHT / 23
+    ESCAPE_KEY_HEIGHT: float = InterfaceSettings.WINDOW_HEIGHT / 23
+
+    # Set Escape key icon and position
+    ESCAPE_KEY: tuple = (pygame.transform.smoothscale(pygame.image.load("img/icons/esc_key.png"),
+                                                      (ESCAPE_KEY_WIDTH,
+                                                       ESCAPE_KEY_HEIGHT)),
+                         (InterfaceSettings.WINDOW_WIDTH * 0.96, InterfaceSettings.WINDOW_HEIGHT * 0.04))
 
 
 # Static Class for the Ball Settings
