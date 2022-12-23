@@ -220,7 +220,7 @@ class DoubleScore(PowerUp):
     # Set the PowerUp name
     name: str = 'Iron Man'
     # Set the description of the powerup
-    description: str = 'Doubles your score when hit the ball'
+    description: str = 'Doubles your score'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup4.png'
     # set the position of the icon in instructions

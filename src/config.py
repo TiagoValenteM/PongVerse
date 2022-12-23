@@ -54,6 +54,7 @@ class GameSettings:
     FONT_TYPE_MENU: str = "font/menu_font.ttf"
     FONT_SIZE_DEFAULT: int = int(InterfaceSettings.WINDOW_WIDTH / 17)
     FONT_SIZE_POWERUP: int = int(InterfaceSettings.WINDOW_WIDTH / 23)
+    FONT_SIZE_SMALL_POWERUP: int = int(InterfaceSettings.WINDOW_WIDTH / 70)
     FONT_SIZE_MENU: int = int(InterfaceSettings.WINDOW_WIDTH / 40)
 
     # Set Winner Icon Size
