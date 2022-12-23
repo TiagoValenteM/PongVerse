@@ -28,12 +28,14 @@ class PongVerse:
         self.powerup_owner: any = None
         # Opens a new window
         self.screen = pygame.display.set_mode(InterfaceSettings.WINDOW_SIZE)
-        # Create a clock that controls FPS
-        self.clock = pygame.time.Clock()
         # Set the Default Font
         self.default_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_DEFAULT)
         # Set the PowerUp Font
         self.powerup_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_POWERUP)
+        # Set a small Powerup Font
+        self.small_powerup_font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, GameSettings.FONT_SIZE_SMALL_POWERUP)
+        # Create a clock that controls FPS
+        self.clock = pygame.time.Clock()
         # Set scores to 0
         self.scoreA: int = 0
         self.scoreB: int = 0
@@ -278,12 +280,20 @@ class PongVerse:
             # It checks if the visible time for the name of the active powerup's name is not over
             if int(activated) < PowerUpSettings.POWERUP_NAME_VISIBLE_TIME:
                 # Displays the powerup active name
-                display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), False, GameSettings.RED)
+                display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), True, GameSettings.WHITE)
                 # Gets the rectangle of the powerup name
                 display_powerup_name_rect = display_powerup_name.get_rect()
                 self.screen.blit(display_powerup_name, (
                     InterfaceSettings.WINDOW_WIDTH / 2 - display_powerup_name_rect.center[0],
                     InterfaceSettings.WINDOW_HEIGHT * 0.85))
+                # Displays the powerup active description
+                display_powerup_name = self.small_powerup_font.render(str(self.powerup_active.description), True,
+                                                                GameSettings.WHITE)
+                # Gets the rectangle of the powerup name
+                display_powerup_name_rect = display_powerup_name.get_rect()
+                self.screen.blit(display_powerup_name, (
+                    InterfaceSettings.WINDOW_WIDTH / 2 - display_powerup_name_rect.center[0],
+                    InterfaceSettings.WINDOW_HEIGHT * 0.94))
             # It checks if the active time is over
             if int(activated) == self.powerup_active.active_time:
                 # If it is over, it sets the powerup to be inactive
@@ -317,10 +327,13 @@ class PongVerse:
         color_A = GameSettings.WHITE
         color_B = GameSettings.WHITE
 
-        if self.scoreA > self.scoreB:
-            color_A = GameSettings.BLUE
+        if self.powerup_active is not None:
+            color_A = GameSettings.RED
+            color_B = GameSettings.RED
         elif self.scoreA < self.scoreB:
             color_B = GameSettings.GOLDEN
+        elif self.scoreA > self.scoreB:
+            color_A = GameSettings.BLUE
 
         text_A = self.default_font.render(str(self.scoreA), False, color_A)
         text_B = self.default_font.render(str(self.scoreB), False, color_B)
@@ -339,8 +352,12 @@ class PongVerse:
         # Player B icon
         self.screen.blit(playerB_icon, GameSettings.PLAYER_B_ICON_POS)
         # Field divider
-        pygame.draw.line(self.screen, GameSettings.WHITE, GameSettings.FIELD_DIVIDER_INITIAL_POS,
-                         GameSettings.FIELD_DIVIDER_MAX_POS, 5)
+        if self.powerup_active is not None:
+            pygame.draw.line(self.screen, GameSettings.RED, GameSettings.FIELD_DIVIDER_INITIAL_POS,
+                             GameSettings.FIELD_DIVIDER_MAX_POS, 5)
+        else:
+            pygame.draw.line(self.screen, GameSettings.WHITE, GameSettings.FIELD_DIVIDER_INITIAL_POS,
+                             GameSettings.FIELD_DIVIDER_MAX_POS, 5)
 
     # Creates the ball
     @staticmethod
