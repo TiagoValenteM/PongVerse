@@ -45,7 +45,7 @@ class Interface:
                                      InterfaceSettings.SMALL_BUTTON_HEIGHT],
                                     border_radius=15)
 
-    def display_return_button(self, mouse_pos, return_rect, return_text_rect, return_text):
+    def displayReturnButton(self, mouse_pos, return_rect, return_text_rect, return_text):
         if return_rect.collidepoint(mouse_pos):
             self.drawRect(GameSettings.RED, InterfaceSettings.WINDOW_WIDTH * 0.85,
                           InterfaceSettings.WINDOW_HEIGHT * 0.88, False)
@@ -56,12 +56,34 @@ class Interface:
                          (InterfaceSettings.WINDOW_WIDTH - return_rect.width - return_text_rect.center[0],
                           InterfaceSettings.WINDOW_HEIGHT * 0.885))
 
+    def setTitle(self, title):
+        text_title = self.default_font.render(title, True, GameSettings.RED)
+        title_rect = text_title.get_rect()
+        return text_title, title_rect
+
+    def mainProgramLoop(self, main_loop, return_rect):
+        # Get mouse position
+        mouse_pos = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            # press on exit button
+            if event.type == pygame.QUIT:
+                pygame.quit(), sys.exit()
+            # press on quit button
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Mouse click on quit button
+                if return_rect.collidepoint(mouse_pos):
+                    main_loop = 0 and self.mainMenu()
+        return main_loop, mouse_pos
+
     # Creating a function that creates the GUI
     def mainMenu(self):
-        # Create a loop that carries on until the user exits the main menu
+        # Create a loop that carries on until the user exits the game
         mainMenuOn: int = 1
 
         # Create text-labels and get their rectangle
+        # Title
+        text_title, title_rect = self.setTitle('The PongVerse - OOP PyGame')
+
         # PongVerse
         text_play_pongVerse = self.menu_font.render('The PongVerse', True, GameSettings.WHITE)
         play_pong_rect = text_play_pongVerse.get_rect()
@@ -87,11 +109,8 @@ class Interface:
         quit_text_rect = text_quit.get_rect()
         quit_rect = self.drawRect(GameSettings.GRAY, self.button_width_center,
                                   self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4, True)
-        # Title
-        text_title = self.default_font.render('The PongVerse - OOP PyGame', True, GameSettings.RED)
-        title_rect = text_title.get_rect()
 
-        # interface loop
+        # -------- Main Program Loop -----------
         while mainMenuOn:
             # Get mouse position
             mouse_pos = pygame.mouse.get_pos()
@@ -102,12 +121,6 @@ class Interface:
                     pygame.quit(), sys.exit()
                 # Press the mouse button
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Mouse click on quit button
-                    if quit_rect.collidepoint(mouse_pos):
-                        pygame.quit(), sys.exit()
-                    # Mouse click on Creators button
-                    if creators_rect.collidepoint(mouse_pos):
-                        self.creators()
                     # Mouse click on Pong button
                     if play_pongVerse_rect.collidepoint(mouse_pos):
                         PongVerse(vanilla=False).instructions()
@@ -117,11 +130,24 @@ class Interface:
                     # Mouse click on Settings button
                     if settings_rect.collidepoint(mouse_pos):
                         self.settings()
+                    # Mouse click on Creators button
+                    if creators_rect.collidepoint(mouse_pos):
+                        self.creators()
+                    # Mouse click on quit button
+                    if quit_rect.collidepoint(mouse_pos):
+                        pygame.quit(), sys.exit()
+
+            # --- Main Menu logic starts here
 
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.MENU_TITLE)
             # background image
             self.screen.blit(self.background_img, (0, 0))
+
+            # Display the title of the game
+            self.screen.blit(text_title, (
+                InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
+                InterfaceSettings.WINDOW_HEIGHT * 0.05))
 
             # On Hover, button changes color
             # Play PongVerse Button
@@ -173,13 +199,6 @@ class Interface:
                              (self.width_center - quit_text_rect.center[0],
                               self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4.05))
 
-            # TITLE TEXT
-            # pygame.draw.rect(screen, color_dark, [52, 0, 612, 100])
-            # Gets the rectangle of the powerup name
-            self.screen.blit(text_title, (
-                InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
-                InterfaceSettings.WINDOW_HEIGHT * 0.05))
-
             # --- Update the screen with what was drawn
             pygame.display.update()
 
@@ -187,110 +206,147 @@ class Interface:
             self.clock.tick(30)
 
     def creators(self):
+        # Create a loop that carries on until the user exits the main menu
+        creatorsON: int = 1
+
+        # Create specific fonts for the creators
         creators_body_font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.SUBTITLE_SIZE)
         nova_text_font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE)
 
+        # Create specific alignments for the creators names
+        name_height_pos: int = int(InterfaceSettings.WINDOW_HEIGHT * 0.35)
+
+        # Create specific alignments for the creators icons
+        creator_icon_rect = InterfaceSettings.CREATOR_1_IMG_LOAD.get_rect()
+        left_icon_alignment = InterfaceSettings.WINDOW_WIDTH * 0.07
+        right_icon_alignment = InterfaceSettings.WINDOW_WIDTH * 0.93 - creator_icon_rect.width
+        top_icon_alignment = InterfaceSettings.WINDOW_HEIGHT * 0.25
+        bottom_icon_alignment = InterfaceSettings.WINDOW_HEIGHT * 0.75 - creator_icon_rect.height
+
         # Create text-labels and get their rectangle
-        # Return
+        # Title
+        text_title, title_rect = self.setTitle('Our Team of Creators')
+
+        # Body
+        # Professors text
+        professors_text = nova_text_font.render('Base code provided by our well Respected Professors', True,
+                                                GameSettings.WHITE)
+        professors_text_rect = professors_text.get_rect()
+
+        # Creators text
+        creator_1 = creators_body_font.render('Leonor Costa | 20211649@novaims.unl.pt', True, GameSettings.WHITE)
+        creator_1_rect = creator_1.get_rect()
+        creator_2 = creators_body_font.render('Osmáiny Raimundo | e20191506@novaims.unl.pt', True, GameSettings.WHITE)
+        creator_2_rect = creator_2.get_rect()
+        creator_3 = creators_body_font.render('Sara Lyra | 20211565@novaims.unl.pt', True, GameSettings.WHITE)
+        creator_3_rect = creator_3.get_rect()
+        creator_4 = creators_body_font.render('Tiago Valente | 20211650@novaims.unl.pt', True, GameSettings.WHITE)
+        creator_4_rect = creator_4.get_rect()
+
+        # Return text
         return_text = self.menu_font.render('Return', True, GameSettings.WHITE)
         return_text_rect = return_text.get_rect()
         return_rect = self.drawRect(GameSettings.GRAY, InterfaceSettings.WINDOW_WIDTH * 0.85,
                                     InterfaceSettings.WINDOW_HEIGHT * 0.88, False)
 
-        # Title
-        text_title = self.default_font.render('Our Team of Creators', True, GameSettings.LIGHT_BLUE)
-        title_rect = text_title.get_rect()
-
-        creator_1 = creators_body_font.render('Leonor Costa | 20211649@novaims.unl.pt', True, GameSettings.GOLDEN)
-        creator_1_rect = creator_1.get_rect()
-        creator_2 = creators_body_font.render('Osmáiny Raimundo | e20191506@novaims.unl.pt', True, GameSettings.GOLDEN)
-        creator_2_rect = creator_2.get_rect()
-        creator_3 = creators_body_font.render('Sara Lyra | 20211565@novaims.unl.pt', True, GameSettings.GOLDEN)
-        creator_3_rect = creator_3.get_rect()
-        creator_4 = creators_body_font.render('Tiago Valente | 20211650@novaims.unl.pt', True, GameSettings.GOLDEN)
-        creator_4_rect = creator_4.get_rect()
-
+        # Nova IMS text
         novaims_text = nova_text_font.render('NovaIMS - Information Management School', True,
                                              GameSettings.WHITE)
 
-        while True:
-            # Get mouse position
-            mouse_pos = pygame.mouse.get_pos()
-            for ev in pygame.event.get():
-                # press on exit button
-                if ev.type == pygame.QUIT:
-                    pygame.quit()
-                # press on quit button
-                if ev.type == pygame.MOUSEBUTTONDOWN:
-                    # Mouse click on quit button
-                    if return_rect.collidepoint(mouse_pos):
-                        self.mainMenu()
+        # -------- Main Program Loop -----------
+        while creatorsON:
+            creatorsON, mouse_pos = self.mainProgramLoop(creatorsON, return_rect)
+
+            # --- Creators screen logic starts here
 
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.CREDITS_TITLE)
 
-            # background image
+            # Display Background image
             self.screen.blit(self.background_img, (0, 0))
 
-            # Title text
+            # Display Title text
             self.screen.blit(text_title, (
                 InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
                 InterfaceSettings.WINDOW_HEIGHT * 0.05))
 
-            # credits text
-            self.screen.blit(creator_1, (self.width_center - creator_1_rect.center[0], self.button_height_pos))
+            # Display Professors text
+            self.screen.blit(professors_text, (InterfaceSettings.WINDOW_WIDTH / 2 - professors_text_rect.center[0],
+                                               InterfaceSettings.WINDOW_HEIGHT * 0.17))
+
+            # Display Creators text
+            # Creator 1
+            self.screen.blit(creator_1, (self.width_center - creator_1_rect.center[0], name_height_pos))
+            # Creator 2
             self.screen.blit(creator_2, (
                 self.width_center - creator_2_rect.center[0],
-                self.button_height_pos + InterfaceSettings.BUTTON_GAP * 0.75))
+                name_height_pos + InterfaceSettings.BUTTON_GAP * 0.75))
+            # Creator 3
             self.screen.blit(creator_3, (
                 self.width_center - creator_3_rect.center[0],
-                self.button_height_pos + InterfaceSettings.BUTTON_GAP * 1.5))
+                name_height_pos + InterfaceSettings.BUTTON_GAP * 1.5))
+            # Creator 4
             self.screen.blit(creator_4, (
                 self.width_center - creator_4_rect.center[0],
-                self.button_height_pos + InterfaceSettings.BUTTON_GAP * 2.25))
+                name_height_pos + InterfaceSettings.BUTTON_GAP * 2.25))
 
-            # Quit Button
-            self.display_return_button(mouse_pos, return_rect, return_text_rect, return_text)
+            # Display Creators Icons
+            # Creator 1
+            self.screen.blit(InterfaceSettings.CREATOR_1_IMG_LOAD, (left_icon_alignment, top_icon_alignment))
+            # Creator 2
+            self.screen.blit(InterfaceSettings.CREATOR_2_IMG_LOAD, (left_icon_alignment, bottom_icon_alignment))
+            # Creator 3
+            self.screen.blit(InterfaceSettings.CREATOR_3_IMG_LOAD, (right_icon_alignment, top_icon_alignment))
+            # Creator 4
+            self.screen.blit(InterfaceSettings.CREATOR_4_IMG_LOAD, (right_icon_alignment, bottom_icon_alignment))
+            # Display Return button
+            self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)
 
-            NOVAIMS_IMG_RECT = InterfaceSettings.NOVAIMS_IMG_LOAD.get_rect()
+            # Display NovaIMS text and Icon
+            novaims_img_rect = InterfaceSettings.NOVAIMS_IMG_LOAD.get_rect()
             self.screen.blit(InterfaceSettings.NOVAIMS_IMG_LOAD.convert_alpha(), (
                 InterfaceSettings.WINDOW_WIDTH * 0.03,
-                InterfaceSettings.WINDOW_HEIGHT * 0.97 - NOVAIMS_IMG_RECT.height))
-            self.screen.blit(novaims_text, (InterfaceSettings.WINDOW_WIDTH * 0.03 + NOVAIMS_IMG_RECT.width,
-                                            InterfaceSettings.WINDOW_HEIGHT * 1.04 - NOVAIMS_IMG_RECT.height))
+                InterfaceSettings.WINDOW_HEIGHT * 0.97 - novaims_img_rect.height))
+            self.screen.blit(novaims_text, (InterfaceSettings.WINDOW_WIDTH * 0.03 + novaims_img_rect.width,
+                                            InterfaceSettings.WINDOW_HEIGHT * 1.04 - novaims_img_rect.height))
 
             # --- Update the screen with what was drawn
             pygame.display.update()
 
-            # --- Limit the game to 60 frames per second
+            # --- Limit the game to 30 frames per second
             self.clock.tick(30)
 
     def settings(self):
+        # Create a loop that carries on until the user exits the main menu
+        settingsOn: int = 1
+
         # Create text-labels and get their rectangle
+
+        # Title
+        text_title, title_rect = self.setTitle('Settings')
+
         # Return
         return_text = self.menu_font.render('Return', True, GameSettings.WHITE)
         return_text_rect = return_text.get_rect()
         return_rect = self.drawRect(GameSettings.GRAY, InterfaceSettings.WINDOW_WIDTH * 0.85,
                                     InterfaceSettings.WINDOW_HEIGHT * 0.88, False)
 
-        while True:
-            # Get mouse position
-            mouse_pos = pygame.mouse.get_pos()
-            for event in pygame.event.get():
-                # press on exit button
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                # press on quit button
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Mouse click on quit button
-                    if return_rect.collidepoint(mouse_pos):
-                        self.mainMenu()
+        # -------- Main Program Loop -----------
+        while settingsOn:
+            settingsOn, mouse_pos = self.mainProgramLoop(settingsOn, return_rect)
+
+            # --- Settings screen logic starts here
 
             # background image
             self.screen.blit(self.background_img, (0, 0))
 
             # Set the title of the window
             pygame.display.set_caption(InterfaceSettings.SETTINGS_TITLE)
+
+            # Display the title of the game
+            self.screen.blit(text_title, (
+                InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
+                InterfaceSettings.WINDOW_HEIGHT * 0.05))
 
             # Set height position for Resolutions
             resolutions_pos_y = self.height * 0.2
@@ -309,10 +365,10 @@ class Interface:
                             self.screen = pygame.display.set_mode((self.width, self.height))
 
             # Quit Button
-            self.display_return_button(mouse_pos, return_rect, return_text_rect, return_text)
+            self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)
 
             # --- Update the screen with what was drawn
             pygame.display.update()
 
-            # --- Limit the game to 60 frames per second
+            # --- Limit the game to 30 frames per second
             self.clock.tick(30)

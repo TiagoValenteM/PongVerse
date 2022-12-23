@@ -29,6 +29,17 @@ class InterfaceSettings:
     NOVAIMS_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/novaims_logo.png"),
                                                                   NOVAIMS_ICON_SIZE)
 
+    # Set Creators icon size and load
+    CREATOR_ICON_SIZE: tuple = (WINDOW_WIDTH * 0.1, WINDOW_WIDTH * 0.1)
+    CREATOR_1_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/creator_1.png"),
+                                                                    CREATOR_ICON_SIZE)
+    CREATOR_2_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/creator_2.png"),
+                                                                    CREATOR_ICON_SIZE)
+    CREATOR_3_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/creator_3.png"),
+                                                                    CREATOR_ICON_SIZE)
+    CREATOR_4_IMG_LOAD: pygame.image = pygame.transform.smoothscale(pygame.image.load("img/creators/creator_4.png"),
+                                                                    CREATOR_ICON_SIZE)
+
 
 # Static Class for the Game Settings
 class GameSettings:

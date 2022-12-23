@@ -1,9 +1,10 @@
 # Import the pygame library and initialise the game engine
-from random import choices
-from .paddle import Paddle
-from .ball import Ball
-from .powerups import *
 import sys
+from random import choices
+
+from .ball import Ball
+from .paddle import Paddle
+from .powerups import *
 
 
 class PongVerse:
@@ -288,7 +289,7 @@ class PongVerse:
                     InterfaceSettings.WINDOW_HEIGHT * 0.85))
                 # Displays the powerup active description
                 display_powerup_name = self.small_powerup_font.render(str(self.powerup_active.description), True,
-                                                                GameSettings.WHITE)
+                                                                      GameSettings.WHITE)
                 # Gets the rectangle of the powerup name
                 display_powerup_name_rect = display_powerup_name.get_rect()
                 self.screen.blit(display_powerup_name, (
