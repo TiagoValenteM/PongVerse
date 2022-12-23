@@ -20,6 +20,8 @@ class InterfaceSettings:
     # Set Menu Buttons size
     BUTTON_WIDTH: int = int(WINDOW_WIDTH * 0.3)
     BUTTON_HEIGHT: int = int(WINDOW_HEIGHT * 0.06)
+    SMALL_BUTTON_WIDTH: int = int(WINDOW_WIDTH * 0.1)
+    SMALL_BUTTON_HEIGHT: int = int(WINDOW_HEIGHT * 0.06)
     BUTTON_GAP: int = int(BUTTON_HEIGHT * 2)
 
 

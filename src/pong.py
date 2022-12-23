@@ -40,6 +40,160 @@ class PongVerse:
         # Set trigger for the ball to be reset
         self.triggered: bool = False
 
+    def display_win_condition_instructions(self, body_font, subtitle_font, left_x_alignment):
+        # Display the win condition subtitle
+        win_condition_title = subtitle_font.render('Win Condition', True, GameSettings.LIGHT_BLUE)
+        self.screen.blit(win_condition_title,
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.6))
+        # Display the win condition text
+        win_condition_body = body_font.render(f'First player to hit {GameSettings.WIN_SCORE} points wins!', True,
+                                              GameSettings.WHITE)
+        self.screen.blit(win_condition_body,
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.67))
+
+    def display_powerups_instructions(self, body_font, small_body_font, subtitle_font):
+        # Check if the game is not vanilla
+        if not self.vanilla:
+            # Display the powerups subtitle
+            powerup_class_title = subtitle_font.render('Powerups', True, GameSettings.LIGHT_BLUE)
+            self.screen.blit(powerup_class_title,
+                             (InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.2))
+            # Check the powerups dictionary
+            for powerup in PowerUps.values():
+                # Get icon, name, description and active time of each powerup
+                powerup_icon = pygame.transform.smoothscale(pygame.image.load(powerup.icon),
+                                                            (InstructionsSettings.POWERUP_WIDTH,
+                                                             InstructionsSettings.POWERUP_HEIGHT))
+                powerup_name = subtitle_font.render(powerup.name, True, GameSettings.GOLDEN)
+                powerup_description = body_font.render(powerup.description, True, GameSettings.WHITE)
+                powerup_active_time = small_body_font.render(f"{powerup.active_time} seconds active", True,
+                                                             GameSettings.LIGHT_BLUE)
+                # Display the powerup icon
+                self.screen.blit(powerup_icon, powerup.instructions_icon_pos)
+                # Display the powerup name
+                self.screen.blit(powerup_name, [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
+                                                powerup.instructions_icon_pos[1]])
+                # Display the powerup description
+                self.screen.blit(powerup_description,
+                                 [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
+                                  powerup.instructions_icon_pos[1] + PowerUpSettings.POWERUP_WIDTH * 0.45])
+                # Display the powerup active time
+                self.screen.blit(powerup_active_time,
+                                 [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.4,
+                                  powerup.instructions_icon_pos[1] + PowerUpSettings.POWERUP_WIDTH * 0.8])
+
+    def display_player_keys_instructions(self, body_font, subtitle_font, left_x_alignment):
+        # Display the player keys subtitle
+        player_keys_title = subtitle_font.render('Player keys', True, GameSettings.LIGHT_BLUE)
+        self.screen.blit(player_keys_title,
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.2))
+
+        # Display the player A keys text
+        playerA_keys = body_font.render('Player A - Captain America', True, GameSettings.WHITE)
+        self.screen.blit(playerA_keys,
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.27))
+        # Display the player A key icons
+        self.screen.blit(InstructionsSettings.PLAYER_A_UP.convert_alpha(),
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.32))
+        self.screen.blit(InstructionsSettings.PLAYER_A_DOWN.convert_alpha(),
+                         (left_x_alignment + InterfaceSettings.WINDOW_WIDTH / 22,
+                          InterfaceSettings.WINDOW_HEIGHT * 0.32))
+
+        # Display the player B keys text
+        playerB_keys = body_font.render('Player B - Iron Man', True, GameSettings.WHITE)
+        self.screen.blit(playerB_keys,
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.42))
+        # Display the player B key icons
+        self.screen.blit(InstructionsSettings.PLAYER_B_UP.convert_alpha(),
+                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.47))
+        self.screen.blit(InstructionsSettings.PLAYER_B_DOWN.convert_alpha(),
+                         (left_x_alignment + InterfaceSettings.WINDOW_WIDTH / 22,
+                          InterfaceSettings.WINDOW_HEIGHT * 0.47))
+
+    # Screen to display the instructions
+    def instructions(self):
+        # Create a loop that carries on until the user exits the instructions screen
+        instructionsON: int = 1
+
+        # Set Instructions Fonts
+        title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.TITLE_SIZE)
+        subtitle_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
+                                                      InstructionsSettings.SUBTITLE_SIZE)
+        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE)
+        small_body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU,
+                                                        InstructionsSettings.SMALL_BODY_SIZE)
+
+        # -------- Main Program Loop -----------
+        while instructionsON:
+
+            # --- Main event loop
+            for event in pygame.event.get():
+
+                # If user clicked close
+                if event.type == pygame.QUIT:
+                    # Close the window and quit
+                    pygame.quit(), sys.exit()
+
+                # Or they used the keyboard
+                if event.type == pygame.KEYDOWN:
+                    # Pressing the Space key will start the game
+                    if event.key == pygame.K_SPACE:
+                        # Quit the loop
+                        instructionsON = 0
+                        # Start the game
+                        self.play()
+
+                    # Pressing the Escape Key will quit to the main menu
+                    if event.key == pygame.K_ESCAPE:
+                        # Quit the loop
+                        instructionsON = 0
+
+            if self.vanilla:
+                # Set the vanilla title of the window/game
+                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
+                title = title_font.render('Instructions - Vanilla Edition', True, GameSettings.WHITE)
+                # Align keys and win text on the right side of the screen
+                left_x_alignment = InstructionsSettings.RIGHT_X_ALIGNMENT
+
+            else:
+                # Set the title of the window/game
+                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
+                title = title_font.render('Instructions', True, GameSettings.WHITE)
+                # Align keys and win text on the left side of the screen
+                left_x_alignment = InstructionsSettings.LEFT_X_ALIGNMENT
+
+            # Set the background image
+            self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
+            # Display the title on the screen
+            self.screen.blit(title, (InterfaceSettings.WINDOW_WIDTH * 0.07, InterfaceSettings.WINDOW_HEIGHT * 0.05))
+
+            # Display text to return to the main menu
+            self.screen.blit(InstructionsSettings.ESCAPE_KEY[0].convert_alpha(), InstructionsSettings.ESCAPE_KEY[1])
+            return_text = small_body_font.render('To return press', True, GameSettings.WHITE)
+            # Position the text
+            self.screen.blit(return_text,
+                             (InterfaceSettings.WINDOW_WIDTH * 0.87, InterfaceSettings.WINDOW_HEIGHT * 0.05))
+
+            # Call a function to display the instructions for the powerups
+            self.display_powerups_instructions(body_font, small_body_font, subtitle_font)
+            # Call a function to display the player keys
+            self.display_player_keys_instructions(body_font, subtitle_font, left_x_alignment)
+            # Call a function to display the win condition
+            self.display_win_condition_instructions(body_font, subtitle_font, left_x_alignment)
+
+            # Display text to start the game
+            start_game_text = body_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
+            start_game_text_rect = start_game_text.get_rect()
+            # Center the text
+            self.screen.blit(start_game_text, (InterfaceSettings.WINDOW_WIDTH / 2 - start_game_text_rect.center[0],
+                                               InterfaceSettings.WINDOW_HEIGHT * 0.9))
+
+            # --- Update the screen with what was drawn
+            pygame.display.update()
+
+            # --- Limit the game to 30 frames per second
+            self.clock.tick(30)
+
     # Set what keys are used to move the paddles
     def pressed_keys(self, keys, paddleA, paddleB):
         # Move the paddles when the user hits W/S (player A) or up/down (player B)
@@ -197,228 +351,8 @@ class PongVerse:
         ball.rect.x, ball.rect.y = (BallSettings.INITIAL_POS_X, BallSettings.INITIAL_POS_Y)
         return ball
 
-    def instructions(self):
-        # Create a loop that carries on until the user exits the instructions screen
-        instructionsON: int = 1
-
-        # Set Instructions Fonts
-        title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.TITLE_SIZE)
-        subtitle_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
-                                                      InstructionsSettings.SUBTITLE_SIZE)
-        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE)
-        small_body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU,
-                                                        InstructionsSettings.SMALL_BODY_SIZE)
-
-        # -------- Main Program Loop -----------
-        while instructionsON:
-
-            # --- Main event loop
-            for event in pygame.event.get():
-
-                # If user clicked close
-                if event.type == pygame.QUIT:
-                    # Close the window and quit
-                    pygame.quit(), sys.exit()
-
-                # Or they used the keyboard
-                if event.type == pygame.KEYDOWN:
-                    # Pressing the Space key will start the game
-                    if event.key == pygame.K_SPACE:
-                        # Quit the loop
-                        instructionsON = 0
-                        # Start the game
-                        self.play()
-
-                    # Pressing the Escape Key will quit to the main menu
-                    if event.key == pygame.K_ESCAPE:
-                        # Quit the loop
-                        instructionsON = 0
-
-            if self.vanilla:
-                # Set the vanilla title of the window/game
-                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE_VANILLA)
-                title = title_font.render('Instructions - Vanilla Edition', True, GameSettings.WHITE)
-                # Align keys and win text on the right side of the screen
-                left_x_alignment = InstructionsSettings.RIGHT_X_ALIGNMENT
-
-            else:
-                # Set the title of the window/game
-                pygame.display.set_caption(InstructionsSettings.INSTRUCTIONS_TITLE)
-                title = title_font.render('Instructions', True, GameSettings.WHITE)
-                # Align keys and win text on the left side of the screen
-                left_x_alignment = InstructionsSettings.LEFT_X_ALIGNMENT
-
-            # Set the background image
-            self.screen.blit(InstructionsSettings.BACKGROUND_IMG, (0, 0))
-            # Display the title on the screen
-            self.screen.blit(title, (InterfaceSettings.WINDOW_WIDTH * 0.07, InterfaceSettings.WINDOW_HEIGHT * 0.05))
-
-            # Display text to return to the main menu
-            self.screen.blit(InstructionsSettings.ESCAPE_KEY[0].convert_alpha(), InstructionsSettings.ESCAPE_KEY[1])
-            return_text = small_body_font.render('To return press', True, GameSettings.WHITE)
-            # Position the text
-            self.screen.blit(return_text,
-                             (InterfaceSettings.WINDOW_WIDTH * 0.87, InterfaceSettings.WINDOW_HEIGHT * 0.05))
-
-            # Call a function to display the instructions for the powerups
-            self.display_powerups_instructions(body_font, small_body_font, subtitle_font)
-            # Call a function to display the player keys
-            self.display_player_keys_instructions(body_font, subtitle_font, left_x_alignment)
-            # Call a function to display the win condition
-            self.display_win_condition_instructions(body_font, subtitle_font, left_x_alignment)
-
-            # Display text to start the game
-            start_game_text = body_font.render("Press SPACE to start the game", True, GameSettings.WHITE)
-            start_game_text_rect = start_game_text.get_rect()
-            # Center the text
-            self.screen.blit(start_game_text, (InterfaceSettings.WINDOW_WIDTH / 2 - start_game_text_rect.center[0],
-                                               InterfaceSettings.WINDOW_HEIGHT * 0.9))
-
-            # --- Update the screen with what was drawn
-            pygame.display.update()
-
-            # --- Limit the game to 30 frames per second
-            self.clock.tick(30)
-
-    def display_win_condition_instructions(self, body_font, subtitle_font, left_x_alignment):
-        # Display the win condition subtitle
-        win_condition_title = subtitle_font.render('Win Condition', True, GameSettings.LIGHT_BLUE)
-        self.screen.blit(win_condition_title,
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.6))
-        # Display the win condition text
-        win_condition_body = body_font.render(f'First player to hit {GameSettings.WIN_SCORE} points wins!', True,
-                                              GameSettings.WHITE)
-        self.screen.blit(win_condition_body,
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.67))
-
-    def display_powerups_instructions(self, body_font, small_body_font, subtitle_font):
-        # Check if the game is not vanilla
-        if not self.vanilla:
-            # Display the powerups subtitle
-            powerup_class_title = subtitle_font.render('Powerups', True, GameSettings.LIGHT_BLUE)
-            self.screen.blit(powerup_class_title,
-                             (InstructionsSettings.RIGHT_X_ALIGNMENT, InterfaceSettings.WINDOW_HEIGHT * 0.2))
-            # Check the powerups dictionary
-            for powerup in PowerUps.values():
-                # Get icon, name, description and active time of each powerup
-                powerup_icon = pygame.transform.smoothscale(pygame.image.load(powerup.icon),
-                                                            (InstructionsSettings.POWERUP_WIDTH,
-                                                             InstructionsSettings.POWERUP_HEIGHT))
-                powerup_name = subtitle_font.render(powerup.name, True, GameSettings.GOLDEN)
-                powerup_description = body_font.render(powerup.description, True, GameSettings.WHITE)
-                powerup_active_time = small_body_font.render(f"{powerup.active_time} seconds active", True,
-                                                             GameSettings.LIGHT_BLUE)
-                # Display the powerup icon
-                self.screen.blit(powerup_icon, powerup.instructions_icon_pos)
-                # Display the powerup name
-                self.screen.blit(powerup_name, [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
-                                                powerup.instructions_icon_pos[1]])
-                # Display the powerup description
-                self.screen.blit(powerup_description,
-                                 [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.1,
-                                  powerup.instructions_icon_pos[1] + PowerUpSettings.POWERUP_WIDTH * 0.45])
-                # Display the powerup active time
-                self.screen.blit(powerup_active_time,
-                                 [powerup.instructions_icon_pos[0] + PowerUpSettings.POWERUP_WIDTH * 1.4,
-                                  powerup.instructions_icon_pos[1] + PowerUpSettings.POWERUP_WIDTH * 0.8])
-
-    def display_player_keys_instructions(self, body_font, subtitle_font, left_x_alignment):
-        # Display the player keys subtitle
-        player_keys_title = subtitle_font.render('Player keys', True, GameSettings.LIGHT_BLUE)
-        self.screen.blit(player_keys_title,
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.2))
-
-        # Display the player A keys text
-        playerA_keys = body_font.render('Player A - Captain America', True, GameSettings.WHITE)
-        self.screen.blit(playerA_keys,
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.27))
-        # Display the player A key icons
-        self.screen.blit(InstructionsSettings.PLAYER_A_UP.convert_alpha(),
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.32))
-        self.screen.blit(InstructionsSettings.PLAYER_A_DOWN.convert_alpha(),
-                         (left_x_alignment + InterfaceSettings.WINDOW_WIDTH / 22,
-                          InterfaceSettings.WINDOW_HEIGHT * 0.32))
-
-        # Display the player B keys text
-        playerB_keys = body_font.render('Player B - Iron Man', True, GameSettings.WHITE)
-        self.screen.blit(playerB_keys,
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.42))
-        # Display the player B key icons
-        self.screen.blit(InstructionsSettings.PLAYER_B_UP.convert_alpha(),
-                         (left_x_alignment, InterfaceSettings.WINDOW_HEIGHT * 0.47))
-        self.screen.blit(InstructionsSettings.PLAYER_B_DOWN.convert_alpha(),
-                         (left_x_alignment + InterfaceSettings.WINDOW_WIDTH / 22,
-                          InterfaceSettings.WINDOW_HEIGHT * 0.47))
-
-    # Screen when a player wins
-    def win_screen(self):
-        # Create a loop that carries on until the user exits the win screen
-        win_screenON: int = 1
-        # Set the winner
-        winner: any = None
-        # Set the winner score
-        winner_score: int = 0
-
-        # Set Background Image for Win Screen
-        backgroundA_img_load: pygame.image = pygame.image.load("img/background/background_winA.jpg").convert()
-        backgroundA_img: pygame.transform = pygame.transform.scale(backgroundA_img_load,
-                                                                   (InterfaceSettings.WINDOW_WIDTH,
-                                                                    InterfaceSettings.WINDOW_HEIGHT))
-        backgroundB_img_load: pygame.image = pygame.image.load("img/background/background_winB.jpg").convert()
-        backgroundB_img: pygame.transform = pygame.transform.scale(backgroundB_img_load,
-                                                                   (InterfaceSettings.WINDOW_WIDTH,
-                                                                    InterfaceSettings.WINDOW_HEIGHT))
-
-        # Set Icons for each winner
-        winnerA_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconA.png").convert_alpha()
-        winnerA_icon: pygame.transform = pygame.transform.scale(winnerA_icon_load, GameSettings.WINNER_ICON_SIZE)
-        winnerB_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconB.png").convert_alpha()
-        winnerB_icon: pygame.transform = pygame.transform.scale(winnerB_icon_load, GameSettings.WINNER_ICON_SIZE)
-
-        # -------- Main Program Loop -----------
-        while win_screenON:
-
-            # --- Main event loop
-            for event in pygame.event.get():
-
-                # If user clicked close
-                if event.type == pygame.QUIT:
-                    # Close the window and quit
-                    pygame.quit(), sys.exit()
-
-                # Or they used the keyboard
-                if event.type == pygame.KEYDOWN:
-                    # Pressing the Escape Key will quit to the main menu
-                    if event.key == pygame.K_ESCAPE:
-                        # Quit the loop
-                        win_screenON = 0
-
-            if self.scoreA > self.scoreB:
-                winner = "Captain America"
-                winner_score = self.scoreA
-                self.screen.blit(backgroundA_img, (0, 0))
-                self.screen.blit(winnerA_icon,
-                                 (InterfaceSettings.WINDOW_WIDTH * 0.15, InterfaceSettings.WINDOW_HEIGHT * 0.7))
-            elif self.scoreA < self.scoreB:
-                winner = 'Iron Man'
-                winner_score = self.scoreB
-                self.screen.blit(backgroundB_img, (0, 0))
-                self.screen.blit(winnerB_icon,
-                                 (InterfaceSettings.WINDOW_WIDTH * 0.3, InterfaceSettings.WINDOW_HEIGHT * 0.7))
-
-            winner_text = self.default_font.render(winner + " your team wins!", False, GameSettings.WHITE)
-            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), False, (255, 255, 255))
-            self.screen.blit(lastScore, (700 / 2, 500 / 2))
-            self.screen.blit(winner_text, (700 / 3, 500 / 3))
-
-            # --- Update the screen with what was drawn
-            pygame.display.update()
-
-            # --- Limit the game to 30 frames per second
-            self.clock.tick(30)
-
+    # Screen to play the game
     def play(self):
-
         # Create Player A paddle
         paddleA = Paddle(GameSettings.BLUE, PaddleSettings.PADDLE_WIDTH_A, PaddleSettings.PADDLE_HEIGHT_A,
                          PaddleSettings.PADDLE_ROUND_CORNERS_A)
@@ -521,3 +455,70 @@ class PongVerse:
 
             # --- Limit the game to 60 frames per second
             self.clock.tick(60)
+
+    # Screen when a player wins
+    def win_screen(self):
+        # Create a loop that carries on until the user exits the win screen
+        win_screenON: int = 1
+        # Set the winner
+        winner: any = None
+        # Set the winner score
+        winner_score: int = 0
+
+        # Set Background Image for Win Screen
+        backgroundA_img_load: pygame.image = pygame.image.load("img/background/background_winA.jpg").convert()
+        backgroundA_img: pygame.transform = pygame.transform.scale(backgroundA_img_load,
+                                                                   (InterfaceSettings.WINDOW_WIDTH,
+                                                                    InterfaceSettings.WINDOW_HEIGHT))
+        backgroundB_img_load: pygame.image = pygame.image.load("img/background/background_winB.jpg").convert()
+        backgroundB_img: pygame.transform = pygame.transform.scale(backgroundB_img_load,
+                                                                   (InterfaceSettings.WINDOW_WIDTH,
+                                                                    InterfaceSettings.WINDOW_HEIGHT))
+
+        # Set Icons for each winner
+        winnerA_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconA.png").convert_alpha()
+        winnerA_icon: pygame.transform = pygame.transform.scale(winnerA_icon_load, GameSettings.WINNER_ICON_SIZE)
+        winnerB_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconB.png").convert_alpha()
+        winnerB_icon: pygame.transform = pygame.transform.scale(winnerB_icon_load, GameSettings.WINNER_ICON_SIZE)
+
+        # -------- Main Program Loop -----------
+        while win_screenON:
+
+            # --- Main event loop
+            for event in pygame.event.get():
+
+                # If user clicked close
+                if event.type == pygame.QUIT:
+                    # Close the window and quit
+                    pygame.quit(), sys.exit()
+
+                # Or they used the keyboard
+                if event.type == pygame.KEYDOWN:
+                    # Pressing the Escape Key will quit to the main menu
+                    if event.key == pygame.K_ESCAPE:
+                        # Quit the loop
+                        win_screenON = 0
+
+            if self.scoreA > self.scoreB:
+                winner = "Captain America"
+                winner_score = self.scoreA
+                self.screen.blit(backgroundA_img, (0, 0))
+                self.screen.blit(winnerA_icon,
+                                 (InterfaceSettings.WINDOW_WIDTH * 0.15, InterfaceSettings.WINDOW_HEIGHT * 0.7))
+            elif self.scoreA < self.scoreB:
+                winner = 'Iron Man'
+                winner_score = self.scoreB
+                self.screen.blit(backgroundB_img, (0, 0))
+                self.screen.blit(winnerB_icon,
+                                 (InterfaceSettings.WINDOW_WIDTH * 0.3, InterfaceSettings.WINDOW_HEIGHT * 0.7))
+
+            winner_text = self.default_font.render(winner + " your team wins!", False, GameSettings.WHITE)
+            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), False, (255, 255, 255))
+            self.screen.blit(lastScore, (700 / 2, 500 / 2))
+            self.screen.blit(winner_text, (700 / 3, 500 / 3))
+
+            # --- Update the screen with what was drawn
+            pygame.display.update()
+
+            # --- Limit the game to 30 frames per second
+            self.clock.tick(30)

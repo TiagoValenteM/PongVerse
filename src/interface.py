@@ -19,51 +19,75 @@ class Interface:
         background_img_load: any = pygame.image.load("img/background/background_interface.jpg").convert()
         self.background_img: any = pygame.transform.scale(background_img_load, (InterfaceSettings.WINDOW_WIDTH,
                                                                                 InterfaceSettings.WINDOW_HEIGHT))
-        # Set Instructions Fonts
-        title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.TITLE_SIZE)
-        subtitle_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
-                                                      InstructionsSettings.SUBTITLE_SIZE)
-        body_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE)
-        # Set the Default Font
+        # Set Instructions Fonts title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
+        # InstructionsSettings.TITLE_SIZE) subtitle_font: pygame.font = pygame.font.Font(
+        # GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.SUBTITLE_SIZE) body_font: pygame.font =
+        # pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE) Set the Default Font
         self.default_font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT, GameSettings.FONT_SIZE_DEFAULT)
         # Set the font for the menu options
         self.menu_font = pygame.font.Font(GameSettings.FONT_TYPE_MENU, GameSettings.FONT_SIZE_MENU)
+        # Creating Screen positions and Sizes
+        self.button_width_center: int = int(InterfaceSettings.WINDOW_WIDTH * 0.5 - InterfaceSettings.BUTTON_WIDTH * 0.5)
+        self.small_button_width_center: int = int(
+            InterfaceSettings.WINDOW_WIDTH * 0.5 - InterfaceSettings.SMALL_BUTTON_WIDTH * 0.5)
+        self.button_height_pos: int = int(InterfaceSettings.WINDOW_HEIGHT * 0.3)
+        self.width_center: int = int(InterfaceSettings.WINDOW_WIDTH / 2)
 
-    def drawRect(self, color, width, height):
-        # Draw the rectangle with position and size
-        return pygame.draw.rect(self.screen, color,
-                                [width, height, InterfaceSettings.BUTTON_WIDTH, InterfaceSettings.BUTTON_HEIGHT],
-                                border_radius=15)
+    def drawRect(self, color, width, height, default_size):
+        if default_size:
+            # Draw the rectangle with position and size
+            return pygame.draw.rect(self.screen, color,
+                                    [width, height, InterfaceSettings.BUTTON_WIDTH, InterfaceSettings.BUTTON_HEIGHT],
+                                    border_radius=15)
+        else:
+            # Draw the rectangle with position and size
+            return pygame.draw.rect(self.screen, color,
+                                    [width, height, InterfaceSettings.SMALL_BUTTON_WIDTH,
+                                     InterfaceSettings.SMALL_BUTTON_HEIGHT],
+                                    border_radius=15)
+
+    def display_quit_small_button(self, mouse_pos, quit_rect, quit_text_rect, text_quit):
+        if quit_rect.collidepoint(mouse_pos):
+            self.drawRect(GameSettings.RED, self.small_button_width_center,
+                          self.button_height_pos + InterfaceSettings.BUTTON_GAP * 5, False)
+        else:
+            self.drawRect(GameSettings.WHITE, self.small_button_width_center,
+                          self.button_height_pos + InterfaceSettings.BUTTON_GAP * 5, False)
+        self.screen.blit(text_quit,
+                         (self.width_center - quit_text_rect.center[0],
+                          self.button_height_pos + InterfaceSettings.BUTTON_GAP * 5))
 
     # Creating a function that creates the GUI
     def mainMenu(self):
         # Create a loop that carries on until the user exits the main menu
         mainMenuOn: int = 1
 
-        # Creating Screen positions and Sizes
-        button_width_center: int = int(InterfaceSettings.WINDOW_WIDTH * 0.5 - InterfaceSettings.BUTTON_WIDTH * 0.5)
-        button_height_pos: int = int(InterfaceSettings.WINDOW_HEIGHT * 0.3)
-
         # Create text-labels and get their rectangle
         # PongVerse
-        text_play_pongVerse = self.menu_font.render('The PongVerse', True, GameSettings.BLUE)
-        play_pongVerse_rect = self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos)
+        text_play_pongVerse = self.menu_font.render('The PongVerse', True, GameSettings.GOLDEN)
+        play_pong_rect = text_play_pongVerse.get_rect()
+        play_pongVerse_rect = self.drawRect(GameSettings.WHITE, self.button_width_center, self.button_height_pos, True)
+
         # PongVerse Vanilla Edition
-        text_play_pongVerse_vanilla = self.menu_font.render('Vanilla Pong', True, GameSettings.BLUE)
-        play_pongVerse_vanilla_rect = self.drawRect(GameSettings.WHITE, button_width_center,
-                                                    button_height_pos + InterfaceSettings.BUTTON_GAP)
+        text_play_pongVerse_vanilla = self.menu_font.render('PongVerse - Vanilla', True, GameSettings.GOLDEN)
+        play_pong_vanilla_rect = text_play_pongVerse_vanilla.get_rect()
+        play_pongVerse_vanilla_rect = self.drawRect(GameSettings.WHITE, self.button_width_center,
+                                                    self.button_height_pos + InterfaceSettings.BUTTON_GAP, True)
         # Settings
-        text_settings = self.menu_font.render('Settings', True, GameSettings.BLUE)
-        settings_rect = self.drawRect(GameSettings.WHITE, button_width_center,
-                                      button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
+        text_settings = self.menu_font.render('Settings', True, GameSettings.GOLDEN)
+        settings_text_rect = text_settings.get_rect()
+        settings_rect = self.drawRect(GameSettings.WHITE, self.button_width_center,
+                                      self.button_height_pos + InterfaceSettings.BUTTON_GAP * 2, True)
         # Creators
-        text_creators = self.menu_font.render('Creators', True, GameSettings.BLUE)
-        creators_rect = self.drawRect(GameSettings.WHITE, button_width_center,
-                                      button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
+        text_creators = self.menu_font.render('Creators', True, GameSettings.GOLDEN)
+        creators_text_rect = text_creators.get_rect()
+        creators_rect = self.drawRect(GameSettings.WHITE, self.button_width_center,
+                                      self.button_height_pos + InterfaceSettings.BUTTON_GAP * 3, True)
         # Quit
-        text_quit = self.menu_font.render('Quit', True, GameSettings.BLUE)
-        quit_rect = self.drawRect(GameSettings.WHITE, button_width_center,
-                                  button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
+        text_quit = self.menu_font.render('Quit', True, GameSettings.GOLDEN)
+        quit_text_rect = text_quit.get_rect()
+        quit_rect = self.drawRect(GameSettings.WHITE, self.button_width_center,
+                                  self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4, True)
         # Title
         text_title = self.default_font.render('The PongVerse - OOP PyGame', True, GameSettings.LIGHT_BLUE)
         title_rect = text_title.get_rect()
@@ -103,44 +127,51 @@ class Interface:
             # On Hover, button changes color
             # Play PongVerse Button
             if play_pongVerse_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, button_width_center, button_height_pos)
+                self.drawRect(GameSettings.GREEN, self.button_width_center, self.button_height_pos, True)
             else:
-                self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos)
-            self.screen.blit(text_play_pongVerse, (button_width_center, button_height_pos))
+                self.drawRect(GameSettings.WHITE, self.button_width_center, self.button_height_pos, True)
+            self.screen.blit(text_play_pongVerse,
+                             (self.width_center - play_pong_rect.center[0], self.button_height_pos))
             # Play PongVerse Vanilla Edition Button
             if play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP)
+                self.drawRect(GameSettings.GREEN, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP, True)
             else:
-                self.drawRect(GameSettings.WHITE, button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP)
+                self.drawRect(GameSettings.WHITE, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP, True)
             self.screen.blit(text_play_pongVerse_vanilla,
-                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP))
+                             (self.width_center - play_pong_vanilla_rect.center[0],
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP))
             # Enter Settings Button
             if settings_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
+                self.drawRect(GameSettings.GREEN, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 2, True)
             else:
-                self.drawRect(GameSettings.WHITE, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 2)
+                self.drawRect(GameSettings.WHITE, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 2, True)
             self.screen.blit(text_settings,
-                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 2))
+                             (self.width_center - settings_text_rect.center[0],
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 2))
             # Enter Creators Button
             if creators_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
+                self.drawRect(GameSettings.GREEN, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 3, True)
             else:
-                self.drawRect(GameSettings.WHITE, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 3)
+                self.drawRect(GameSettings.WHITE, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 3, True)
             self.screen.blit(text_creators,
-                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 3))
+                             (self.width_center - creators_text_rect.center[0],
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 3))
             # Quit Button
             if quit_rect.collidepoint(mouse_pos):
-                self.drawRect(GameSettings.GREEN, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
+                self.drawRect(GameSettings.GREEN, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4, True)
             else:
-                self.drawRect(GameSettings.WHITE, button_width_center,
-                              button_height_pos + InterfaceSettings.BUTTON_GAP * 4)
+                self.drawRect(GameSettings.WHITE, self.button_width_center,
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4, True)
             self.screen.blit(text_quit,
-                             (button_width_center, button_height_pos + InterfaceSettings.BUTTON_GAP * 4))
+                             (self.width_center - quit_text_rect.center[0],
+                              self.button_height_pos + InterfaceSettings.BUTTON_GAP * 4))
 
             # TITLE TEXT
             # pygame.draw.rect(screen, color_dark, [52, 0, 612, 100])
@@ -157,23 +188,28 @@ class Interface:
 
     def creators(self):
 
-        width = self.screen.get_width()
-        height = self.screen.get_height()
-        back_text = self.menu_font.render('   back', True, GameSettings.BLUE)
+        # Create text-labels and get their rectangle
+        # Quit
+        text_quit = self.menu_font.render('Quit', True, GameSettings.BLUE)
+        quit_text_rect = text_quit.get_rect()
+        quit_rect = self.drawRect(GameSettings.WHITE, self.small_button_width_center,
+                                  self.button_height_pos + InterfaceSettings.BUTTON_GAP * 5, False)
+
         line1_text = self.menu_font.render('Davide Farinati, dfarinati@novaims.unl.pt', True, GameSettings.GOLDEN)
         line2_text = self.menu_font.render('Ilya Bakurov, ibakurov@novaims.unl.pt', True, GameSettings.GOLDEN)
         line3_text = self.menu_font.render('Liah Rosenfeld, lrosenfeld@novaims.unl.pt', True, GameSettings.GOLDEN)
 
         while True:
-            mouse = pygame.mouse.get_pos()
+            # Get mouse position
+            mouse_pos = pygame.mouse.get_pos()
             for ev in pygame.event.get():
                 # press on exit button
                 if ev.type == pygame.QUIT:
                     pygame.quit()
                 # press on quit button
                 if ev.type == pygame.MOUSEBUTTONDOWN:
-                    if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[
-                        1] <= 5 * height / 6 + 60:
+                    # Mouse click on quit button
+                    if quit_rect.collidepoint(mouse_pos):
                         self.mainMenu()
 
             # Set the title of the window
@@ -185,12 +221,9 @@ class Interface:
             self.screen.blit(line1_text, (0, 0))
             self.screen.blit(line2_text, (0, 25))
             self.screen.blit(line3_text, (0, 50))
-            # back text
-            if 5 * width / 8 <= mouse[0] <= 5 * width / 8 + 140 and 5 * height / 6 <= mouse[1] <= 5 * height / 6 + 60:
-                pygame.draw.rect(self.screen, GameSettings.RED, [5 * width / 8, 5 * height / 6, 140, 60])
-            else:
-                pygame.draw.rect(self.screen, GameSettings.WHITE, [5 * width / 8, 5 * height / 6, 140, 60])
-            self.screen.blit(back_text, (5 * width / 8, 5 * height / 6))
+
+            # Quit Button
+            self.display_quit_small_button(mouse_pos, quit_rect, quit_text_rect, text_quit)
 
             # --- Update the screen with what was drawn
             pygame.display.update()
@@ -199,19 +232,24 @@ class Interface:
             self.clock.tick(30)
 
     def settings(self):
-        back_text = self.menu_font.render('  back', True, GameSettings.BLUE)
+        # Create text-labels and get their rectangle
+        # Quit
+        text_quit = self.menu_font.render('Quit', True, GameSettings.BLUE)
+        quit_text_rect = text_quit.get_rect()
+        quit_rect = self.drawRect(GameSettings.WHITE, self.small_button_width_center,
+                                  self.button_height_pos + InterfaceSettings.BUTTON_GAP * 5, False)
 
         while True:
-            # Get the mouse position
-            mouse = pygame.mouse.get_pos()
+            # Get mouse position
+            mouse_pos = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 # press on exit button
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 # press on quit button
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if 5 * self.width / 8 <= mouse[0] <= 5 * self.width / 8 + 140 and 5 * self.height / 6 <= mouse[
-                        1] <= 5 * self.height / 6 + 60:
+                    # Mouse click on quit button
+                    if quit_rect.collidepoint(mouse_pos):
                         self.mainMenu()
 
             # background image
@@ -223,7 +261,6 @@ class Interface:
             # Set height position for Resolutions
             resolutions_pos_y = self.height * 0.2
             for resolution_name, resolution in Screen_Resolution.items():
-                print(resolution[0], resolution[1])
                 resolutions_pos_y += self.height * 0.07
                 screen_resolution = self.menu_font.render(resolution_name, True, GameSettings.WHITE)
                 screen_resolution_rect = screen_resolution.get_rect()
@@ -232,18 +269,13 @@ class Interface:
 
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        if resolution_final.collidepoint(mouse):
+                        if resolution_final.collidepoint(mouse_pos):
                             self.width, InterfaceSettings.WINDOW_WIDTH = resolution[0], resolution[0]
                             self.height, InterfaceSettings.WINDOW_HEIGHT = resolution[1], resolution[1]
                             self.screen = pygame.display.set_mode((self.width, self.height))
 
-            # back text
-            if 5 * self.width / 8 <= mouse[0] <= 5 * self.width / 8 + 140 and 5 * self.height / 6 <= mouse[
-                1] <= 5 * self.height / 6 + 60:
-                pygame.draw.rect(self.screen, GameSettings.RED, [5 * self.width / 8, 5 * self.height / 6, 140, 60])
-            else:
-                pygame.draw.rect(self.screen, GameSettings.WHITE, [5 * self.width / 8, 5 * self.height / 6, 140, 60])
-            self.screen.blit(back_text, (5 * self.width / 8, 5 * self.height / 6))
+            # Quit Button
+            self.display_quit_small_button(mouse_pos, quit_rect, quit_text_rect, text_quit)
 
             # --- Update the screen with what was drawn
             pygame.display.update()
