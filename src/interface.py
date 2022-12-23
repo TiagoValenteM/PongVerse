@@ -335,13 +335,13 @@ class Interface:
             resolution_rect_list = []
             resolution_pos_height = InterfaceSettings.WINDOW_HEIGHT * 0.18
             for resolution_name, resolution in Screen_Resolution.items():
+                resolution_pos_height += InterfaceSettings.BUTTON_GAP
                 resolution_text = self.menu_font.render(resolution_name, True, GameSettings.WHITE)
                 resolution_text_rect = resolution_text.get_rect()
                 resolution_rect = self.drawRect(GameSettings.GRAY, self.button_width_center,
-                                                self.button_height_pos, True)
-                resolution_pos_height += InterfaceSettings.BUTTON_GAP
+                                                resolution_pos_height, True)
                 resolution_rect_list.append(
-                    (resolution_text, resolution_text_rect, resolution_rect, resolution_pos_height))
+                    (resolution_text, resolution_text_rect, resolution_rect, resolution_pos_height, resolution))
             return resolution_rect_list
 
         resolutions_rect_list = getResolutionDict()
@@ -363,7 +363,7 @@ class Interface:
                 InterfaceSettings.WINDOW_WIDTH / 2 - title_rect.center[0],
                 InterfaceSettings.WINDOW_HEIGHT * 0.05))
 
-            for screen_resolution_text, screen_resolution_text_rect, screen_resolution_rect, screen_resolution_pos_height in resolutions_rect_list:
+            for screen_resolution_text, screen_resolution_text_rect, screen_resolution_rect, screen_resolution_pos_height, screen_resolution in resolutions_rect_list:
                 if screen_resolution_rect.collidepoint(mouse_pos):
                     print('collide')
                     self.drawRect(GameSettings.BLUE, self.button_width_center, screen_resolution_pos_height, True)
