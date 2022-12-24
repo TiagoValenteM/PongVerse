@@ -1,6 +1,8 @@
 import os
 import sys
 
+import pygame
+
 import main
 from .config import *
 from .pong import PongVerse
@@ -8,32 +10,31 @@ from .pong import PongVerse
 
 class Interface:
     def __init__(self, settings: GlobalSettings):
-        # initiating pygames
-        pygame.init()
+        # initiating pygame and pygame mixer
+        pygame.init(), pygame.mixer.init()
+        # Define settings for the game
+        self.settings: GlobalSettings = settings
+        # Music and Sound Effects
+        if self.settings.MUSIC_ON:
+            pygame.mixer.music.load('sound/main_theme.mp3')
+            pygame.mixer.music.play(-1)
         # Opens a new window
-        self.settings = settings
-        self.screen = pygame.display.set_mode(settings.resolution)
-        self.width = self.screen.get_width()
-        self.height = self.screen.get_height()
-        self.clock = pygame.time.Clock()
+        self.screen: pygame.display = pygame.display.set_mode(settings.resolution)
+        self.clock: pygame.time = pygame.time.Clock()
         # Set the Game icon
         icon: pygame.image = pygame.image.load("img/icons/main_icon.png").convert_alpha()
         pygame.display.set_icon(icon)
         # Set background Image
-        background_img_load: any = pygame.image.load("img/background/background_interface.jpg").convert()
-        self.background_img: any = pygame.transform.scale(background_img_load, (self.width,
-                                                                                self.height))
-        # Set Instructions Fonts title_font: pygame.font = pygame.font.Font(GameSettings.FONT_TYPE_DEFAULT,
-        # InstructionsSettings.TITLE_SIZE) subtitle_font: pygame.font = pygame.font.Font(
-        # GameSettings.FONT_TYPE_DEFAULT, InstructionsSettings.SUBTITLE_SIZE) body_font: pygame.font =
-        # pygame.font.Font(GameSettings.FONT_TYPE_MENU, InstructionsSettings.BODY_SIZE) Set the Default Font
+        background_img_load: pygame.image = pygame.image.load("img/background/background_interface.jpg").convert()
+        self.background_img: pygame.transform = pygame.transform.scale(background_img_load, (self.settings.width,
+                                                                                             self.settings.height))
         self.default_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT, settings.FONT_SIZE_DEFAULT)
         # Set the font for the menu options
         self.menu_font = pygame.font.Font(settings.FONT_TYPE_MENU, settings.SUBTITLE_SIZE)
         # Creating Screen positions and Sizes
-        self.button_width_center: int = int(self.width * 0.5 - settings.BUTTON_WIDTH * 0.5)
-        self.button_height_pos: int = int(self.height * 0.3)
-        self.width_center: int = int(self.width / 2)
+        self.button_width_center: int = int(self.settings.width * 0.5 - settings.BUTTON_WIDTH * 0.5)
+        self.button_height_pos: int = int(self.settings.height * 0.3)
+        self.width_center: int = int(self.settings.width / 2)
 
     def drawRect(self, color, width, height, default_size):
         if default_size:
@@ -50,19 +51,23 @@ class Interface:
 
     def displayReturnButton(self, mouse_pos, return_rect, return_text_rect, return_text):
         if return_rect.collidepoint(mouse_pos):
-            self.drawRect(self.settings.RED, self.width * 0.85,
-                          self.height * 0.88, False)
+            self.drawRect(self.settings.RED, self.settings.width * 0.85,
+                          self.settings.height * 0.88, False)
         else:
-            self.drawRect(self.settings.GRAY, self.width * 0.85,
-                          self.height * 0.88, False)
+            self.drawRect(self.settings.GRAY, self.settings.width * 0.85,
+                          self.settings.height * 0.88, False)
         self.screen.blit(return_text,
-                         (self.width - return_rect.width - return_text_rect.center[0],
-                          self.height * 0.885))
+                         (self.settings.width - return_rect.width - return_text_rect.center[0],
+                          self.settings.height * 0.885))
 
     def setTitle(self, title):
         text_title = self.default_font.render(title, True, self.settings.RED)
         title_rect = text_title.get_rect()
         return text_title, title_rect
+
+    @staticmethod
+    def setWindowTitle(title):
+        pygame.display.set_caption(title)
 
     def mainProgramLoop(self, main_loop, return_rect):
         # Get mouse position
@@ -79,7 +84,7 @@ class Interface:
     def getResolutionDict(self):
         # Set height position for Resolutions
         resolution_rect_list = []
-        resolution_pos_height = self.height * 0.18
+        resolution_pos_height = self.settings.height * 0.18
         for resolution_name, resolution in Screen_Resolution.items():
             resolution_pos_height += self.settings.BUTTON_GAP
             resolution_text = self.menu_font.render(resolution_name, True, self.settings.WHITE)
@@ -154,14 +159,14 @@ class Interface:
             # --- Main Menu logic starts here
 
             # Set the title of the window
-            pygame.display.set_caption(self.settings.MENU_TITLE)
+            self.setWindowTitle(self.settings.MENU_TITLE)
             # background image
             self.screen.blit(self.background_img, (0, 0))
 
             # Display the title of the game
             self.screen.blit(text_title, (
-                self.width / 2 - title_rect.center[0],
-                self.height * 0.05))
+                self.settings.width / 2 - title_rect.center[0],
+                self.settings.height * 0.05))
 
             # On Hover, button changes color
             # Play PongVerse Button
@@ -228,14 +233,14 @@ class Interface:
         nova_text_font = pygame.font.Font(self.settings.FONT_TYPE_MENU, self.settings.BODY_SIZE)
 
         # Create specific alignments for the creators names
-        name_height_pos: int = int(self.height * 0.35)
+        name_height_pos: int = int(self.settings.height * 0.35)
 
         # Create specific alignments for the creators icons
         creator_icon_rect = self.settings.CREATOR_1_IMG_LOAD.get_rect()
-        left_icon_alignment = self.width * 0.07
-        right_icon_alignment = self.width * 0.93 - creator_icon_rect.width
-        top_icon_alignment = self.height * 0.25
-        bottom_icon_alignment = self.height * 0.75 - creator_icon_rect.height
+        left_icon_alignment = self.settings.width * 0.07
+        right_icon_alignment = self.settings.width * 0.93 - creator_icon_rect.width
+        top_icon_alignment = self.settings.height * 0.25
+        bottom_icon_alignment = self.settings.height * 0.75 - creator_icon_rect.height
 
         # Create text-labels and get their rectangle
         # Title
@@ -260,8 +265,8 @@ class Interface:
         # Return text
         return_text = self.menu_font.render('Return', True, self.settings.WHITE)
         return_text_rect = return_text.get_rect()
-        return_rect = self.drawRect(self.settings.GRAY, self.width * 0.85,
-                                    self.height * 0.88, False)
+        return_rect = self.drawRect(self.settings.GRAY, self.settings.width * 0.85,
+                                    self.settings.height * 0.88, False)
 
         # Nova IMS text
         novaims_text = nova_text_font.render('NovaIMS - Information Management School', True,
@@ -274,19 +279,19 @@ class Interface:
             # --- Creators screen logic starts here
 
             # Set the title of the window
-            pygame.display.set_caption(self.settings.CREDITS_TITLE)
+            self.setWindowTitle(self.settings.CREDITS_TITLE)
 
             # Display Background image
             self.screen.blit(self.background_img, (0, 0))
 
             # Display Title text
             self.screen.blit(text_title, (
-                self.width / 2 - title_rect.center[0],
-                self.height * 0.05))
+                self.settings.width / 2 - title_rect.center[0],
+                self.settings.height * 0.05))
 
             # Display Professors text
-            self.screen.blit(professors_text, (self.width / 2 - professors_text_rect.center[0],
-                                               self.height * 0.17))
+            self.screen.blit(professors_text, (self.settings.width / 2 - professors_text_rect.center[0],
+                                               self.settings.height * 0.17))
 
             # Display Creators text
             # Creator 1
@@ -319,10 +324,10 @@ class Interface:
             # Display NovaIMS text and Icon
             novaims_img_rect = self.settings.NOVAIMS_IMG_LOAD.get_rect()
             self.screen.blit(self.settings.NOVAIMS_IMG_LOAD.convert_alpha(), (
-                self.width * 0.03,
-                self.height * 0.97 - novaims_img_rect.height))
-            self.screen.blit(novaims_text, (self.width * 0.03 + novaims_img_rect.width,
-                                            self.height * 1.04 - novaims_img_rect.height))
+                self.settings.width * 0.03,
+                self.settings.height * 0.97 - novaims_img_rect.height))
+            self.screen.blit(novaims_text, (self.settings.width * 0.03 + novaims_img_rect.width,
+                                            self.settings.height * 1.04 - novaims_img_rect.height))
 
             # --- Update the screen with what was drawn
             pygame.display.update()
@@ -341,26 +346,33 @@ class Interface:
         # Return text
         return_text = self.menu_font.render('Return', True, self.settings.WHITE)
         return_text_rect = return_text.get_rect()
-        return_rect = self.drawRect(self.settings.GRAY, self.width * 0.85,
-                                    self.height * 0.88, False)
+        return_rect = self.drawRect(self.settings.GRAY, self.settings.width * 0.85,
+                                    self.settings.height * 0.88, False)
+
+        # Sound On/Off text
+        sound_text = self.menu_font.render('Sound On/Off', True, self.settings.WHITE)
+        sound_text_rect = return_text.get_rect()
+        sound_rect = self.drawRect(self.settings.GRAY, self.settings.width * 0.15,
+                                   self.settings.height * 0.88, False)
 
         resolutions_rect_list = self.getResolutionDict()
 
         # -------- Main Program Loop -----------
         while settingsOn:
             settingsOn, mouse_pos = self.mainProgramLoop(settingsOn, return_rect)
-            # mouse_pos = pygame.mouse.get_pos()
+
             # --- Settings screen logic starts here
 
             # background image
             self.screen.blit(self.background_img, (0, 0))
 
             # Set the title of the window
-            pygame.display.set_caption(self.settings.SETTINGS_TITLE)
+            self.setWindowTitle(self.settings.SETTINGS_TITLE)
+
             # Display the title of the game
             self.screen.blit(text_title, (
-                self.width / 2 - title_rect.center[0],
-                self.height * 0.05))
+                self.settings.width / 2 - title_rect.center[0],
+                self.settings.height * 0.05))
 
             for screen_resolution_text, screen_resolution_text_rect, \
                     screen_resolution_rect, screen_resolution_pos_height, screen_resolution in resolutions_rect_list:
@@ -374,6 +386,17 @@ class Interface:
                 self.screen.blit(screen_resolution_text, (
                     self.width_center - screen_resolution_text_rect.center[0],
                     screen_resolution_pos_height + self.settings.BUTTON_GAP * 0.05))
+
+            if sound_rect.collidepoint(mouse_pos):
+                self.drawRect(self.settings.RED, self.settings.width * 0.15, self.settings.height * 0.88, False)
+                if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                    if self.settings.MUSIC_ON:
+                        pygame.mixer.music.stop()
+                        self.settings.MUSIC_ON = False, sys.argv.append(False)
+            else:
+                self.drawRect(self.settings.GRAY, self.settings.width * 0.15, self.settings.height * 0.88, False)
+            self.screen.blit(sound_text,
+                             (sound_rect.width + sound_text_rect.center[0], self.settings.height * 0.885))
 
             # Quit Button
             self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)

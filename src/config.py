@@ -60,7 +60,7 @@ class GlobalSettings:
     POWERUP_NAME_VISIBLE_TIME: int = 2
 
     # == Constructor ==
-    def __init__(self, initial_resolution=Screen_Resolution['720p']):
+    def __init__(self, initial_resolution=Screen_Resolution['720p'], initial_music_on=True):
         # Set window size
         self.resolution = initial_resolution
         self.width = initial_resolution[0]
@@ -75,6 +75,9 @@ class GlobalSettings:
         self.SUBTITLE_SIZE: int = int(self.width / 46)
         self.BODY_SIZE: int = int(self.width / 78)
         self.SMALL_BODY_SIZE: int = int(self.width / 90)
+
+        # Music On/Off
+        self.MUSIC_ON: bool = initial_music_on
 
         # ---- Interface ----
 
