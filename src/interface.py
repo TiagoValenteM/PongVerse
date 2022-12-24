@@ -67,16 +67,28 @@ class Interface:
     def mainProgramLoop(self, main_loop, return_rect):
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
-        for event in pygame.event.get():
+        if pygame.event.get(pygame.QUIT):
             # press on exit button
-            if event.type == pygame.QUIT:
-                pygame.quit(), sys.exit()
-            # press on quit button
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # Mouse click on quit button
-                if return_rect.collidepoint(mouse_pos):
-                    main_loop = 0 and self.mainMenu()
+            pygame.quit(), sys.exit()
+            # press on return button
+        if return_rect.collidepoint(mouse_pos) and pygame.event.get(pygame.MOUSEBUTTONDOWN):
+            # Mouse click on return button
+            main_loop = 0 and self.mainMenu()
         return main_loop, mouse_pos
+
+    def getResolutionDict(self):
+        # Set height position for Resolutions
+        resolution_rect_list = []
+        resolution_pos_height = self.height * 0.18
+        for resolution_name, resolution in Screen_Resolution.items():
+            resolution_pos_height += self.settings.BUTTON_GAP
+            resolution_text = self.menu_font.render(resolution_name, True, self.settings.WHITE)
+            resolution_text_rect = resolution_text.get_rect()
+            resolution_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
+                                            resolution_pos_height, True)
+            resolution_rect_list.append(
+                (resolution_text, resolution_text_rect, resolution_rect, resolution_pos_height, resolution))
+        return resolution_rect_list
 
     # Creating a function that creates the GUI
     def mainMenu(self):
@@ -118,27 +130,26 @@ class Interface:
             # Get mouse position
             mouse_pos = pygame.mouse.get_pos()
             # Get an input from the user
-            for event in pygame.event.get():
-                # Press the exit button
-                if event.type == pygame.QUIT:
-                    pygame.quit(), sys.exit()
+            # Press the exit button
+            if pygame.event.get(pygame.QUIT):
+                pygame.quit(), sys.exit()
                 # Press the mouse button
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Mouse click on Pong button
-                    if play_pongVerse_rect.collidepoint(mouse_pos):
-                        PongVerse(vanilla=False, settings=self.settings).instructions()
-                    # Mouse click on Vanilla Pong button
-                    if play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
-                        PongVerse(vanilla=True, settings=self.settings).instructions()
-                    # Mouse click on Settings button
-                    if settings_rect.collidepoint(mouse_pos):
-                        self.load_settings()
-                    # Mouse click on Creators button
-                    if creators_rect.collidepoint(mouse_pos):
-                        self.creators()
-                    # Mouse click on quit button
-                    if quit_rect.collidepoint(mouse_pos):
-                        pygame.quit(), sys.exit()
+            if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                # Mouse click on Pong button
+                if play_pongVerse_rect.collidepoint(mouse_pos):
+                    PongVerse(vanilla=False, settings=self.settings).instructions()
+                # Mouse click on Vanilla Pong button
+                elif play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
+                    PongVerse(vanilla=True, settings=self.settings).instructions()
+                # Mouse click on Settings button
+                elif settings_rect.collidepoint(mouse_pos):
+                    self.load_settings()
+                # Mouse click on Creators button
+                elif creators_rect.collidepoint(mouse_pos):
+                    self.creators()
+                # Mouse click on quit button
+                elif quit_rect.collidepoint(mouse_pos):
+                    pygame.quit(), sys.exit()
 
             # --- Main Menu logic starts here
 
@@ -333,26 +344,12 @@ class Interface:
         return_rect = self.drawRect(self.settings.GRAY, self.width * 0.85,
                                     self.height * 0.88, False)
 
-        def getResolutionDict():
-            # Set height position for Resolutions
-            resolution_rect_list = []
-            resolution_pos_height = self.height * 0.18
-            for resolution_name, resolution in Screen_Resolution.items():
-                resolution_pos_height += self.settings.BUTTON_GAP
-                resolution_text = self.menu_font.render(resolution_name, True, self.settings.WHITE)
-                resolution_text_rect = resolution_text.get_rect()
-                resolution_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
-                                                resolution_pos_height, True)
-                resolution_rect_list.append(
-                    (resolution_text, resolution_text_rect, resolution_rect, resolution_pos_height, resolution))
-            return resolution_rect_list
-
-        resolutions_rect_list = getResolutionDict()
+        resolutions_rect_list = self.getResolutionDict()
 
         # -------- Main Program Loop -----------
         while settingsOn:
             settingsOn, mouse_pos = self.mainProgramLoop(settingsOn, return_rect)
-
+            # mouse_pos = pygame.mouse.get_pos()
             # --- Settings screen logic starts here
 
             # background image
@@ -365,10 +362,11 @@ class Interface:
                 self.width / 2 - title_rect.center[0],
                 self.height * 0.05))
 
-            for screen_resolution_text, screen_resolution_text_rect, screen_resolution_rect, screen_resolution_pos_height, screen_resolution in resolutions_rect_list:
+            for screen_resolution_text, screen_resolution_text_rect, \
+                    screen_resolution_rect, screen_resolution_pos_height, screen_resolution in resolutions_rect_list:
                 if screen_resolution_rect.collidepoint(mouse_pos):
                     self.drawRect(self.settings.BLUE, self.button_width_center, screen_resolution_pos_height, True)
-                    if pygame.event.get(pygame.MOUSEBUTTONDOWN) or pygame.event.get(pygame.APPFOCUSMOUSE):
+                    if pygame.event.get(pygame.MOUSEBUTTONDOWN):
                         sys.argv = [sys.argv[0], int(screen_resolution[0]), int(screen_resolution[1])]
                         os.execv(main.main(), sys.argv)
                 else:
