@@ -90,9 +90,13 @@ class GlobalSettings:
 
         # Set NovaIMS icon size and load in Creators screen
         self.NOVAIMS_ICON_SIZE: tuple = (self.width * 0.07, self.width * 0.07)
-        self.NOVAIMS_IMG_LOAD: pygame.image = pygame.transform.smoothscale(
-            pygame.image.load("img/creators/novaims_logo.png"),
-            self.NOVAIMS_ICON_SIZE)
+        self.NOVAIMS_IMG_LOAD: pygame.transform = pygame.transform.smoothscale(
+            pygame.image.load("img/creators/novaims_logo.png"), self.NOVAIMS_ICON_SIZE)
+
+        # Set Sound On/Off icon size and load in Settings screen
+        self.SOUND_ON_ICON_SIZE: tuple = (self.width * 0.03, self.width * 0.03)
+        self.SOUND_ON_IMG_LOAD: pygame.transform = pygame.transform.smoothscale(
+            pygame.image.load('img/icons/sound_icon.png'), self.SOUND_ON_ICON_SIZE)
 
         # Set Creators icon size and load
         self.CREATOR_ICON_SIZE: tuple = (self.width * 0.1, self.width * 0.1)
@@ -125,9 +129,7 @@ class GlobalSettings:
 
         # Set the Field Divider Height
         self.FIELD_DIVIDER_INITIAL_POS: tuple = (self.width / 2, self.height * 0.03)
-        self.FIELD_DIVIDER_MAX_POS: tuple = (
-            self.width / 2,
-            self.height - self.height * 0.03)
+        self.FIELD_DIVIDER_MAX_POS: tuple = (self.width / 2, self.height - self.height * 0.03)
 
         # ---- Win Screen ----
 
@@ -138,9 +140,7 @@ class GlobalSettings:
 
         # Set background Image
         self.BACKGROUND_IMG: any = pygame.transform.scale(
-            pygame.image.load("img/background/background_instructions.jpg"),
-            (self.width,
-             self.height))
+            pygame.image.load("img/background/background_instructions.jpg"), (self.width, self.height))
 
         # Set PowerUp icon Instructions size
         self.POWERUP_WIDTH: float = self.height / 11

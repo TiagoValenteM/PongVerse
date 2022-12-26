@@ -1,7 +1,5 @@
-# Import the pygame library and initialise the game engine
 import sys
 from random import choices
-
 from .ball import Ball
 from .paddle import Paddle
 from .powerups import *

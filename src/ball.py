@@ -1,7 +1,5 @@
-from random import randint
-
 import pygame
-
+from random import randint
 from src.config import GlobalSettings
 
 

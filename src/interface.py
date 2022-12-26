@@ -1,9 +1,4 @@
-import os
-import sys
-
-import pygame
-
-import main
+import os, sys, main
 from .config import *
 from .pong import PongVerse
 
@@ -18,6 +13,8 @@ class Interface:
         if self.settings.MUSIC_ON:
             pygame.mixer.music.load('sound/main_theme.mp3')
             pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.pause()
         # Opens a new window
         self.screen: pygame.display = pygame.display.set_mode(settings.resolution)
         self.clock: pygame.time = pygame.time.Clock()
@@ -350,9 +347,9 @@ class Interface:
                                     self.settings.height * 0.88, False)
 
         # Sound On/Off text
-        sound_text = self.menu_font.render('Sound On/Off', True, self.settings.WHITE)
+        sound_text = self.menu_font.render('On/Off', True, self.settings.WHITE)
         sound_text_rect = return_text.get_rect()
-        sound_rect = self.drawRect(self.settings.GRAY, self.settings.width * 0.15,
+        sound_rect = self.drawRect(self.settings.GRAY, self.settings.width * 0.04,
                                    self.settings.height * 0.88, False)
 
         resolutions_rect_list = self.getResolutionDict()
@@ -374,12 +371,14 @@ class Interface:
                 self.settings.width / 2 - title_rect.center[0],
                 self.settings.height * 0.05))
 
+            # Display Resolution buttons
             for screen_resolution_text, screen_resolution_text_rect, \
                     screen_resolution_rect, screen_resolution_pos_height, screen_resolution in resolutions_rect_list:
                 if screen_resolution_rect.collidepoint(mouse_pos):
                     self.drawRect(self.settings.BLUE, self.button_width_center, screen_resolution_pos_height, True)
                     if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                        sys.argv = [sys.argv[0], int(screen_resolution[0]), int(screen_resolution[1])]
+                        sys.argv = [sys.argv[0], int(screen_resolution[0]), int(screen_resolution[1]),
+                                    self.settings.MUSIC_ON]
                         os.execv(main.main(), sys.argv)
                 else:
                     self.drawRect(self.settings.GRAY, self.button_width_center, screen_resolution_pos_height, True)
@@ -387,16 +386,24 @@ class Interface:
                     self.width_center - screen_resolution_text_rect.center[0],
                     screen_resolution_pos_height + self.settings.BUTTON_GAP * 0.05))
 
+            # Display Sound On/Off icon
+            self.screen.blit(self.settings.SOUND_ON_IMG_LOAD.convert_alpha(),
+                             (sound_rect.width * 1.5, self.settings.height * 0.885))
+
+            # Display Sound On/Off button
             if sound_rect.collidepoint(mouse_pos):
-                self.drawRect(self.settings.RED, self.settings.width * 0.15, self.settings.height * 0.88, False)
+                self.drawRect(self.settings.BLUE, self.settings.width * 0.04, self.settings.height * 0.88, False)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
                     if self.settings.MUSIC_ON:
-                        pygame.mixer.music.stop()
-                        self.settings.MUSIC_ON = False, sys.argv.append(False)
+                        pygame.mixer.music.pause()
+                        self.settings.MUSIC_ON = False
+                    else:
+                        pygame.mixer.music.unpause()
+                        self.settings.MUSIC_ON = True
             else:
-                self.drawRect(self.settings.GRAY, self.settings.width * 0.15, self.settings.height * 0.88, False)
+                self.drawRect(self.settings.GRAY, self.settings.width * 0.04, self.settings.height * 0.88, False)
             self.screen.blit(sound_text,
-                             (sound_rect.width + sound_text_rect.center[0], self.settings.height * 0.885))
+                             (sound_rect.center[0] - sound_text_rect.center[0], self.settings.height * 0.885))
 
             # Quit Button
             self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)
