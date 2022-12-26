@@ -1,5 +1,4 @@
-import sys
-import src.interface
+import sys, src.interface
 from src.config import *
 
 

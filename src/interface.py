@@ -13,8 +13,6 @@ class Interface:
         if self.settings.MUSIC_ON:
             pygame.mixer.music.load('sound/main_theme.mp3')
             pygame.mixer.music.play(-1)
-        else:
-            pygame.mixer.music.pause()
         # Opens a new window
         self.screen: pygame.display = pygame.display.set_mode(settings.resolution)
         self.clock: pygame.time = pygame.time.Clock()
