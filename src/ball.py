@@ -38,13 +38,13 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         self.velocity[1] = randint(-8, 8)
 
     # Bounce the ball off a vertical surface (wall)
-    def bounce_up_down(self):
+    def bounceUpDown(self):
         # X not affected
         # Y changes to opposite direction
         self.velocity[1] = - self.velocity[1]
 
     # Detect collision between the ball and the paddles and change its speed accordingly
-    def handle_ball_collision(self, ball_owner, paddleA, paddleB):
+    def handleBallCollision(self, ball_owner, paddleA, paddleB):
         # Detect collision with paddleA
         if pygame.sprite.collide_mask(self, paddleA):
             ball_owner: str = 'paddleA'
@@ -57,18 +57,18 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         return ball_owner
 
     # Reset Ball position
-    def reset_ball(self):
+    def resetBall(self):
         # Initial position of the ball (center of the screen)
         self.rect.x, self.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)
 
     # Handle the ball motion in the screen
-    def handle_ball_motion(self, scoreA, scoreB, ball_owner, triggered):
+    def handleBallMotion(self, scoreA, scoreB, ball_owner, triggered):
         # If the ball goes off the right of the screen
         if self.rect.x >= self.settings.width + self.settings.ball_width:
             # Add score to player A
             scoreA += self.settings.SCORE_ADDER_A
             # Reset the ball
-            self.reset_ball()
+            self.resetBall()
             ball_owner = None  # Reset the ball owner
             triggered: bool = False  # Reset the trigger
             # Ball direction turns to the left
@@ -78,21 +78,21 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
             # Add score to player B
             scoreB += self.settings.SCORE_ADDER_B
             # Reset the ball
-            self.reset_ball()
+            self.resetBall()
             ball_owner = None  # Reset the ball owner
             triggered: bool = False  # Reset the trigger
             # Ball direction turns to the right
             self.velocity[0] = - self.velocity[0]
         # if the ball hits the bottom of the screen, bounce it
         if self.rect.y >= self.settings.height - self.settings.ball_height:
-            self.bounce_up_down()
+            self.bounceUpDown()
         # If the ball hits the top of the screen, bounce it
         if self.rect.y <= 0:
-            self.bounce_up_down()
+            self.bounceUpDown()
         return scoreA, scoreB, ball_owner, triggered
 
     # Handle multiple balls motion in the screen
-    def handle_multiple_balls_motion(self, powerup_owner, scoreA, scoreB):
+    def handleMultipleBallsMotion(self, powerup_owner, scoreA, scoreB):
         # Boolean to check if the ball is out of the screen
         should_kill: bool = False
         # If the ball goes off the right of the screen
@@ -113,8 +113,8 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
             self.kill()  # kill the ball
         # If the ball hits the bottom of the screen, bounce it
         if self.rect.y >= self.settings.height - self.settings.ball_height:
-            self.bounce_up_down()
+            self.bounceUpDown()
         # If the ball hits the top of the screen, bounce it
         if self.rect.y <= 0:
-            self.bounce_up_down()
+            self.bounceUpDown()
         return scoreA, scoreB, should_kill

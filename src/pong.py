@@ -9,43 +9,30 @@ from .config import *
 # Class Pong represents the game
 class PongVerse:
     def __init__(self, vanilla: bool, settings: GlobalSettings):
-        # Load the game settings
-        self.settings = settings
-        # Set the game version
-        self.vanilla = vanilla
-        # Set if a powerup is visible
-        self.powerup_visible: any = None
-        # Set if a powerup is active
-        self.powerup_active: any = None
-        # Set the time for the powerup icon to be visible
-        self.powerup_visible_time: pygame.time = None
-        # Set the time a powerup affects a player
-        self.powerup_active_time: pygame.time = None
-        # Create a list that contains all the sprites used in game
-        self.all_sprites_list = pygame.sprite.Group()
-        # Create a list that contains additional balls
-        self.additional_balls: list[Ball] = []
-        # Set the ball owner
-        self.ball_owner: any = None
-        # Set the powerup owner
-        self.powerup_owner: any = None
-        # Opens a new window
-        self.screen = pygame.display.set_mode(settings.resolution)
-        # Set the Default Font
-        self.default_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT, settings.font_size_default)
-        # Set the PowerUp Font
-        self.powerup_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT, settings.font_size_powerup)
-        # Set a small Powerup Font
-        self.small_powerup_font = pygame.font.Font(settings.FONT_TYPE_MENU, settings.font_size_small_powerup)
-        # Create a clock that controls FPS
-        self.clock = pygame.time.Clock()
-        # Set scores to 0
-        self.scoreA: int = 0
-        self.scoreB: int = 0
-        # Set trigger for the ball to be reset
-        self.triggered: bool = False
+        self.settings: GlobalSettings = settings  # Load game settings
+        self.vanilla: bool = vanilla  # Set game version
+        self.powerup_visible: any = None  # Variable to store the visible powerup
+        self.powerup_active: any = None  # Variable to store the active powerup
+        self.powerup_visible_time: pygame.time = None  # Variable to store the visible powerup time
+        self.powerup_active_time: pygame.time = None  # Variable to store the active powerup time
+        self.all_sprites_list = pygame.sprite.Group()  # List of all sprites in the game
+        self.additional_balls: list[Ball] = []  # List of additional balls
+        self.ball_owner: any = None  # Variable to store the ball owner
+        self.powerup_owner: any = None  # Variable to store the powerup owner
+        self.screen = pygame.display.set_mode(settings.resolution)  # Set the screen resolution
+        self.default_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT,
+                                             settings.font_size_default)  # Set the default font
+        self.powerup_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT,
+                                             settings.font_size_powerup)  # Set the PowerUp font
+        self.small_powerup_font = pygame.font.Font(settings.FONT_TYPE_MENU,
+                                                   settings.font_size_small_powerup)  # Set the small PowerUp font
+        self.clock = pygame.time.Clock()  # Create a clock that controls FPS
+        self.scoreA: int = 0  # Player A score
+        self.scoreB: int = 0  # Player B score
+        self.triggered: bool = False  # Trigger is set to True when a player scores a point
 
-    def display_win_condition_instructions(self, body_font, subtitle_font, left_x_alignment):
+    # Display win condition (Instructions)
+    def displayWinConditionInstructions(self, body_font, subtitle_font, left_x_alignment):
         # Display the win condition subtitle
         win_condition_title = subtitle_font.render('Win Condition', True, self.settings.LIGHT_BLUE)
         self.screen.blit(win_condition_title,
@@ -56,7 +43,8 @@ class PongVerse:
         self.screen.blit(win_condition_body,
                          (left_x_alignment, self.settings.height * 0.67))
 
-    def display_powerups_instructions(self, body_font, small_body_font, subtitle_font):
+    # Display powerups (Instructions)
+    def displayPowerupsInstructions(self, body_font, small_body_font, subtitle_font):
         # Check if the game is not vanilla
         if not self.vanilla:
             # Display the powerups subtitle
@@ -65,7 +53,7 @@ class PongVerse:
                              (self.settings.right_x_alignment, self.settings.height * 0.2))
             # Check the powerups dictionary
             for powerup in PowerUps.values():
-                # Get icon, name, description and active time of each powerup
+                # Get icon, name, description and active time for each powerup
                 powerup_icon = pygame.transform.smoothscale(pygame.image.load(powerup.icon),
                                                             (self.settings.powerup_width,
                                                              self.settings.powerup_height))
@@ -73,7 +61,7 @@ class PongVerse:
                 powerup_description = body_font.render(powerup.description, True, self.settings.WHITE)
                 powerup_active_time = small_body_font.render(f"{powerup.active_time} seconds active", True,
                                                              self.settings.LIGHT_BLUE)
-                # Set the powerup icon position
+                # Powerup icon position
                 icon_pos = self.settings.powerup_icon_pos_list[powerup.name]
                 # Display the powerup icon
                 self.screen.blit(powerup_icon, icon_pos)
@@ -89,7 +77,8 @@ class PongVerse:
                                  [icon_pos[0] + self.settings.powerup_width * 1.4,
                                   icon_pos[1] + self.settings.powerup_width * 0.8])
 
-    def display_player_keys_instructions(self, body_font, subtitle_font, left_x_alignment):
+    # Display player keys (Instructions)
+    def displayPlayerKeysInstructions(self, body_font, subtitle_font, left_x_alignment):
         # Display the player keys subtitle
         player_keys_title = subtitle_font.render('Player keys', True, self.settings.LIGHT_BLUE)
         self.screen.blit(player_keys_title,
@@ -117,12 +106,12 @@ class PongVerse:
                          (left_x_alignment + self.settings.width / 22,
                           self.settings.height * 0.47))
 
-    # Screen to display the instructions
+    # Screen (Instructions)
     def instructions(self):
-        # Create a loop that carries on until the user exits the instructions screen
+        # Loop that carries on until the user exits the instructions screen
         instructionsON: int = 1
 
-        # Set Instructions Fonts
+        # Instructions Fonts
         title_font: pygame.font = pygame.font.Font(self.settings.FONT_TYPE_DEFAULT, self.settings.title_size)
         subtitle_font: pygame.font = pygame.font.Font(self.settings.FONT_TYPE_DEFAULT,
                                                       self.settings.subtitle_size)
@@ -136,10 +125,9 @@ class PongVerse:
             # --- Main event loop
             for event in pygame.event.get():
 
-                # If user clicked close
+                # User clicked close
                 if event.type == pygame.QUIT:
-                    # Close the window and quit
-                    pygame.quit(), sys.exit()
+                    pygame.quit(), sys.exit()  # Close the window and quit
 
                 # Or they used the keyboard
                 if event.type == pygame.KEYDOWN:
@@ -156,20 +144,18 @@ class PongVerse:
                         instructionsON = 0
 
             if self.vanilla:
-                # Set the vanilla title of the window/game
+                # Vanilla Game title
                 pygame.display.set_caption(self.settings.INSTRUCTIONS_TITLE_VANILLA)
                 title = title_font.render('Instructions - Vanilla Edition', True, self.settings.WHITE)
-                # Align keys and win text on the right side of the screen
-                left_x_alignment = self.settings.right_x_alignment
+                left_x_alignment = self.settings.right_x_alignment  # Keys and Text aligned on the right side
 
             else:
-                # Set the title of the window/game
+                # Game title
                 pygame.display.set_caption(self.settings.INSTRUCTIONS_TITLE)
                 title = title_font.render('Instructions', True, self.settings.WHITE)
-                # Align keys and win text on the left side of the screen
-                left_x_alignment = self.settings.left_x_alignment
+                left_x_alignment = self.settings.left_x_alignment  # Keys and Text aligned on the left side
 
-            # Set the background image
+            # Background image
             self.screen.blit(self.settings.background_img, (0, 0))
             # Display the title on the screen
             self.screen.blit(title, (self.settings.width * 0.07, self.settings.height * 0.05))
@@ -182,16 +168,16 @@ class PongVerse:
                              (self.settings.width * 0.87, self.settings.height * 0.05))
 
             # Call a function to display the instructions for the powerups
-            self.display_powerups_instructions(body_font, small_body_font, subtitle_font)
+            self.displayPowerupsInstructions(body_font, small_body_font, subtitle_font)
             # Call a function to display the player keys
-            self.display_player_keys_instructions(body_font, subtitle_font, left_x_alignment)
+            self.displayPlayerKeysInstructions(body_font, subtitle_font, left_x_alignment)
             # Call a function to display the win condition
-            self.display_win_condition_instructions(body_font, subtitle_font, left_x_alignment)
+            self.displayWinConditionInstructions(body_font, subtitle_font, left_x_alignment)
 
             # Display text to start the game
             start_game_text = body_font.render("Press SPACE to start the game", True, self.settings.WHITE)
             start_game_text_rect = start_game_text.get_rect()
-            # Center the text
+            # Center that text
             self.screen.blit(start_game_text, (self.settings.width / 2 - start_game_text_rect.center[0],
                                                self.settings.height * 0.9))
 
@@ -201,178 +187,162 @@ class PongVerse:
             # --- Limit the game to 30 frames per second
             self.clock.tick(30)
 
-    # Set what keys are used to move the paddles
-    def pressed_keys(self, keys, paddleA, paddleB):
+    # Keys used to move the paddles
+    def pressedKeys(self, keys, paddleA, paddleB):
         # Move the paddles when the user hits W/S (player A) or up/down (player B)
         if keys[pygame.K_w]:
-            paddleA.moveUp(self.settings.PADDLE_SPEED_A)
+            paddleA.moveUp(self.settings.PADDLE_SPEED_A)  # Move the paddle up
             self.triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(self.settings.PADDLE_SPEED_A, self.settings.height)
+            paddleA.moveDown(self.settings.PADDLE_SPEED_A, self.settings.height)  # Move the paddle down
             self.triggered = True
         if keys[pygame.K_UP]:
-            paddleB.moveUp(self.settings.PADDLE_SPEED_B)
+            paddleB.moveUp(self.settings.PADDLE_SPEED_B)  # Move the paddle up
             self.triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(self.settings.PADDLE_SPEED_B, self.settings.height)
+            paddleB.moveDown(self.settings.PADDLE_SPEED_B, self.settings.height)  # Move the paddle down
             self.triggered = True
 
-    # Define when a PowerUp appears, and it appears every 3 goals
-    def set_powerup_visible(self):
+    # Powerup icon appears every score sum divisible by 2
+    def setPowerupVisible(self):
         # Checks if a powerup is invisible and inactive and if there is a ball owner
         if self.powerup_visible is None and self.powerup_active is None and self.ball_owner is not None:
-            # Gets the powerup probability
+            # List of powerup probabilities
             PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
-            # It checks if the sum of the scores is divisible by 3
+            # Score sum divisible by 2 and different from 0
             if (self.scoreA + self.scoreB) % 2 == 0 and (self.scoreA + self.scoreB) != 0:
-                # It chooses the first chosen random powerup
+                # Choose a random powerup
                 chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
-                # It creates the powerup
+                # Instantiate the powerup
                 powerup = chosen_powerup(self.ball_owner, self.settings.powerup_width, self.settings.powerup_height,
                                          self.settings)
-                # It adds the powerup to the list of objects
+                # Powerup added to sprites
                 self.all_sprites_list.add(powerup)
-                # It sets the powerup as visible and sets the powerup visible timer
+                # Powerup icon visible for 5 seconds
                 self.powerup_visible, self.powerup_visible_time = powerup, pygame.time.get_ticks()
 
-    # Define when a PowerUp icon disappears
-    def set_powerup_invisible(self):
-        # It erases the powerup icon
-        self.powerup_visible.kill()
-        # It sets the powerup as invisible
-        self.powerup_visible, self.powerup_visible_time = None, None
+    # Powerup icon disappears after 5 seconds
+    def setPowerupInvisible(self):
+        self.powerup_visible.kill()  # Erase powerup icon
+        self.powerup_visible, self.powerup_visible_time = None, None  # Set powerup icon invisible
 
-    # Define when a PowerUp becomes active
-    def set_powerup_active(self, paddleA, paddleB):
-        # It sets the collided powerup as the active powerup
-        self.powerup_active = self.powerup_visible
-        # It erases the powerup icon
-        self.powerup_visible.kill()
-        # It activates the powerup and sets the powerup active timer
-        self.powerup_active.run_powerup(paddleA, paddleB)
-        self.powerup_active_time = pygame.time.get_ticks()
+    # Powerup is activated
+    def setPowerupActive(self, paddleA, paddleB):
+        self.powerup_active = self.powerup_visible  # Set powerup active as the powerup visible
+        self.powerup_visible.kill()  # Erase powerup icon
+        self.powerup_active.run_powerup(paddleA, paddleB)  # Activate powerup
+        self.powerup_active_time = pygame.time.get_ticks()  # Set powerup active timer
 
-    # Define when a PowerUp becomes inactive and is effect revert
-    def set_powerup_inactive(self, paddleA, paddleB):
-        # It reverts the powerup effect
-        self.powerup_active.revert_powerup(paddleA, paddleB)
-        # It sets the powerup as inactive
-        self.powerup_active, self.powerup_active_time, self.powerup_owner = None, None, None
+    # Powerup is deactivated
+    def setPowerupInactive(self, paddleA, paddleB):
+        self.powerup_active.revert_powerup(paddleA, paddleB)  # Revert powerup effect
+        self.powerup_active, self.powerup_active_time, self.powerup_owner = None, None, None  # Set powerup inactive
 
-    # Handles the visible powerup to turn it off after a certain time or activate it
-    def handle_visible_powerup(self, ball, paddleA, paddleB):
-        # Checks if a powerup is visible
+    # Handle visible powerup
+    def handleVisiblePowerup(self, ball, paddleA, paddleB):
+        # Check powerup visibility
         if self.powerup_visible_time is not None:
-            # Creates a variable that stores the time the powerup has been visible
+            # Variable to store the time the powerup has been visible
             visible = (pygame.time.get_ticks() - self.powerup_visible_time) / 1000
-            # It checks if the visible time is not over
+            # Check if the visible time is not over
             if int(visible) < self.powerup_visible.visible_time:
-                # If it is visible, it checks if it collides with the ball
-                if pygame.sprite.collide_mask(ball, self.powerup_visible) and self.ball_owner is not None:
-                    # Set the powerup owner, that does not change when hitting a paddle
-                    self.powerup_owner = self.ball_owner
-                    # If it collides, it sets the powerup to be active and plays the activated sound
-                    self.powerupActivatedSound()
-                    self.set_powerup_active(paddleA, paddleB)
+                # If visible, check if it collides with the ball
+                if pygame.sprite.collide_mask(ball,
+                                              self.powerup_visible) and self.ball_owner is not None and self.powerup_active is None:
+                    self.powerup_owner = self.ball_owner  # Powerup owner (doesn't change when hitting a paddle)
+                    self.powerupActivatedSound()  # Play sound
+                    self.setPowerupActive(paddleA, paddleB)  # Powerup active
             else:
-                # If the visible time is over, it sets the powerup to be invisible
-                self.set_powerup_invisible()
+                self.setPowerupInvisible()  # Powerup invisible (visible time is over)
 
-    # Handles the active powerup to turn it off after a certain time
-    def handle_active_powerup(self, paddleA, paddleB):
-        # Checks if a powerup is active
+    # Handle active powerup
+    def handleActivePowerup(self, paddleA, paddleB):
+        # Check if a powerup is active
         if self.powerup_active_time is not None:
-            # Creates a variable that stores the time the powerup has been active
+            # Variable to store the time the powerup has been active
             activated = (pygame.time.get_ticks() - self.powerup_active_time) / 1000
-            # It checks if the visible time for the name of the active powerup's name is not over
+            # If powerup name visible time is not over, it displays the name of the powerup
             if int(activated) < self.settings.POWERUP_NAME_VISIBLE_TIME:
-                # Displays the powerup active name
+                # Display active powerup name
                 display_powerup_name = self.powerup_font.render(str(self.powerup_active.name), True,
                                                                 self.settings.WHITE)
-                # Gets the rectangle of the powerup name
+                # Get powerup name rectangle
                 display_powerup_name_rect = display_powerup_name.get_rect()
                 self.screen.blit(display_powerup_name, (
                     self.settings.width / 2 - display_powerup_name_rect.center[0],
                     self.settings.height * 0.85))
-                # Displays the powerup active description
-                display_powerup_name = self.small_powerup_font.render(str(self.powerup_active.description), True,
-                                                                      self.settings.WHITE)
+                # Display active powerup description
+                display_powerup_description = self.small_powerup_font.render(str(self.powerup_active.description), True,
+                                                                             self.settings.WHITE)
                 # Gets the rectangle of the powerup name
-                display_powerup_name_rect = display_powerup_name.get_rect()
-                self.screen.blit(display_powerup_name, (
-                    self.settings.width / 2 - display_powerup_name_rect.center[0],
+                display_powerup_description_rect = display_powerup_description.get_rect()
+                self.screen.blit(display_powerup_description, (
+                    self.settings.width / 2 - display_powerup_description_rect.center[0],
                     self.settings.height * 0.94))
-            # It checks if the active time is over
+            # Check if the active time is over
             if int(activated) == self.powerup_active.active_time:
-                # If it is over, it sets the powerup to be inactive
-                self.set_powerup_inactive(paddleA, paddleB)
+                self.setPowerupInactive(paddleA, paddleB)  # Powerup inactive
 
-    # Handles the additional balls
-    def handle_multiple_balls(self, paddleA, paddleB):
+    # Handle additional balls
+    def handleMultipleBalls(self, paddleA, paddleB):
         if self.powerup_active is not None and self.powerup_active.name == MultipleBalls.name:
             self.triggered = True  # avoid triggering and stopping the screen if a ball scores
-            if len(self.additional_balls) == 0:
+            if len(self.additional_balls) == 0:  # if there are no additional balls
                 ball_count = randint(self.settings.MIN_ADDITIONAL_BALLS, self.settings.MAX_ADDITIONAL_BALLS)
-                for i in range(ball_count):
-                    additional_ball = self.instance_new_ball()
-                    self.all_sprites_list.add(additional_ball)
-                    self.additional_balls.append(additional_ball)
-            else:
+                for i in range(ball_count):  # create a random number of additional balls
+                    additional_ball = self.instanceNewBall()  # create a new ball
+                    self.all_sprites_list.add(additional_ball)  # add the ball to the sprite list
+                    self.additional_balls.append(additional_ball)  # add the ball to the additional balls list
+            else:  # if there are additional balls
                 for additional_ball in self.additional_balls:
-                    additional_ball.handle_ball_collision(self.ball_owner, paddleA, paddleB)
-                    self.scoreA, self.scoreB, should_kill = additional_ball.handle_multiple_balls_motion(
+                    additional_ball.handleBallCollision(self.ball_owner, paddleA, paddleB)  # handle ball collisions
+                    # handle ball motion
+                    self.scoreA, self.scoreB, should_kill = additional_ball.handleMultipleBallsMotion(
                         self.powerup_owner,
                         self.scoreA,
                         self.scoreB)
                     if should_kill:
-                        self.additional_balls.remove(additional_ball)
-                        self.all_sprites_list.remove(additional_ball)
-                if len(self.additional_balls) == 0:
-                    self.set_powerup_inactive(paddleA, paddleB)
+                        self.additional_balls.remove(additional_ball)  # remove the ball from the additional balls list
+                        self.all_sprites_list.remove(additional_ball)  # remove the ball from the sprite list
+                if len(self.additional_balls) == 0:  # if there are no additional balls
+                    self.setPowerupInactive(paddleA, paddleB)  # deactivate the powerup
 
-    # Function to manage who is winning
-    def display_scores(self):
-        color_A = self.settings.WHITE
-        color_B = self.settings.WHITE
+    # Manage Scores
+    def displayScores(self):
+        color_A, color_B = self.settings.WHITE, self.settings.WHITE
 
-        if self.powerup_active is not None:
+        if self.powerup_active is not None:  # if a powerup is active (Color Red)
             color_A = self.settings.RED
             color_B = self.settings.RED
-        elif self.scoreA < self.scoreB:
+        elif self.scoreA < self.scoreB:  # if player B is winning (Color Golden)
             color_B = self.settings.GOLDEN
-        elif self.scoreA > self.scoreB:
+        elif self.scoreA > self.scoreB:  # if player A is winning (Color Blue)
             color_A = self.settings.BLUE
 
+        # Display scores
         text_A = self.default_font.render(str(self.scoreA), False, color_A)
         text_B = self.default_font.render(str(self.scoreB), False, color_B)
         self.screen.blit(text_A, self.settings.pos_score_a)
         self.screen.blit(text_B, self.settings.pos_score_b)
 
-    # Set and display static elements
-    def set_static_elements(self, background_img, playerA_icon, playerB_icon):
-        # Scale the background image
+    # Display Static Elements
+    def setStaticElements(self, background_img, playerA_icon, playerB_icon):
         background: any = pygame.transform.scale(background_img, [self.settings.width,
-                                                                  self.settings.height])
-        # Display background image
-        self.screen.blit(background, (0, 0))
-        # Player A icon
-        self.screen.blit(playerA_icon, self.settings.player_a_icon_pos)
-        # Player B icon
-        self.screen.blit(playerB_icon, self.settings.player_b_icon_pos)
-        # Field divider
-        if self.powerup_active is not None:
+                                                                  self.settings.height])  # Scale background image
+        self.screen.blit(background, (0, 0))  # Display background image
+        self.screen.blit(playerA_icon, self.settings.player_a_icon_pos)  # Display player A icon
+        self.screen.blit(playerB_icon, self.settings.player_b_icon_pos)  # Display player B icon
+        if self.powerup_active is not None:  # if active powerup (Field divider w/ Color Red)
             pygame.draw.line(self.screen, self.settings.RED, self.settings.field_divider_initial_pos,
                              self.settings.field_divider_max_pos, 5)
-        else:
+        else:  # no active powerup (Field divider w/ Color White)
             pygame.draw.line(self.screen, self.settings.WHITE, self.settings.field_divider_initial_pos,
                              self.settings.field_divider_max_pos, 5)
 
-    # Creates the ball
-    def instance_new_ball(self):
-        # Creates a new ball with width and height
-        ball = Ball("img/icons/ball.png", self.settings.ball_width, self.settings.ball_height, self.settings)
-        # Sets the initial position of the ball
-        ball.rect.x, ball.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)
+    # Create ball
+    def instanceNewBall(self):
+        ball = Ball("img/icons/ball.png", self.settings.ball_width, self.settings.ball_height, self.settings)  # Ball
+        ball.rect.x, ball.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)  # Initial position
         return ball
 
     # Sound when a Powerup is activated
@@ -385,33 +355,28 @@ class PongVerse:
         if self.settings.music_on:
             pygame.mixer.Sound('sound/winner_sound.wav').play()
 
-    # Screen to play the game
+    # Screen (PlayPong)
     def play(self):
-        # Create Player A paddle
         paddleA = Paddle(self.settings.BLUE, self.settings.paddle_width_a, self.settings.paddle_height_a,
-                         self.settings.PADDLE_ROUND_CORNERS_A)
-        paddleA.rect.x, paddleA.rect.y = (self.settings.initial_pos_x_a, self.settings.initial_pos_y_a)
-        # Create Player B paddle
+                         self.settings.PADDLE_ROUND_CORNERS_A)  # Paddle A
+        paddleA.rect.x, paddleA.rect.y = (
+            self.settings.initial_pos_x_a, self.settings.initial_pos_y_a)  # Initial position
         paddleB = Paddle(self.settings.GOLDEN, self.settings.paddle_width_b, self.settings.paddle_height_b,
-                         self.settings.PADDLE_ROUND_CORNERS_B)
-        paddleB.rect.x, paddleB.rect.y = (self.settings.initial_pos_x_b, self.settings.initial_pos_y_b)
+                         self.settings.PADDLE_ROUND_CORNERS_B)  # Paddle B
+        paddleB.rect.x, paddleB.rect.y = (
+            self.settings.initial_pos_x_b, self.settings.initial_pos_y_b)  # Initial position
 
-        # Call a function to create the ball
-        ball = self.instance_new_ball()
+        ball = self.instanceNewBall()  # Instance a new ball
+        self.all_sprites_list.add(paddleA, paddleB, ball)  # Add sprites to the sprite list
+        background_img_load = pygame.image.load("img/background/background_pong.jpg").convert()  # Load background image
 
-        # Adds the paddles and the ball to the list of objects
-        self.all_sprites_list.add(paddleA, paddleB, ball)
-
-        # Load Background Image
-        background_img_load = pygame.image.load("img/background/background_pong.jpg").convert()
-
-        # Load and set Players Icons
+        # Load and scale Players Icons
         playerA_icon_load: pygame.image = pygame.image.load("img/icons/playerA_icon.png").convert_alpha()
         playerA_icon: any = pygame.transform.scale(playerA_icon_load, self.settings.player_icon_size)
         playerB_icon_load: pygame.image = pygame.image.load("img/icons/playerB_icon.png").convert_alpha()
         playerB_icon: any = pygame.transform.scale(playerB_icon_load, self.settings.player_icon_size)
 
-        # Create a loop that carries on until the user exits the game
+        # Loop that carries on until the user exits the game
         carryOn: int = 1
 
         # -------- Main Program Loop -----------
@@ -420,69 +385,50 @@ class PongVerse:
             # --- Main event loop
             for event in pygame.event.get():
 
-                # If user clicked close
+                # User clicked close
                 if event.type == pygame.QUIT:
-                    # Close the window and quit
-                    pygame.quit(), sys.exit()
+                    pygame.quit(), sys.exit()  # Exit the program
 
                     # Or they used the keyboard
                 elif event.type == pygame.KEYDOWN:
                     # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
-                        # Quit the loop
-                        carryOn = 0
+                        carryOn = 0  # Exit the loop
 
-                # Detects if a player hits a win score
+                # Player hits the win score
                 elif self.scoreA >= self.settings.WIN_SCORE or self.scoreB >= self.settings.WIN_SCORE:
                     # Quit the loop
                     carryOn = 0
-                    # Calls the win screen
-                    self.winnerSound(), self.win_screen()
+                    # Call winner screen
+                    self.winnerSound(), self.winnerScreen()
 
             # --- Game logic starts here
 
-            # Set the title of the window/game
-            if self.vanilla:
-                pygame.display.set_caption(self.settings.GAME_TITLE_VANILLA)
+            if self.vanilla:  # if vanilla mode
+                pygame.display.set_caption(self.settings.GAME_TITLE_VANILLA)  # Set title
             else:
-                pygame.display.set_caption(self.settings.GAME_TITLE)
+                pygame.display.set_caption(self.settings.GAME_TITLE)  # Set title
 
-            # Built-in method to save user input on the keyboard
-            keys = pygame.key.get_pressed()
-            # Calls the function to move the paddles
-            self.pressed_keys(keys, paddleA, paddleB)
+            keys = pygame.key.get_pressed()  # Get pressed keys
+            self.pressedKeys(keys, paddleA, paddleB)  # Pressed keys to move paddles
+            self.setStaticElements(background_img_load, playerA_icon, playerB_icon)  # Display static elements
+            self.displayScores()  # Display scores
+            self.all_sprites_list.update(move=self.triggered)  # Update sprites
+            self.ball_owner = ball.handleBallCollision(self.ball_owner, paddleA, paddleB)  # Handle ball collision
 
-            # Calls a function to display static elements on the screen
-            self.set_static_elements(background_img_load, playerA_icon, playerB_icon)
+            # Handle ball motion
+            self.scoreA, self.scoreB, self.ball_owner, self.triggered = ball.handleBallMotion(self.scoreA,
+                                                                                              self.scoreB,
+                                                                                              self.ball_owner,
+                                                                                              self.triggered)
 
-            # Controls the ball movement
-            self.all_sprites_list.update(move=self.triggered)
+            self.all_sprites_list.draw(self.screen)  # Draw sprites
 
-            # Detect collisions between the ball and the paddles and change its speed accordingly
-            self.ball_owner = ball.handle_ball_collision(self.ball_owner, paddleA, paddleB)
-
-            # Calls a function that Handles the ball motion in the screen
-            self.scoreA, self.scoreB, self.ball_owner, self.triggered = ball.handle_ball_motion(self.scoreA,
-                                                                                                self.scoreB,
-                                                                                                self.ball_owner,
-                                                                                                self.triggered)
-
-            # Set all the game objects (sprites) to be drawn on the screen
-            self.all_sprites_list.draw(self.screen)
-
-            # Calls a function to display the score
-            self.display_scores()
-
-            # If is not vanilla mode, display the powerup
-            if not self.vanilla:
-                # Calls a function that sets a random powerup to be visible
-                self.set_powerup_visible()
-                # Calls a function to Handle the visible powerup
-                self.handle_visible_powerup(ball, paddleA, paddleB)
-                # Calls a function to Handle the active powerup
-                self.handle_active_powerup(paddleA, paddleB)
-                # Calls a function to handle multiple balls on the screen
-                self.handle_multiple_balls(paddleA, paddleB)
+            if not self.vanilla:  # if not vanilla mode, display powerups
+                self.setPowerupVisible()  # Set powerup visible
+                self.handleVisiblePowerup(ball, paddleA, paddleB)  # Handle visible powerup
+                self.handleActivePowerup(paddleA, paddleB)  # Handle active powerup
+                self.handleMultipleBalls(paddleA, paddleB)  # Handle multiple balls
 
             # --- Update the screen with what was drawn
             pygame.display.update()
@@ -490,16 +436,15 @@ class PongVerse:
             # --- Limit the game to 60 frames per second
             self.clock.tick(60)
 
-    # Screen when a player wins
-    def win_screen(self):
-        # Create a loop that carries on until the user exits the win screen
-        win_screenON: int = 1
-        # Set the winner
-        winner: any = None
-        # Set the winner score
-        winner_score: int = 0
+    # Screen (Winning)
+    def winnerScreen(self):
+        # Loop that carries on until the user exits the win screen
+        winner_screenON: int = 1
 
-        # Set Background Image for Win Screen
+        winner: any = None  # Winner
+        winner_score: int = 0  # Winner score
+
+        # Background image load and scale for each player
         backgroundA_img_load: pygame.image = pygame.image.load("img/background/background_winA.jpg").convert()
         backgroundA_img: pygame.transform = pygame.transform.scale(backgroundA_img_load,
                                                                    (self.settings.width,
@@ -509,19 +454,21 @@ class PongVerse:
                                                                    (self.settings.width,
                                                                     self.settings.height))
 
-        # Set Icons for each winner
+        # Icons load and scale for each player
         winnerA_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconA.png").convert_alpha()
         winnerA_icon: pygame.transform = pygame.transform.scale(winnerA_icon_load, self.settings.winner_icon_size)
+        winnerA_icon_rect: pygame.rect = winnerA_icon.get_rect()  # Get rect of winnerA icon
         winnerB_icon_load: pygame.image = pygame.image.load("img/icons/winner_iconB.png").convert_alpha()
         winnerB_icon: pygame.transform = pygame.transform.scale(winnerB_icon_load, self.settings.winner_icon_size)
+        winnerB_icon_rect: pygame.rect = winnerB_icon.get_rect()  # Get rect of winnerB icon
 
         # -------- Main Program Loop -----------
-        while win_screenON:
+        while winner_screenON:
 
             # --- Main event loop
             for event in pygame.event.get():
 
-                # If user clicked close
+                # User clicked close
                 if event.type == pygame.QUIT:
                     # Close the window and quit
                     pygame.quit(), sys.exit()
@@ -530,26 +477,34 @@ class PongVerse:
                 if event.type == pygame.KEYDOWN:
                     # Pressing the Escape Key will quit to the main menu
                     if event.key == pygame.K_ESCAPE:
-                        # Quit the loop
-                        win_screenON = 0
+                        winner_screenON = 0  # Quit the loop
 
-            if self.scoreA > self.scoreB:
+            if self.scoreA > self.scoreB:  # If player A wins
                 winner = "Captain America"
-                winner_score = self.scoreA
-                self.screen.blit(backgroundA_img, (0, 0))
+                winner_score = self.scoreA  # Set winner score
+                self.screen.blit(backgroundA_img, (0, 0))  # Display background
                 self.screen.blit(winnerA_icon,
-                                 (self.settings.width * 0.15, self.settings.height * 0.7))
-            elif self.scoreA < self.scoreB:
-                winner = 'Iron Man'
-                winner_score = self.scoreB
-                self.screen.blit(backgroundB_img, (0, 0))
-                self.screen.blit(winnerB_icon,
-                                 (self.settings.width * 0.3, self.settings.height * 0.7))
+                                 (self.settings.width * 0.95 - winnerA_icon_rect.width,
+                                  self.settings.height * 0.7))  # Display icon
 
+            elif self.scoreA < self.scoreB:  # If player B wins
+                winner = 'Iron Man'
+                winner_score = self.scoreB  # Set winner score
+                self.screen.blit(backgroundB_img, (0, 0))  # Set background
+                self.screen.blit(winnerB_icon,
+                                 (self.settings.width * 0.95 - winnerB_icon_rect.width,
+                                  self.settings.height * 0.7))  # Display icon
+
+            # Display winner text
             winner_text = self.default_font.render(winner + " your team wins!", False, self.settings.WHITE)
-            lastScore = self.powerup_font.render('Best Score: ' + str(winner_score), False, (255, 255, 255))
-            self.screen.blit(lastScore, (700 / 2, 500 / 2))
-            self.screen.blit(winner_text, (700 / 3, 500 / 3))
+            winner_text_rect = winner_text.get_rect()
+            winner_score_text = self.powerup_font.render('Congratulations. Your Score : ' + str(winner_score), False,
+                                                         self.settings.WHITE)
+            winner_score_text_rect = winner_score_text.get_rect()  # Get rect of winner score text
+            self.screen.blit(winner_text,
+                             ((self.settings.width / 2 - winner_text_rect.center[0]), self.settings.height * 0.17))
+            self.screen.blit(winner_score_text, ((self.settings.width / 2 - winner_score_text_rect.center[0]),
+                                                 self.settings.height * 0.30))
 
             # --- Update the screen with what was drawn
             pygame.display.update()
