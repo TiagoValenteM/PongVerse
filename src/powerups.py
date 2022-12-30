@@ -46,8 +46,8 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         pygame.draw.rect(self.image, self.settings.BLACK, [self.width, self.height, 0, 0])
         self.rect = self.image.get_rect()
-        self.rect.y = randint(self.settings.POWERUP_FIELD_HEIGHT[0], self.settings.POWERUP_FIELD_HEIGHT[1])
-        self.rect.x = randint(self.settings.POWERUP_FIELD_WIDTH[0], self.settings.POWERUP_FIELD_WIDTH[1])
+        self.rect.y = randint(self.settings.powerup_field_height[0], self.settings.powerup_field_height[1])
+        self.rect.x = randint(self.settings.powerup_field_width[0], self.settings.powerup_field_width[1])
 
 
 # Mandatory PowerUps
@@ -74,12 +74,12 @@ class ShrinkEnlarge(PowerUp):
     def affect_playerA(self, player_A):
         player_A.border_radius = 12
         player_A.image = pygame.transform.scale(player_A.image, (player_A.rect.width * 1.5, player_A.rect.height * 2))
-        player_A.height = self.settings.PADDLE_HEIGHT_A * 2
+        player_A.height = self.settings.paddle_height_a * 2
 
     def affect_playerB(self, player_B):
         player_B.border_radius = 12
         player_B.image = pygame.transform.scale(player_B.image, (player_B.rect.width * 1.5, player_B.rect.height * 2))
-        player_B.height = self.settings.PADDLE_HEIGHT_B * 2
+        player_B.height = self.settings.paddle_height_b * 2
 
     def run_powerup(self, paddleA, paddleB):
         if self.owner == 'paddleA':
@@ -91,9 +91,9 @@ class ShrinkEnlarge(PowerUp):
         paddleA.border_radius, paddleB.border_radius = self.settings.PADDLE_ROUND_CORNERS_A, \
             self.settings.PADDLE_ROUND_CORNERS_B
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
-        paddleA.height = self.settings.PADDLE_HEIGHT_A
+        paddleA.height = self.settings.paddle_height_a
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
-        paddleB.height = self.settings.PADDLE_HEIGHT_B
+        paddleB.height = self.settings.paddle_height_b
 
 
 # Black Widow: The Black Widow "Power-up" freezes the position of the player’s paddle
@@ -145,7 +145,7 @@ class MultipleBalls(PowerUp):
     # Set the PowerUp name
     name: str = 'Scarlet Witch'
     # Set the description of the powerup
-    description: str = 'Creates multiple balls'
+    description: str = 'Multiple balls that score for you'
     # Set the path to the Icon
     icon: str = 'img/icons/powerup6.png'
 
@@ -279,7 +279,7 @@ class Shield(PowerUp):
     def revert_powerup(self, paddleA, paddleB):
         paddleA.image = pygame.transform.scale(paddleA.image, (paddleA.rect.width, paddleA.rect.height))
         paddleB.image = pygame.transform.scale(paddleB.image, (paddleB.rect.width, paddleB.rect.height))
-        paddleA.height, paddleB.height = self.settings.PADDLE_HEIGHT_A, self.settings.PADDLE_HEIGHT_B
+        paddleA.height, paddleB.height = self.settings.paddle_height_a, self.settings.paddle_height_b
 
 
 # Dictionary of PowerUps and their probabilities

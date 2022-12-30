@@ -1,100 +1,120 @@
 import pygame
 from random import randint
-from src.config import GlobalSettings
+from .config import GlobalSettings
 
 
-# let's create the ball class
-class Ball(pygame.sprite.Sprite):
-    # This class represents a ball. It derives from the "Sprite" class in Pygame.
+# Class Ball represents the ball that bounces around the screen
+class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     def __init__(self, filename, width, height, settings: GlobalSettings):
         # Call the parent class (Sprite) constructor
         super().__init__()
-        # Store game settings
-        self.settings = settings
-        # Pass in the color of the ball, its width and height.
-        # Set the background color and set it to be transparent
-        self.image = pygame.image.load(filename)
-        self.image = pygame.transform.smoothscale(self.image, (width, height))
-        # Draw the ball (a rectangle!)
-        # WE NEED TO USE A PYGAME BUILT IN METHOD
+        # Pass Ball settings
+        self.settings: GlobalSettings = settings
+        # Load and scale the image
+        self.image: pygame.image = pygame.image.load(filename)
+        self.image: pygame.transform = pygame.transform.smoothscale(self.image, (width, height))
+        # Draw the ball
         pygame.draw.rect(self.image, self.settings.BLACK, [width, height, 0, 0])
-        self.rect = self.image.get_rect()
-        # LET'S SET THE BALL SPEED ATTRIBUTE, IT WILL HAVE TWO COMPONENTS, Y-SPEED, X-SPEED, BOTH RANDOM,
-        # CHOOSE CAREFULLY THE INTERVAL
-        # setting the ball velocity in the form of [x velocity, y velocity]
-        self.velocity = [randint(6, 10), randint(-10, 10)]
-        # Fetch the rectangle object that has the dimensions of the image.
+        # Get the ball rectangle dimensions
+        self.rect: pygame.image = self.image.get_rect()
+        # X and Y velocity
+        self.x_velocity: randint = randint(int(-self.settings.height / 70), int(-self.settings.height / 120))
+        self.y_velocity: randint = randint(int(self.settings.height / 120), int(self.settings.height / 70))
+        # Ball velocity adapted to screen resolution (X, Y)
+        self.velocity: list = [self.x_velocity, self.y_velocity]
 
-    # CREATE THE UPDATE METHOD, THAT MODIFIES THE POSITION OF THE BALL ACCORDING TO THE SPEED
-    # method that updates the position of the ball
+    # Method that updates the position of the ball
     def update(self, move: False):
         if move:
             self.rect.x += self.velocity[0]
             self.rect.y += self.velocity[1]
 
-    # CREATE THE BOUNCE METHOD, THAT MODIFIES THE SPEED OF THE BALL AFTER IT TOUCHES A PADDLE
-    # method that updates the position of the ball once it hits an obstacle
+    # Methods that update the position of the ball once it hits an obstacle
+    # Bounce the ball off a horizontal surface (paddle)
     def bounce(self):
-        # x will need to change to the opposite direction
-        self.velocity[0] = -self.velocity[0]
-        # y can still randomly either go up or down
+        # X changes to opposite direction
+        self.velocity[0] = - self.velocity[0]
+        # Y Goes up or down randomly
         self.velocity[1] = randint(-8, 8)
 
+    # Bounce the ball off a vertical surface (wall)
     def bounce_up_down(self):
-        # x will not be affected
-        # y will need to change to the opposite direction
-        self.velocity[1] = -self.velocity[1]
+        # X not affected
+        # Y changes to opposite direction
+        self.velocity[1] = - self.velocity[1]
 
-    # Detect collisions between the ball and the paddles and change its speed accordingly
+    # Detect collision between the ball and the paddles and change its speed accordingly
     def handle_ball_collision(self, ball_owner, paddleA, paddleB):
+        # Detect collision with paddleA
         if pygame.sprite.collide_mask(self, paddleA):
-            ball_owner = 'paddleA'
+            ball_owner: str = 'paddleA'
             self.bounce()
+        # Detect collision with paddleB
         if pygame.sprite.collide_mask(self, paddleB):
-            ball_owner = 'paddleB'
+            ball_owner: str = 'paddleB'
             self.bounce()
+        # Return the ball owner
         return ball_owner
 
-    # Resets Ball position
+    # Reset Ball position
     def reset_ball(self):
-        # Initial position of the ball
-        self.rect.x, self.rect.y = (self.settings.INITIAL_POS_X, self.settings.INITIAL_POS_Y)
+        # Initial position of the ball (center of the screen)
+        self.rect.x, self.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)
 
-    # Handles the ball motion in the screen
+    # Handle the ball motion in the screen
     def handle_ball_motion(self, scoreA, scoreB, ball_owner, triggered):
-        if self.rect.x >= self.settings.width + self.settings.BALL_WIDTH:
+        # If the ball goes off the right of the screen
+        if self.rect.x >= self.settings.width + self.settings.ball_width:
+            # Add score to player A
             scoreA += self.settings.SCORE_ADDER_A
+            # Reset the ball
             self.reset_ball()
-            ball_owner = None
-            triggered = False
+            ball_owner = None  # Reset the ball owner
+            triggered: bool = False  # Reset the trigger
+            # Ball direction turns to the left
             self.velocity[0] = - self.velocity[0]
-        if self.rect.x <= 0 - self.settings.BALL_WIDTH:
+        # If the ball goes off the left side of the screen
+        if self.rect.x <= 0 - self.settings.ball_width:
+            # Add score to player B
             scoreB += self.settings.SCORE_ADDER_B
+            # Reset the ball
             self.reset_ball()
-            ball_owner = None
-            triggered = False
+            ball_owner = None  # Reset the ball owner
+            triggered: bool = False  # Reset the trigger
+            # Ball direction turns to the right
             self.velocity[0] = - self.velocity[0]
-        if self.rect.y >= self.settings.height - self.settings.BALL_HEIGHT:
+        # if the ball hits the bottom of the screen, bounce it
+        if self.rect.y >= self.settings.height - self.settings.ball_height:
             self.bounce_up_down()
+        # If the ball hits the top of the screen, bounce it
         if self.rect.y <= 0:
             self.bounce_up_down()
         return scoreA, scoreB, ball_owner, triggered
 
-    # Handles multiple balls motion in the screen
+    # Handle multiple balls motion in the screen
     def handle_multiple_balls_motion(self, powerup_owner, scoreA, scoreB):
-        should_kill = False
-        if self.rect.x >= self.settings.width + self.settings.BALL_WIDTH:
-            if powerup_owner == 'paddleA':
+        # Boolean to check if the ball is out of the screen
+        should_kill: bool = False
+        # If the ball goes off the right of the screen
+        if self.rect.x >= self.settings.width + self.settings.ball_width:
+            if powerup_owner == 'paddleA':  # If the ball is owned by player A
+                # Add score to player A
                 scoreA += self.settings.SCORE_ADDER_A
-            should_kill = True
-            self.kill()
-        if self.rect.x <= 0 - self.settings.BALL_WIDTH:
-            if powerup_owner == 'paddleB':
+            # Ball out of the screen --> kill the ball
+            should_kill: bool = True
+            self.kill()  # kill the ball
+        # If the ball goes off the left of the screen
+        if self.rect.x <= 0 - self.settings.ball_width:
+            if powerup_owner == 'paddleB':  # If the ball is owned by player B
+                # Add score to player B
                 scoreB += self.settings.SCORE_ADDER_B
-            should_kill = True
-            self.kill()
-        if self.rect.y >= self.settings.height - self.settings.BALL_HEIGHT:
+            # Ball out of the screen --> kill the ball
+            should_kill: bool = True
+            self.kill()  # kill the ball
+        # If the ball hits the bottom of the screen, bounce it
+        if self.rect.y >= self.settings.height - self.settings.ball_height:
             self.bounce_up_down()
+        # If the ball hits the top of the screen, bounce it
         if self.rect.y <= 0:
             self.bounce_up_down()
         return scoreA, scoreB, should_kill

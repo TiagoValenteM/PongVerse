@@ -1,4 +1,7 @@
 import os, sys, main
+
+import pygame.mixer
+
 from .config import *
 from .pong import PongVerse
 
@@ -10,7 +13,7 @@ class Interface:
         # Define settings for the game
         self.settings: GlobalSettings = settings
         # Music and Sound Effects
-        if self.settings.MUSIC_ON:
+        if self.settings.music_on:
             pygame.mixer.music.load('sound/main_theme.mp3')
             pygame.mixer.music.play(-1)
         # Opens a new window
@@ -23,25 +26,29 @@ class Interface:
         background_img_load: pygame.image = pygame.image.load("img/background/background_interface.jpg").convert()
         self.background_img: pygame.transform = pygame.transform.scale(background_img_load, (self.settings.width,
                                                                                              self.settings.height))
-        self.default_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT, settings.FONT_SIZE_DEFAULT)
+        self.default_font = pygame.font.Font(settings.FONT_TYPE_DEFAULT, settings.font_size_default)
         # Set the font for the menu options
-        self.menu_font = pygame.font.Font(settings.FONT_TYPE_MENU, settings.SUBTITLE_SIZE)
+        self.menu_font = pygame.font.Font(settings.FONT_TYPE_MENU, settings.subtitle_size)
         # Creating Screen positions and Sizes
-        self.button_width_center: int = int(self.settings.width * 0.5 - settings.BUTTON_WIDTH * 0.5)
+        self.button_width_center: int = int(self.settings.width * 0.5 - settings.button_width * 0.5)
         self.button_height_pos: int = int(self.settings.height * 0.3)
         self.width_center: int = int(self.settings.width / 2)
+
+    def clickSound(self):
+        if self.settings.music_on:
+            pygame.mixer.Sound('sound/click_sound.wav').play()
 
     def drawRect(self, color, width, height, default_size):
         if default_size:
             # Draw the rectangle with position and size
             return pygame.draw.rect(self.screen, color,
-                                    [width, height, self.settings.BUTTON_WIDTH, self.settings.BUTTON_HEIGHT],
+                                    [width, height, self.settings.button_width, self.settings.button_height],
                                     border_radius=15)
         else:
             # Draw the rectangle with position and size
             return pygame.draw.rect(self.screen, color,
-                                    [width, height, self.settings.SMALL_BUTTON_WIDTH,
-                                     self.settings.SMALL_BUTTON_HEIGHT],
+                                    [width, height, self.settings.small_button_width,
+                                     self.settings.small_button_height],
                                     border_radius=15)
 
     def displayReturnButton(self, mouse_pos, return_rect, return_text_rect, return_text):
@@ -72,6 +79,7 @@ class Interface:
             pygame.quit(), sys.exit()
             # press on return button
         if return_rect.collidepoint(mouse_pos) and pygame.event.get(pygame.MOUSEBUTTONDOWN):
+            self.clickSound()
             # Mouse click on return button
             main_loop = 0 and self.mainMenu()
         return main_loop, mouse_pos
@@ -81,7 +89,7 @@ class Interface:
         resolution_rect_list = []
         resolution_pos_height = self.settings.height * 0.18
         for resolution_name, resolution in Screen_Resolution.items():
-            resolution_pos_height += self.settings.BUTTON_GAP
+            resolution_pos_height += self.settings.button_gap
             resolution_text = self.menu_font.render(resolution_name, True, self.settings.WHITE)
             resolution_text_rect = resolution_text.get_rect()
             resolution_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
@@ -108,22 +116,22 @@ class Interface:
         text_play_pongVerse_vanilla = self.menu_font.render('PongVerse - Vanilla', True, self.settings.WHITE)
         play_pong_vanilla_rect = text_play_pongVerse_vanilla.get_rect()
         play_pongVerse_vanilla_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
-                                                    self.button_height_pos + self.settings.BUTTON_GAP, True)
+                                                    self.button_height_pos + self.settings.button_gap, True)
         # Settings
         text_settings = self.menu_font.render('Settings', True, self.settings.WHITE)
         settings_text_rect = text_settings.get_rect()
         settings_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
-                                      self.button_height_pos + self.settings.BUTTON_GAP * 2, True)
+                                      self.button_height_pos + self.settings.button_gap * 2, True)
         # Creators
         text_creators = self.menu_font.render('Creators', True, self.settings.WHITE)
         creators_text_rect = text_creators.get_rect()
         creators_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
-                                      self.button_height_pos + self.settings.BUTTON_GAP * 3, True)
+                                      self.button_height_pos + self.settings.button_gap * 3, True)
         # Quit
         text_quit = self.menu_font.render('Quit', True, self.settings.WHITE)
         quit_text_rect = text_quit.get_rect()
         quit_rect = self.drawRect(self.settings.GRAY, self.button_width_center,
-                                  self.button_height_pos + self.settings.BUTTON_GAP * 4, True)
+                                  self.button_height_pos + self.settings.button_gap * 4, True)
 
         # -------- Main Program Loop -----------
         while mainMenuOn:
@@ -137,19 +145,19 @@ class Interface:
             if pygame.event.get(pygame.MOUSEBUTTONDOWN):
                 # Mouse click on Pong button
                 if play_pongVerse_rect.collidepoint(mouse_pos):
-                    PongVerse(vanilla=False, settings=self.settings).instructions()
+                    self.clickSound(), PongVerse(vanilla=False, settings=self.settings).instructions()
                 # Mouse click on Vanilla Pong button
                 elif play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
-                    PongVerse(vanilla=True, settings=self.settings).instructions()
+                    self.clickSound(), PongVerse(vanilla=True, settings=self.settings).instructions()
                 # Mouse click on Settings button
                 elif settings_rect.collidepoint(mouse_pos):
-                    self.load_settings()
+                    self.clickSound(), self.settingsScreen()
                 # Mouse click on Creators button
                 elif creators_rect.collidepoint(mouse_pos):
-                    self.creators()
+                    self.clickSound(), self.creatorsScreen()
                 # Mouse click on quit button
                 elif quit_rect.collidepoint(mouse_pos):
-                    pygame.quit(), sys.exit()
+                    self.clickSound(), pygame.quit(), sys.exit()
 
             # --- Main Menu logic starts here
 
@@ -171,47 +179,47 @@ class Interface:
                 self.drawRect(self.settings.GRAY, self.button_width_center, self.button_height_pos, True)
             self.screen.blit(text_play_pongVerse,
                              (self.width_center - play_pong_rect.center[0],
-                              self.button_height_pos + self.settings.BUTTON_GAP * 0.05))
+                              self.button_height_pos + self.settings.button_gap * 0.05))
             # Play PongVerse Vanilla Edition Button
             if play_pongVerse_vanilla_rect.collidepoint(mouse_pos):
                 self.drawRect(self.settings.BLUE, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP, True)
+                              self.button_height_pos + self.settings.button_gap, True)
             else:
                 self.drawRect(self.settings.GRAY, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP, True)
+                              self.button_height_pos + self.settings.button_gap, True)
             self.screen.blit(text_play_pongVerse_vanilla,
                              (self.width_center - play_pong_vanilla_rect.center[0],
-                              self.button_height_pos + self.settings.BUTTON_GAP * 1.05))
+                              self.button_height_pos + self.settings.button_gap * 1.05))
             # Enter Settings Button
             if settings_rect.collidepoint(mouse_pos):
                 self.drawRect(self.settings.BLUE, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 2, True)
+                              self.button_height_pos + self.settings.button_gap * 2, True)
             else:
                 self.drawRect(self.settings.GRAY, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 2, True)
+                              self.button_height_pos + self.settings.button_gap * 2, True)
             self.screen.blit(text_settings,
                              (self.width_center - settings_text_rect.center[0],
-                              self.button_height_pos + self.settings.BUTTON_GAP * 2.05))
+                              self.button_height_pos + self.settings.button_gap * 2.05))
             # Enter Creators Button
             if creators_rect.collidepoint(mouse_pos):
                 self.drawRect(self.settings.BLUE, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 3, True)
+                              self.button_height_pos + self.settings.button_gap * 3, True)
             else:
                 self.drawRect(self.settings.GRAY, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 3, True)
+                              self.button_height_pos + self.settings.button_gap * 3, True)
             self.screen.blit(text_creators,
                              (self.width_center - creators_text_rect.center[0],
-                              self.button_height_pos + self.settings.BUTTON_GAP * 3.05))
+                              self.button_height_pos + self.settings.button_gap * 3.05))
             # Quit Button
             if quit_rect.collidepoint(mouse_pos):
                 self.drawRect(self.settings.RED, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 4, True)
+                              self.button_height_pos + self.settings.button_gap * 4, True)
             else:
                 self.drawRect(self.settings.GRAY, self.button_width_center,
-                              self.button_height_pos + self.settings.BUTTON_GAP * 4, True)
+                              self.button_height_pos + self.settings.button_gap * 4, True)
             self.screen.blit(text_quit,
                              (self.width_center - quit_text_rect.center[0],
-                              self.button_height_pos + self.settings.BUTTON_GAP * 4.05))
+                              self.button_height_pos + self.settings.button_gap * 4.05))
 
             # --- Update the screen with what was drawn
             pygame.display.update()
@@ -219,19 +227,19 @@ class Interface:
             # --- Limit the game to 30 frames per second
             self.clock.tick(30)
 
-    def creators(self):
+    def creatorsScreen(self):
         # Create a loop that carries on until the user exits the main menu
         creatorsON: int = 1
 
         # Create specific fonts for the creators
-        creators_body_font = pygame.font.Font(self.settings.FONT_TYPE_MENU, self.settings.SUBTITLE_SIZE)
-        nova_text_font = pygame.font.Font(self.settings.FONT_TYPE_MENU, self.settings.BODY_SIZE)
+        creators_body_font = pygame.font.Font(self.settings.FONT_TYPE_MENU, self.settings.subtitle_size)
+        nova_text_font = pygame.font.Font(self.settings.FONT_TYPE_MENU, self.settings.body_size)
 
         # Create specific alignments for the creators names
         name_height_pos: int = int(self.settings.height * 0.35)
 
         # Create specific alignments for the creators icons
-        creator_icon_rect = self.settings.CREATOR_1_IMG_LOAD.get_rect()
+        creator_icon_rect = self.settings.creator_1_img_load.get_rect()
         left_icon_alignment = self.settings.width * 0.07
         right_icon_alignment = self.settings.width * 0.93 - creator_icon_rect.width
         top_icon_alignment = self.settings.height * 0.25
@@ -294,31 +302,31 @@ class Interface:
             # Creator 2
             self.screen.blit(creator_2, (
                 self.width_center - creator_2_rect.center[0],
-                name_height_pos + self.settings.BUTTON_GAP * 0.75))
+                name_height_pos + self.settings.button_gap * 0.75))
             # Creator 3
             self.screen.blit(creator_3, (
                 self.width_center - creator_3_rect.center[0],
-                name_height_pos + self.settings.BUTTON_GAP * 1.5))
+                name_height_pos + self.settings.button_gap * 1.5))
             # Creator 4
             self.screen.blit(creator_4, (
                 self.width_center - creator_4_rect.center[0],
-                name_height_pos + self.settings.BUTTON_GAP * 2.25))
+                name_height_pos + self.settings.button_gap * 2.25))
 
             # Display Creators Icons
             # Creator 1
-            self.screen.blit(self.settings.CREATOR_1_IMG_LOAD, (left_icon_alignment, top_icon_alignment))
+            self.screen.blit(self.settings.creator_1_img_load, (left_icon_alignment, top_icon_alignment))
             # Creator 2
-            self.screen.blit(self.settings.CREATOR_2_IMG_LOAD, (left_icon_alignment, bottom_icon_alignment))
+            self.screen.blit(self.settings.creator_2_img_load, (left_icon_alignment, bottom_icon_alignment))
             # Creator 3
-            self.screen.blit(self.settings.CREATOR_3_IMG_LOAD, (right_icon_alignment, top_icon_alignment))
+            self.screen.blit(self.settings.creator_3_img_load, (right_icon_alignment, top_icon_alignment))
             # Creator 4
-            self.screen.blit(self.settings.CREATOR_4_IMG_LOAD, (right_icon_alignment, bottom_icon_alignment))
+            self.screen.blit(self.settings.creator_4_img_load, (right_icon_alignment, bottom_icon_alignment))
             # Display Return button
             self.displayReturnButton(mouse_pos, return_rect, return_text_rect, return_text)
 
             # Display NovaIMS text and Icon
-            novaims_img_rect = self.settings.NOVAIMS_IMG_LOAD.get_rect()
-            self.screen.blit(self.settings.NOVAIMS_IMG_LOAD.convert_alpha(), (
+            novaims_img_rect = self.settings.novaims_img_load.get_rect()
+            self.screen.blit(self.settings.novaims_img_load.convert_alpha(), (
                 self.settings.width * 0.03,
                 self.settings.height * 0.97 - novaims_img_rect.height))
             self.screen.blit(novaims_text, (self.settings.width * 0.03 + novaims_img_rect.width,
@@ -330,7 +338,7 @@ class Interface:
             # --- Limit the game to 30 frames per second
             self.clock.tick(30)
 
-    def load_settings(self):
+    def settingsScreen(self):
         # Create a loop that carries on until the user exits the main menu
         settingsOn: int = 1
 
@@ -375,29 +383,31 @@ class Interface:
                 if screen_resolution_rect.collidepoint(mouse_pos):
                     self.drawRect(self.settings.BLUE, self.button_width_center, screen_resolution_pos_height, True)
                     if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                        self.clickSound()
                         sys.argv = [sys.argv[0], int(screen_resolution[0]), int(screen_resolution[1]),
-                                    self.settings.MUSIC_ON]
+                                    self.settings.music_on]
                         os.execv(main.main(), sys.argv)
                 else:
                     self.drawRect(self.settings.GRAY, self.button_width_center, screen_resolution_pos_height, True)
                 self.screen.blit(screen_resolution_text, (
                     self.width_center - screen_resolution_text_rect.center[0],
-                    screen_resolution_pos_height + self.settings.BUTTON_GAP * 0.05))
+                    screen_resolution_pos_height + self.settings.button_gap * 0.05))
 
             # Display Sound On/Off icon
-            self.screen.blit(self.settings.SOUND_ON_IMG_LOAD.convert_alpha(),
+            self.screen.blit(self.settings.sound_on_img_load.convert_alpha(),
                              (sound_rect.width * 1.5, self.settings.height * 0.885))
 
             # Display Sound On/Off button
             if sound_rect.collidepoint(mouse_pos):
                 self.drawRect(self.settings.BLUE, self.settings.width * 0.04, self.settings.height * 0.88, False)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    if self.settings.MUSIC_ON:
+                    if self.settings.music_on:
                         pygame.mixer.music.pause()
-                        self.settings.MUSIC_ON = False
+                        pygame.mixer.stop()
+                        self.settings.music_on = False
                     else:
                         pygame.mixer.music.unpause()
-                        self.settings.MUSIC_ON = True
+                        self.settings.music_on = True
             else:
                 self.drawRect(self.settings.GRAY, self.settings.width * 0.04, self.settings.height * 0.88, False)
             self.screen.blit(sound_text,
