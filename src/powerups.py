@@ -11,14 +11,10 @@ class PowerUp(pygame.sprite.Sprite, ABC):  # sprite-Simple base class for visibl
     visible_time: int = GlobalSettings.POWERUP_VISIBLE_TIME
 
     def __init__(self, ball_owner, width, height, settings: GlobalSettings):
-        # Call the parent class (Sprite) constructor
-        super().__init__()
-        # Pass PowerUp settings
-        self.settings = settings
-        # Set PowerUp width and height
-        self.width, self.height = width, height
-        # Set the ball owner to affect a certain player
-        self.owner = ball_owner
+        super().__init__()  # Call the parent class (Sprite) constructor
+        self.settings: GlobalSettings = settings  # Pass PowerUp settings
+        self.width, self.height = width, height  # Set PowerUp width and height
+        self.owner = ball_owner  # Set the ball owner to affect a certain player
 
     # Abstract Method that affects player A
     @abstractmethod

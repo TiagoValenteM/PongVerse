@@ -32,7 +32,7 @@ class GlobalSettings:
     FONT_TYPE_MENU: str = "font/menu_font.ttf"
 
     # Score to Win the Game
-    WIN_SCORE: int = 12
+    WIN_SCORE: int = 10
 
     # Score Adder
     SCORE_ADDER_A: int = 1

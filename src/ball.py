@@ -6,22 +6,17 @@ from .config import GlobalSettings
 # Class Ball represents the ball that bounces around the screen
 class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     def __init__(self, filename, width, height, settings: GlobalSettings):
-        # Call the parent class (Sprite) constructor
-        super().__init__()
-        # Pass Ball settings
-        self.settings: GlobalSettings = settings
-        # Load and scale the image
-        self.image: pygame.image = pygame.image.load(filename)
-        self.image: pygame.transform = pygame.transform.smoothscale(self.image, (width, height))
-        # Draw the ball
-        pygame.draw.rect(self.image, self.settings.BLACK, [width, height, 0, 0])
-        # Get the ball rectangle dimensions
-        self.rect: pygame.image = self.image.get_rect()
+        super().__init__()  # Call the parent class (Sprite) constructor
+        self.settings: GlobalSettings = settings  # Pass Ball settings
+        self.image: pygame.image = pygame.image.load(filename)  # Load the image
+        self.image: pygame.transform = pygame.transform.smoothscale(self.image, (width, height))  # Scale the image
+        pygame.draw.rect(self.image, self.settings.BLACK, [width, height, 0, 0])  # Draw the ball
+        self.rect: pygame.image = self.image.get_rect()  # Get the rectangle of the ball
         # X and Y velocity
         self.x_velocity: randint = randint(int(-self.settings.height / 70), int(-self.settings.height / 120))
         self.y_velocity: randint = randint(int(self.settings.height / 120), int(self.settings.height / 70))
-        # Ball velocity adapted to screen resolution (X, Y)
-        self.velocity: list = [self.x_velocity, self.y_velocity]
+        self.velocity: list = [self.x_velocity, self.y_velocity]  # Ball velocity
+        self.ball_free = True  # Check if the ball is out of paddle bounds
 
     # Method that updates the position of the ball
     def update(self, move: False):
@@ -47,14 +42,20 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     def handleBallCollision(self, ball_owner, paddleA, paddleB):
         # Detect collision with paddleA
         if pygame.sprite.collide_mask(self, paddleA):
-            ball_owner: str = 'paddleA'
-            self.bounce()
+            if self.ball_free:  # if the ball is free, i.e. is not colliding with paddles
+                ball_owner: str = 'paddleA'
+                # Bounce the ball since it is the first collision (avoids being stuck in the paddle)
+                self.bounce()
+            self.ball_free = False
         # Detect collision with paddleB
-        if pygame.sprite.collide_mask(self, paddleB):
-            ball_owner: str = 'paddleB'
-            self.bounce()
-        # Return the ball owner
-        return ball_owner
+        elif pygame.sprite.collide_mask(self, paddleB):
+            if self.ball_free:
+                ball_owner: str = 'paddleB'
+                self.bounce()
+            self.ball_free = False
+        else:
+            self.ball_free = True
+        return ball_owner  # Return the ball owner
 
     # Reset Ball position
     def resetBall(self):

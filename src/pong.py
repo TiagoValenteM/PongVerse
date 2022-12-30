@@ -30,6 +30,7 @@ class PongVerse:
         self.scoreA: int = 0  # Player A score
         self.scoreB: int = 0  # Player B score
         self.triggered: bool = False  # Trigger is set to True when a player scores a point
+        self.random_second = randint(10, 20)  # Create a random number to display the powerup icon
 
     # Display win condition (Instructions)
     def displayWinConditionInstructions(self, body_font, subtitle_font, left_x_alignment):
@@ -203,14 +204,13 @@ class PongVerse:
             paddleB.moveDown(self.settings.PADDLE_SPEED_B, self.settings.height)  # Move the paddle down
             self.triggered = True
 
-    # Powerup icon appears every score sum divisible by 2
-    def setPowerupVisible(self):
+    # Set powerup icon to be displayed
+    def setPowerupVisible(self, timer):
         # Checks if a powerup is invisible and inactive and if there is a ball owner
         if self.powerup_visible is None and self.powerup_active is None and self.ball_owner is not None:
             # List of powerup probabilities
             PowerUps_Probabilities = [val.probability for val in PowerUps.values()]
-            # Score sum divisible by 2 and different from 0
-            if (self.scoreA + self.scoreB) % 2 == 0 and (self.scoreA + self.scoreB) != 0:
+            if timer % self.random_second == 0:  # If the timer is divisible by the random second
                 # Choose a random powerup
                 chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
                 # Instantiate the powerup
@@ -404,6 +404,8 @@ class PongVerse:
 
             # --- Game logic starts here
 
+            timer = int(pygame.time.get_ticks() / 1000)  # Create a timer
+
             if self.vanilla:  # if vanilla mode
                 pygame.display.set_caption(self.settings.GAME_TITLE_VANILLA)  # Set title
             else:
@@ -425,7 +427,7 @@ class PongVerse:
             self.all_sprites_list.draw(self.screen)  # Draw sprites
 
             if not self.vanilla:  # if not vanilla mode, display powerups
-                self.setPowerupVisible()  # Set powerup visible
+                self.setPowerupVisible(timer)  # Set powerup visible
                 self.handleVisiblePowerup(ball, paddleA, paddleB)  # Handle visible powerup
                 self.handleActivePowerup(paddleA, paddleB)  # Handle active powerup
                 self.handleMultipleBalls(paddleA, paddleB)  # Handle multiple balls
