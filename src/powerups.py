@@ -107,11 +107,11 @@ class Freeze(PowerUp):
 
     def affect_playerA(self, player_A):
         # Freeze player A
-        self.settings.PADDLE_SPEED_A = 0
+        self.settings.paddle_speed_a = 0
 
     def affect_playerB(self, player_B):
         # Freeze player B
-        self.settings.PADDLE_SPEED_B = 0
+        self.settings.paddle_speed_b = 0
 
     def run_powerup(self, paddleA, paddleB):  # Does not affect the ball owner
         # If the ball is owned by player A
@@ -125,8 +125,8 @@ class Freeze(PowerUp):
 
     def revert_powerup(self, paddleA, paddleB):
         # Revert the paddle speed
-        self.settings.PADDLE_SPEED_A = 5
-        self.settings.PADDLE_SPEED_B = 5
+        self.settings.paddle_speed_a = 5
+        self.settings.paddle_speed_b = 5
 
 
 # Scarlet Witch: The Scarlet Witch "Power-up" creates multiple balls that move in the different directions
@@ -174,11 +174,11 @@ class FasterPaddle(PowerUp):
 
     def affect_playerA(self, player_A):
         # Increase player A paddle speed
-        self.settings.PADDLE_SPEED_A = self.settings.FASTER_PADDLE_SPEED
+        self.settings.paddle_speed_a = self.settings.faster_paddle_speed
 
     def affect_playerB(self, player_B):
         # Increase player B paddle speed
-        self.settings.PADDLE_SPEED_B = self.settings.FASTER_PADDLE_SPEED
+        self.settings.paddle_speed_b = self.settings.faster_paddle_speed
 
     def run_powerup(self, paddleA, paddleB):  # Affects the ball owner
         if self.owner == 'paddleA':
@@ -188,8 +188,8 @@ class FasterPaddle(PowerUp):
 
     def revert_powerup(self, paddleA, paddleB):
         # Revert player A and player B paddle speed
-        self.settings.PADDLE_SPEED_A = self.settings.DEFAULT_PADDLE_SPEED
-        self.settings.PADDLE_SPEED_B = self.settings.DEFAULT_PADDLE_SPEED
+        self.settings.paddle_speed_a = self.settings.default_paddle_speed
+        self.settings.paddle_speed_b = self.settings.default_paddle_speed
 
 
 # Iron Man: The Iron Man "Power-up" doubles the score of the player that hits the ball

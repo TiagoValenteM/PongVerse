@@ -192,16 +192,16 @@ class PongVerse:
     def pressedKeys(self, keys, paddleA, paddleB):
         # Move the paddles when the user hits W/S (player A) or up/down (player B)
         if keys[pygame.K_w]:
-            paddleA.moveUp(self.settings.PADDLE_SPEED_A)  # Move the paddle up
+            paddleA.moveUp(self.settings.paddle_speed_a)  # Move the paddle up
             self.triggered = True
         if keys[pygame.K_s]:
-            paddleA.moveDown(self.settings.PADDLE_SPEED_A, self.settings.height)  # Move the paddle down
+            paddleA.moveDown(self.settings.paddle_speed_a, self.settings.height)  # Move the paddle down
             self.triggered = True
         if keys[pygame.K_UP]:
-            paddleB.moveUp(self.settings.PADDLE_SPEED_B)  # Move the paddle up
+            paddleB.moveUp(self.settings.paddle_speed_b)  # Move the paddle up
             self.triggered = True
         if keys[pygame.K_DOWN]:
-            paddleB.moveDown(self.settings.PADDLE_SPEED_B, self.settings.height)  # Move the paddle down
+            paddleB.moveDown(self.settings.paddle_speed_b, self.settings.height)  # Move the paddle down
             self.triggered = True
 
     # Set powerup icon to be displayed

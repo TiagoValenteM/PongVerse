@@ -6,6 +6,48 @@ Screen_Resolution = {'480p': (854, 480), '720p': (1280, 720), '1080p': (1920, 10
 
 
 class GlobalSettings:
+    """
+    The GlobalSettings class stores all the global settings for the Pong game.
+
+    Args:
+    initial_resolution: A tuple representing the initial screen resolution. Defaults to (1280, 720).
+    initial_music_on: A boolean indicating whether the music is initially on or off. Defaults to True.
+
+    Attributes:
+    MENU_TITLE: A string representing the title of the main menu screen.
+    SETTINGS_TITLE: A string representing the title of the settings screen.
+    CREDITS_TITLE: A string representing the title of the credits screen.
+    GAME_TITLE: A string representing the title of the game screen.
+    GAME_TITLE_VANILLA: A string representing the title of the vanilla game screen.
+    INSTRUCTIONS_TITLE: A string representing the title of the instructions screen.
+    INSTRUCTIONS_TITLE_VANILLA: A string representing the title of the instructions screen for the vanilla game.
+    BLACK: A tuple representing the color black in RGB format.
+    WHITE: A tuple representing the color white in RGB format.
+    BLUE: A tuple representing the color blue in RGB format.
+    LIGHT_BLUE: A tuple representing the color light blue in RGB format.
+    GOLDEN: A tuple representing the color golden in RGB format.
+    RED: A tuple representing the color red in RGB format.
+    GREEN: A tuple representing the color green in RGB format.
+    PURPLE: A tuple representing the color purple in RGB format.
+    GRAY: A tuple representing the color gray in RGB format.
+    FONT_TYPE_DEFAULT: A string representing the file path for the default font used in the game.
+    FONT_TYPE_MENU: A string representing the file path for the font used in the main menu.
+    WIN_SCORE: An integer representing the score required to win the game.
+    SCORE_ADDER_A: An integer representing the score added to player A when they score a point.
+    SCORE_ADDER_B: An integer representing the score added to player B when they score a point.
+    MIN_ADDITIONAL_BALLS: An integer representing the minimum number of additional balls that can be in play.
+    MAX_ADDITIONAL_BALLS: An integer representing the maximum number of additional balls that can be in play.
+    PADDLE_SPEED_A: A float representing the speed of player A's paddle.
+    PADDLE_SPEED_B: A float representing the speed of player B's paddle.
+    DEFAULT_PADDLE_SPEED: An integer representing the default speed of the paddles.
+    FASTER_PADDLE_SPEED: A float representing the faster speed of the paddles.
+    PADDLE_ROUND_CORNERS_A: An integer representing the border radius for player A's paddle.
+    PADDLE_ROUND_CORNERS_B: An integer representing the border radius for player B's paddle.
+    PADDLE_ROUND_CORNERS_SHIELD: An integer representing the border radius for the shielded paddles.
+    POWERUP_VISIBLE_TIME: An integer representing the time in seconds that powerups are visible on the screen.
+    POWERUP_NAME_VISIBLE_TIME: An integer representing the time in seconds that the name of a powerup is visible on the screen.
+    """
+
     # == Static Attributes ==
     # Titles
     MENU_TITLE: str = "Main Menu"
@@ -42,12 +84,6 @@ class GlobalSettings:
     MIN_ADDITIONAL_BALLS: int = 2
     MAX_ADDITIONAL_BALLS: int = 4
 
-    # Paddle Speeds
-    PADDLE_SPEED_A: float = 5
-    PADDLE_SPEED_B: float = 5
-    DEFAULT_PADDLE_SPEED: int = 5
-    FASTER_PADDLE_SPEED: float = 6.3
-
     # Paddle Round Corners
     PADDLE_ROUND_CORNERS_A: int = 5
     PADDLE_ROUND_CORNERS_B: int = 5
@@ -61,6 +97,35 @@ class GlobalSettings:
 
     # == Constructor ==
     def __init__(self, initial_resolution=Screen_Resolution['720p'], initial_music_on=True):
+        """
+        Initialize the GlobalSettings class.
+
+        Args:
+        initial_resolution (tuple): A tuple representing the width and height of the window.
+        initial_music_on (bool): A boolean representing the state of the music (on/off).
+
+        Attributes:
+        resolution: A tuple representing the screen resolution.
+        width: An integer representing the screen width.
+        height: An integer representing the screen height.
+        font_size_default: An integer representing the default font size.
+        font_size_powerup: An integer representing the powerup font size.
+        font_size_small_powerup: An integer representing the small powerup font size.
+        font_size_menu: An integer representing the menu font size.
+        title_size: An integer representing the title font size.
+        subtitle_size: An integer representing the subtitle font size.
+        body_size: An integer representing the body font size.
+        small_body_size: An integer representing the small body font size.
+        music_on: A boolean indicating whether the music is on or off.
+        button_width: An integer representing the menu button width.
+        button_height: An integer representing the menu button height.
+        small_button_width: An integer representing the small menu button width.
+        small_button_height: An integer representing the small menu button height.
+        button_gap: An integer representing the gap between menu buttons.
+        novaims_icon_size: A tuple representing the size of the NovaIMS icon.
+        novaims_img_load: A pygame transform that loads and scales NovaIMS icon.
+        """
+
         # Set window size
         self.resolution = initial_resolution
         self.width = initial_resolution[0]
@@ -100,16 +165,16 @@ class GlobalSettings:
 
         # Set Creators icon size and load
         self.creator_icon_size: tuple = (self.width * 0.1, self.width * 0.1)
-        self.creator_1_img_load: pygame.image = pygame.transform.smoothscale(
+        self.creator_1_img_load: pygame.transform = pygame.transform.smoothscale(
             pygame.image.load("img/creators/creator_1.png"),
             self.creator_icon_size)
-        self.creator_2_img_load: pygame.image = pygame.transform.smoothscale(
+        self.creator_2_img_load: pygame.transform = pygame.transform.smoothscale(
             pygame.image.load("img/creators/creator_2.png"),
             self.creator_icon_size)
-        self.creator_3_img_load: pygame.image = pygame.transform.smoothscale(
+        self.creator_3_img_load: pygame.transform = pygame.transform.smoothscale(
             pygame.image.load("img/creators/creator_3.png"),
             self.creator_icon_size)
-        self.creator_4_img_load: pygame.image = pygame.transform.smoothscale(
+        self.creator_4_img_load: pygame.transform = pygame.transform.smoothscale(
             pygame.image.load("img/creators/creator_4.png"),
             self.creator_icon_size)
 
@@ -218,6 +283,12 @@ class GlobalSettings:
         # Set PaddleB initial position
         self.initial_pos_x_b: float = self.width - self.paddle_width_b * 3
         self.initial_pos_y_b: float = self.height / 2 - self.paddle_height_b / 2
+
+        # Paddle Speeds
+        self.paddle_speed_a: float = self.height / 144
+        self.paddle_speed_b: float = self.height / 144
+        self.default_paddle_speed: float = self.height / 144
+        self.faster_paddle_speed: float = self.height / 105
 
         # ---- Powerups ----
 
