@@ -63,13 +63,14 @@ class Interface:
 
     def __init__(self, settings: GlobalSettings):
         """
-                Initialize the game interface and its respective settings.
+        Initialize the game interface and its respective settings.
 
-                Parameters
-                ----------
-                settings : GlobalSettings
-                    An instance of the GlobalSettings class containing the game settings.
+        Parameters
+        ----------
+        settings : GlobalSettings
+            An instance of the GlobalSettings class containing the game settings.
         """
+
         pygame.init(), pygame.mixer.init()  # initialize pygame and pygame mixer
         self.settings: GlobalSettings = settings  # Settings for the game
         if self.settings.music_on:  # Music and Sound Effects
@@ -95,12 +96,13 @@ class Interface:
     @staticmethod
     def setWindowTitle(title: str) -> None:  # Set the window title
         """
-                Set the title of the game window
+        Set the title of the game window.
 
-                Returns
-                -------
-                None
-                """
+        Return
+        ----------
+        None
+        """
+
         pygame.display.set_caption(title)
 
     # Click sound activation
@@ -117,6 +119,7 @@ class Interface:
         ----------
         None
         """
+
         if self.settings.music_on:
             pygame.mixer.Sound('sound/click_sound.wav').play()
 
@@ -141,6 +144,7 @@ class Interface:
         pygame.draw.rect : pygame.Rect
             The rectangle object.
         """
+
         if default_size:  # If the size is the default size
             return pygame.draw.rect(self.screen, color,
                                     [width, height, self.settings.button_width, self.settings.button_height],

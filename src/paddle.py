@@ -5,9 +5,8 @@ from .config import *
 class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     """
     A class representing a paddle in the game.
-
-    The paddle is a rectangular object that bounces the ball. It has a specified color and dimensions, and can be moved
-    up or down within the game window.
+        The paddle is a rectangular object that bounces the ball. It has a specified color and dimensions, and can
+        be moved up or down within the game window.
 
     Attributes
     ----------
@@ -28,6 +27,7 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     ----------
     moveUp(self, pixels: int) -> None
         Move the paddle up by a specified number of pixels.
+
     moveDown(self, pixels: int, window_height: int) -> None
         Move the paddle down by a specified number of pixels.
 
@@ -48,6 +48,7 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         border_radius: int
             The radius of the border of the paddle in pixels.
         """
+
         super().__init__()  # Call the parent class (Sprite) constructor
         self.settings: GlobalSettings = GlobalSettings()  # Pass Paddle settings
         self.height: float = height  # Set the height
@@ -73,6 +74,7 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         self.rect.y -= pixels
         if self.rect.y < 0:  # Preventing going too far
             self.rect.y = 0
@@ -93,6 +95,7 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         self.rect.y += pixels
         if self.rect.y > window_height - self.height:  # Preventing going too far
             self.rect.y = window_height - self.height

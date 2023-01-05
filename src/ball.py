@@ -36,14 +36,19 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     ----------
     update(move: bool) -> None
         Update the position of the ball.
+
     bounce() -> None
         Bounce the ball off a horizontal surface (paddle).
+
     bounceUpDown() -> None
         Bounce the ball off a vertical surface (wall).
+
     handleBallCollision(paddleA: Paddle, paddleB: Paddle) -> str
         Detect collision between the ball and the paddles and change its speed accordingly.
+
     resetBall() -> None
         Reset the ball to its initial position.
+
     handleBallMotion(scoreA: int, scoreB: int, ball_owner: str, triggered: bool) -> tuple[int, int, str, bool]
         Handle the ball motion in the screen.
 
@@ -65,6 +70,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         settings : GlobalSettings
             An instance of the `GlobalSettings` class that stores the game settings.
         """
+
         super().__init__()  # Call the parent class (Sprite) constructor
         self.settings: GlobalSettings = settings  # Pass Ball settings
         self.image: pygame.image = pygame.image.load(filename)  # Load the image
@@ -91,6 +97,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         if move:
             self.rect.x += self.velocity[0]
             self.rect.y += self.velocity[1]
@@ -105,6 +112,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         # X changes to opposite direction
         self.velocity[0] = - self.velocity[0]
         # Y Goes up or down randomly
@@ -119,6 +127,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         # X not affected
         # Y changes to opposite direction
         self.velocity[1] = - self.velocity[1]
@@ -142,6 +151,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ball_owner: str
             The owner of the ball after colliding with a paddle, or None if it is not colliding with any paddles.
         """
+
         # Detect collision with paddleA
         if pygame.sprite.collide_mask(self, paddleA):
             if self.ball_free:  # if the ball is free, i.e. is not colliding with paddles
@@ -168,6 +178,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         ----------
         None
         """
+
         # Initial position of the ball (center of the screen)
         self.rect.x, self.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)
 
@@ -200,6 +211,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         triggered: bool
             The updated trigger status of the ball.
         """
+
         # If the ball goes off the right of the screen
         if self.rect.x >= self.settings.width + self.settings.ball_width:
             # Add score to player A
@@ -252,6 +264,7 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         should_kill: bool
             A boolean indicating whether the extra ball should be removed from the game.
         """
+
         # Boolean to check if the ball is out of the screen
         should_kill: bool = False
         # If the ball goes off the right of the screen

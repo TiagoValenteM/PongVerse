@@ -1,14 +1,133 @@
 import sys
 from random import choices
 from .ball import Ball
-from .paddle import Paddle
 from .powerups import *
 from .config import *
 
 
 # Class Pong represents the game
 class PongVerse:
+    """
+    PongVerse class represents the game itself controls instructions, play, and win screens.
+
+    Attributes
+    ----------
+    settings: GlobalSettings
+        An instance of the `GlobalSettings` class that stores the game settings.
+    vanilla: bool
+        Defines the existence or non-existence of power-ups.
+    powerup_visible: Powerup (or None)
+        Variable to store the visible powerup.
+    powerup_active: Powerup (or None)
+        Variable to store the active powerup.
+    powerup_visible_time: pygame.Time
+        Variable to store the visible powerup time.
+    powerup_active_time: pygame.Time
+        Variable to store the active powerup time.
+    all_sprites_list: pygame.sprite.Group
+        List of all sprites in the game.
+    additional_balls: list[Ball]
+        List of additional balls.
+    ball_owner: str (or None)
+        Variable to store the ball owner.
+    powerup_owner: str (or None)
+        Variable to store the powerup owner. (Only used in MultipleBalls)
+    screen: pygame.Surface
+        The game screen.
+    default_font: pygame.Font
+        The default font for the game.
+    powerup_font: pygame.Font
+        The font for the powerup text.
+    small_powerup_font: pygame.Font
+        The font for the small powerup text.
+    clock: pygame.Clock
+        The clock that controls the FPS and timers.
+    scoreA: int
+        Player A score.
+    scoreB: int
+        Player B score.
+    triggered: bool
+        Indicates if the ball has been triggered to move.
+    random_second: int
+        Random second used to spawn powerups.
+
+    Methods
+    ----------
+    displayWinConditionInstructions(self, body_font: pygame.font, subtitle_font: pygame.Font,
+                                        left_x_alignment: float) -> None
+        Displays the win condition instructions.
+
+    displayPowerupsInstructions(self, body_font: pygame.font, small_body_font: pygame.Font,
+                                    subtitle_font: pygame.font) -> None
+        Displays the powerups instructions with active time and description.
+
+    displayPlayerKeysInstructions(self, body_font: pygame.font, subtitle_font: pygame.Font,
+                                      left_x_alignment: float) -> None
+        Displays the player keys (keyboard) instructions for each Paddle/Player.
+
+    instructions(self) -> None
+        Displays the instructions screen for the game.
+
+    pressedKeys(self, keys: pygame.key, paddleA: Paddle, paddleB: Paddle) -> None
+        Defines the keys used to move the paddles.
+
+    setPowerupVisible(self, timer: pygame.time) -> None
+        Sets the powerup visible if there is no active powerup but a ball owner and timer has reached a certain second.
+
+    setPowerupInvisible(self) -> None
+        Sets the powerup icon invisible after 5 seconds.
+
+    setPowerupActive(self, paddleA: Paddle, paddleB: Paddle) -> None
+        Sets the powerup active if a ball collided with an icon and has owner.
+
+    setPowerupInactive(self, paddleA: Paddle, paddleB: Paddle) -> None
+        Sets the powerup inactive if the active time has reached the powerup's active time.
+
+    handleVisiblePowerup(self, ball: Ball, paddleA: Paddle, paddleB: Paddle) -> None
+        Handles the visible powerup icon if there is one and checks if it collides with the ball.
+
+    handleActivePowerup(self, paddleA: Paddle, paddleB: Paddle) -> None
+        Handles the active powerup if there is one, also shows powerup name and description.
+
+    handleMultipleBalls(self, paddleA: Paddle, paddleB: Paddle) -> None
+        Handles the additional balls if there are any.
+
+    displayScores(self) -> None
+        Displays the scores of the players.
+
+    setStaticElements(self, background_img: pygame.image, playerA_icon: pygame.transform,
+                          playerB_icon: pygame.transform) -> None
+        Sets the static elements of the game and shows them, background and players' icons.
+
+    instanceNewBall(self) -> Ball
+        Creates a new ball and returns it.
+
+    powerupActivatedSound(self) -> None
+        Plays a sound when a powerup is activated.
+
+    winnerSound(self) -> None
+        Plays a sound when a player wins.
+
+    play(self) -> None
+        Starts the game and manages everything since paddles, ball to powerups.
+
+    winnerScreen(self) -> None
+        Displays the winner screen.
+
+    """
+
     def __init__(self, vanilla: bool, settings: GlobalSettings):
+        """
+        Initialize the game PongVerse, Instructions and WinScreen and their respective settings.
+
+        Parameters
+        ----------
+        vanilla: bool
+            Defines the existence or non-existence of power-ups.
+        settings : GlobalSettings
+            An instance of the GlobalSettings class containing the game settings.
+        """
+
         self.settings: GlobalSettings = settings  # Load game settings
         self.vanilla: bool = vanilla  # Set game version
         self.powerup_visible: any = None  # Variable to store the visible powerup
@@ -30,10 +149,30 @@ class PongVerse:
         self.scoreA: int = 0  # Player A score
         self.scoreB: int = 0  # Player B score
         self.triggered: bool = False  # Trigger is set to True when a player scores a point
-        self.random_second = randint(10, 20)  # Create a random number to display the powerup icon
+        self.random_second: int = randint(10, 15)  # Create a random number to display the powerup icon
 
     # Display win condition (Instructions)
-    def displayWinConditionInstructions(self, body_font, subtitle_font, left_x_alignment):
+    def displayWinConditionInstructions(self, body_font: pygame.font, subtitle_font: pygame.font,
+                                        left_x_alignment: float) -> None:
+        """
+        Displays the win condition instructions.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        body_font: pygame.Font
+            The font for the body text.
+        subtitle_font: pygame.Font
+            The font for the subtitle text.
+        left_x_alignment: float
+            The left x alignment of the text.
+
+        Return
+        ----------
+        None
+        """
+
         # Display the win condition subtitle
         win_condition_title = subtitle_font.render('Win Condition', True, self.settings.LIGHT_BLUE)
         self.screen.blit(win_condition_title,
@@ -45,7 +184,27 @@ class PongVerse:
                          (left_x_alignment, self.settings.height * 0.67))
 
     # Display powerups (Instructions)
-    def displayPowerupsInstructions(self, body_font, small_body_font, subtitle_font):
+    def displayPowerupsInstructions(self, body_font: pygame.font, small_body_font: pygame.font,
+                                    subtitle_font: pygame.font) -> None:
+        """
+        Displays the powerups instructions with active time and description.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        body_font: pygame.Font
+            The font for the body text.
+        small_body_font: pygame.Font
+            The font for the small body text.
+        subtitle_font: pygame.Font
+            The font for the subtitle text.
+
+        Return
+        ----------
+        None
+        """
+
         # Check if the game is not vanilla
         if not self.vanilla:
             # Display the powerups subtitle
@@ -79,7 +238,27 @@ class PongVerse:
                                   icon_pos[1] + self.settings.powerup_width * 0.8])
 
     # Display player keys (Instructions)
-    def displayPlayerKeysInstructions(self, body_font, subtitle_font, left_x_alignment):
+    def displayPlayerKeysInstructions(self, body_font: pygame.font, subtitle_font: pygame.font,
+                                      left_x_alignment: float) -> None:
+        """
+        Displays the player keys (keyboard) instructions for each Paddle/Player.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        body_font: pygame.Font
+            The font for the body text.
+        subtitle_font: pygame.Font
+            The font for the subtitle text.
+        left_x_alignment: float
+            The left x alignment of the text.
+
+        Return
+        ----------
+        None
+        """
+
         # Display the player keys subtitle
         player_keys_title = subtitle_font.render('Player keys', True, self.settings.LIGHT_BLUE)
         self.screen.blit(player_keys_title,
@@ -108,7 +287,20 @@ class PongVerse:
                           self.settings.height * 0.47))
 
     # Screen (Instructions)
-    def instructions(self):
+    def instructions(self) -> None:
+        """
+        Displays the instructions screen for the game.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         # Loop that carries on until the user exits the instructions screen
         instructionsON: int = 1
 
@@ -189,7 +381,26 @@ class PongVerse:
             self.clock.tick(30)
 
     # Keys used to move the paddles
-    def pressedKeys(self, keys, paddleA, paddleB):
+    def pressedKeys(self, keys: pygame.key, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Defines the keys used to move the paddles.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        keys : pygame.Key
+            The keys pressed by the user.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+
         # Move the paddles when the user hits W/S (player A) or up/down (player B)
         if keys[pygame.K_w]:
             paddleA.moveUp(self.settings.paddle_speed_a)  # Move the paddle up
@@ -205,7 +416,22 @@ class PongVerse:
             self.triggered = True
 
     # Set powerup icon to be displayed
-    def setPowerupVisible(self, timer):
+    def setPowerupVisible(self, timer: pygame.time) -> None:
+        """
+        Sets the powerup visible if there is no active powerup but a ball owner and timer has reached a certain second.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        timer : pygame.Time
+            The timer used to spawn a powerup icon.
+
+        Return
+        ----------
+        None
+        """
+
         # Checks if a powerup is invisible and inactive and if there is a ball owner
         if self.powerup_visible is None and self.powerup_active is None and self.ball_owner is not None:
             # List of powerup probabilities
@@ -222,24 +448,90 @@ class PongVerse:
                 self.powerup_visible, self.powerup_visible_time = powerup, pygame.time.get_ticks()
 
     # Powerup icon disappears after 5 seconds
-    def setPowerupInvisible(self):
+    def setPowerupInvisible(self) -> None:
+        """
+        Sets the powerup icon invisible after 5 seconds.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         self.powerup_visible.kill()  # Erase powerup icon
         self.powerup_visible, self.powerup_visible_time = None, None  # Set powerup icon invisible
 
     # Powerup is activated
-    def setPowerupActive(self, paddleA, paddleB):
+    def setPowerupActive(self, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Sets the powerup active if a ball collided with an icon and has owner.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+        
         self.powerup_active = self.powerup_visible  # Set powerup active as the powerup visible
         self.powerup_visible.kill()  # Erase powerup icon
         self.powerup_active.run_powerup(paddleA, paddleB)  # Activate powerup
         self.powerup_active_time = pygame.time.get_ticks()  # Set powerup active timer
 
     # Powerup is deactivated
-    def setPowerupInactive(self, paddleA, paddleB):
+    def setPowerupInactive(self, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Sets the powerup inactive if the active time has reached the powerup's active time.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+
         self.powerup_active.revert_powerup(paddleA, paddleB)  # Revert powerup effect
         self.powerup_active, self.powerup_active_time, self.powerup_owner = None, None, None  # Set powerup inactive
 
     # Handle visible powerup
-    def handleVisiblePowerup(self, ball, paddleA, paddleB):
+    def handleVisiblePowerup(self, ball: Ball, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Handles the visible powerup icon if there is one and checks if it collides with the ball.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        ball : Ball
+            The ball object.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+
         # Check powerup visibility
         if self.powerup_visible_time is not None:
             # Variable to store the time the powerup has been visible
@@ -256,7 +548,24 @@ class PongVerse:
                 self.setPowerupInvisible()  # Powerup invisible (visible time is over)
 
     # Handle active powerup
-    def handleActivePowerup(self, paddleA, paddleB):
+    def handleActivePowerup(self, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Handles the active powerup if there is one, also shows powerup name and description.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+
         # Check if a powerup is active
         if self.powerup_active_time is not None:
             # Variable to store the time the powerup has been active
@@ -284,7 +593,24 @@ class PongVerse:
                 self.setPowerupInactive(paddleA, paddleB)  # Powerup inactive
 
     # Handle additional balls
-    def handleMultipleBalls(self, paddleA, paddleB):
+    def handleMultipleBalls(self, paddleA: Paddle, paddleB: Paddle) -> None:
+        """
+        Handles the additional balls if there are any.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        paddleA : Paddle
+            The paddle controlled by player A.
+        paddleB : Paddle
+            The paddle controlled by player B.
+
+        Return
+        ----------
+        None
+        """
+
         if self.powerup_active is not None and self.powerup_active.name == MultipleBalls.name:
             self.triggered = True  # avoid triggering and stopping the screen if a ball scores
             if len(self.additional_balls) == 0:  # if there are no additional balls
@@ -308,7 +634,20 @@ class PongVerse:
                     self.setPowerupInactive(paddleA, paddleB)  # deactivate the powerup
 
     # Manage Scores
-    def displayScores(self):
+    def displayScores(self) -> None:
+        """
+        Displays the scores of the players.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         color_A, color_B = self.settings.WHITE, self.settings.WHITE
 
         if self.powerup_active is not None:  # if a powerup is active (Color Red)
@@ -326,7 +665,27 @@ class PongVerse:
         self.screen.blit(text_B, self.settings.pos_score_b)
 
     # Display Static Elements
-    def setStaticElements(self, background_img, playerA_icon, playerB_icon):
+    def setStaticElements(self, background_img: pygame.image, playerA_icon: pygame.transform,
+                          playerB_icon: pygame.transform) -> None:
+        """
+        Sets the static elements of the game and shows them, background and players' icons.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+        background_img : pygame.Image
+            The background image of the game.
+        playerA_icon : pygame.Transform
+            The player A icon.
+        playerB_icon : pygame.Transform
+            The player B icon.
+
+        Return
+        ----------
+        None
+        """
+
         background: any = pygame.transform.scale(background_img, [self.settings.width,
                                                                   self.settings.height])  # Scale background image
         self.screen.blit(background, (0, 0))  # Display background image
@@ -340,23 +699,76 @@ class PongVerse:
                              self.settings.field_divider_max_pos, 5)
 
     # Create ball
-    def instanceNewBall(self):
+    def instanceNewBall(self) -> Ball:
+        """
+        Creates a new ball and returns it.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        ball : Ball
+            The new ball object.
+        """
+
         ball = Ball("img/icons/ball.png", self.settings.ball_width, self.settings.ball_height, self.settings)  # Ball
         ball.rect.x, ball.rect.y = (self.settings.initial_pos_x, self.settings.initial_pos_y)  # Initial position
         return ball
 
     # Sound when a Powerup is activated
-    def powerupActivatedSound(self):
+    def powerupActivatedSound(self) -> None:
+        """
+        Plays a sound when a powerup is activated.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         if self.settings.music_on:
             pygame.mixer.Sound('sound/powerup_activated_sound.wav').play()
 
     # Sound when a Player Wins
-    def winnerSound(self):
+    def winnerSound(self) -> None:
+        """
+        Plays a sound when a player wins.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         if self.settings.music_on:
             pygame.mixer.Sound('sound/winner_sound.wav').play()
 
     # Screen (PlayPong)
-    def play(self):
+    def play(self) -> None:
+        """
+        Starts the game and manages everything since paddles, ball to powerups.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         paddleA = Paddle(self.settings.BLUE, self.settings.paddle_width_a, self.settings.paddle_height_a,
                          self.settings.PADDLE_ROUND_CORNERS_A)  # Paddle A
         paddleA.rect.x, paddleA.rect.y = (
@@ -439,7 +851,20 @@ class PongVerse:
             self.clock.tick(60)
 
     # Screen (Winning)
-    def winnerScreen(self):
+    def winnerScreen(self) -> None:
+        """
+        Displays the winner screen.
+
+        Parameters
+        ----------
+        self : PongVerse
+            The PongVerse object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         # Loop that carries on until the user exits the win screen
         winner_screenON: int = 1
 
