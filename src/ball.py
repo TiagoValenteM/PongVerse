@@ -13,8 +13,6 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     ----------
     settings: GlobalSettings
         An instance of the `GlobalSettings` class that stores the game settings.
-    filename: str
-        Path to the image file.
     width: float
         The height of the ball in pixels.
     height: float
@@ -51,6 +49,9 @@ class Ball(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
 
     handleBallMotion(scoreA: int, scoreB: int, ball_owner: str, triggered: bool) -> tuple[int, int, str, bool]
         Handle the ball motion in the screen.
+
+    handleMultipleBallsMotion(self, powerup_owner: str, scoreA: int, scoreB: int) -> tuple[int, int, bool]
+        Handle the motion of multiple balls in the screen.
 
     """
 

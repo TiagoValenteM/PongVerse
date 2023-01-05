@@ -15,6 +15,8 @@ class Interface:
         Game window with resolution.
     clock: pygame.Time
         The game clock to set the FPS.
+    background_img: pygame.Transform
+        The background image.
     default_font: pygame.Font
         The default font used for the game.
     menu_font: pygame.Font

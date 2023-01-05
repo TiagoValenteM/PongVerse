@@ -483,7 +483,7 @@ class PongVerse:
         ----------
         None
         """
-        
+
         self.powerup_active = self.powerup_visible  # Set powerup active as the powerup visible
         self.powerup_visible.kill()  # Erase powerup icon
         self.powerup_active.run_powerup(paddleA, paddleB)  # Activate powerup

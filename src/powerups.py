@@ -493,8 +493,8 @@ class Freeze(PowerUp):
         """
 
         # Revert the paddle speed
-        self.settings.paddle_speed_a = self.settings.paddle_speed_a
-        self.settings.paddle_speed_b = self.settings.paddle_speed_b
+        self.settings.paddle_speed_a = self.settings.default_paddle_speed
+        self.settings.paddle_speed_b = self.settings.default_paddle_speed
 
 
 # Scarlet Witch: The Scarlet Witch "Power-up" creates multiple balls that move in the different directions

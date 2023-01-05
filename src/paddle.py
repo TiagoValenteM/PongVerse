@@ -20,8 +20,6 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
         A Pygame surface representing the image of the paddle.
     rect: pygame. rect
         A Pygame rectangle representing the dimensions of the paddle.
-    color: tuple
-        A tuple representing the RGB values of the color of the paddle.
 
     Methods
     ----------
