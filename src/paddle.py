@@ -9,27 +9,44 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
     The paddle is a rectangular object that bounces the ball. It has a specified color and dimensions, and can be moved
     up or down within the game window.
 
-    Attributes:
-        settings: An instance of the `GlobalSettings` class that stores the game settings.
-        height: An integer representing the height of the paddle.
-        border_radius: An integer representing the radius of the rounded corners of the paddle.
-        image: A Pygame surface representing the image of the paddle.
-        rect: A Pygame rectangle representing the dimensions of the paddle.
+    Attributes
+    ----------
+    settings: GlobalSettings
+        An instance of the `GlobalSettings` class that stores the game settings.
+    height: float
+        An integer representing the height of the paddle.
+    border_radius: int
+        An integer representing the radius of the rounded corners of the paddle.
+    image: pygame. image
+        A Pygame surface representing the image of the paddle.
+    rect: pygame. rect
+        A Pygame rectangle representing the dimensions of the paddle.
+    color: tuple
+        A tuple representing the RGB values of the color of the paddle.
 
-    Methods:
-        moveUp(self, pixels: int) -> None: Move the paddle up by a specified number of pixels.
-        moveDown(self, pixels: int, window_height: int) -> None: Move the paddle down by a specified number of pixels.
+    Methods
+    ----------
+    moveUp(self, pixels: int) -> None
+        Move the paddle up by a specified number of pixels.
+    moveDown(self, pixels: int, window_height: int) -> None
+        Move the paddle down by a specified number of pixels.
+
     """
 
     def __init__(self, color: tuple, width: float, height: float, border_radius: int):
         """
-                Initialize the paddle.
+        Initialize the Paddle class.
 
-                Args:
-                    color: A tuple representing the RGB values of the color of the paddle.
-                    width: An float representing the width of the paddle.
-                    height: An float representing the height of the paddle.
-                    border_radius: An integer representing the radius of the rounded corners of the paddle.
+        Parameters
+        ----------
+        color: tuple
+            The color of the paddle as a tuple of integers representing the RGB values.
+        width: float
+            The width of the paddle in pixels.
+        height: float
+            The height of the paddle in pixels.
+        border_radius: int
+            The radius of the border of the paddle in pixels.
         """
         super().__init__()  # Call the parent class (Sprite) constructor
         self.settings: GlobalSettings = GlobalSettings()  # Pass Paddle settings
@@ -43,26 +60,39 @@ class Paddle(pygame.sprite.Sprite):  # Inherit from Pygame Sprite class
 
     # Methods that update the position of the paddle
 
-    def moveUp(self, pixels: int) -> None:  # Method to move paddle up
+    def moveUp(self, pixels: float) -> None:  # Method to move paddle up
         """
-                Move the paddle up by a specified number of pixels.
+        Move the paddle up by a specified number of pixels.
 
-                Args:
-                    pixels: An integer representing the number of pixels to move the paddle.
-                """
+        Parameters
+        ----------
+        pixels: float
+            The number of pixels to move the paddle up.
+
+        Return
+        ----------
+        None
+        """
         self.rect.y -= pixels
         if self.rect.y < 0:  # Preventing going too far
             self.rect.y = 0
             pass
 
-    def moveDown(self, pixels: int, window_height: int) -> None:  # Method to move paddle down
+    def moveDown(self, pixels: float, window_height: int) -> None:  # Method to move paddle down
         """
-                Move the paddle down by a specified number of pixels.
+        Move the paddle down by a specified number of pixels.
 
-                Args:
-                    pixels: An integer representing the number of pixels to move the paddle.
-                    window_height: An integer representing the height of the game window.
-                """
+        Parameters
+        ----------
+        pixels: float
+            The number of pixels to move the paddle down.
+        window_height: int
+            Height of the game window.
+
+        Return
+        ----------
+        None
+        """
         self.rect.y += pixels
         if self.rect.y > window_height - self.height:  # Preventing going too far
             self.rect.y = window_height - self.height
