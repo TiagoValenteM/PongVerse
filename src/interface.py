@@ -1,13 +1,75 @@
-import os, sys, main
-
-import pygame.mixer
-
+import os, sys, main, pygame.mixer
 from .config import *
 from .pong import PongVerse
 
 
 class Interface:
+    """
+    The Interface class displays the game interface and handles events.
+
+    Attributes
+    ----------
+    settings: GlobalSettings
+        An instance of the `GlobalSettings` class that stores the game settings.
+    screen: pygame.Display
+        Game window with resolution.
+    clock: pygame.Time
+        The game clock to set the FPS.
+    default_font: pygame.Font
+        The default font used for the game.
+    menu_font: pygame.Font
+        The font used for the menu options.
+    button_width_center: int
+        Define the center of the button on the x-axis. (screen)
+    button_height_pos: int
+        Define the initial position of the button on the y-axis. (screen)
+    width_center: int
+        Define the center of the screen on the x-axis. (screen)
+
+    Methods
+    ----------
+    setWindowTitle(title: str) -> None
+        Set the title of the game window.
+
+    clickSound(self) -> None
+        Used to play the click sound effect.
+
+    drawRect(self, color: tuple, width: float, height: float, default_size: bool) -> pygame.rect
+        Draw a rectangle on the game screen for the menu options.
+
+    displayReturnButton(self, mouse_pos: tuple, return_rect: pygame.rect, return_text_rect: pygame.Rect,
+                            return_text: pygame.surface.Surface) -> None
+        Used to display a return button on Settings and Creators game screen.
+
+    setTitle(self, title: str) -> tuple[pygame.font, pygame.Rect]
+        Set the title of each screen of the game.
+
+    mainProgramLoop(self, main_loop: int, return_rect: pygame.rect) -> tuple[int, tuple]
+        Runs the main loop of the program, it allows to quit the loop and the game.
+
+    getResolutionDict(self) -> list
+        Get the resolution dictionary.
+
+    mainMenu(self) -> None
+        Loads the main menu for the pong game. It shows the game title, the game logo, and the game options.
+
+    creatorsScreen(self) -> None
+        Loads the creators screen for the pong game. It shows the game creators and the game credits.
+
+    settingsScreen(self) -> None
+        Loads the settings menu for the pong game. The user can change game resolution, and turn on/off the sound.
+
+    """
+
     def __init__(self, settings: GlobalSettings):
+        """
+                Initialize the game interface and its respective settings.
+
+                Parameters
+                ----------
+                settings : GlobalSettings
+                    An instance of the GlobalSettings class containing the game settings.
+        """
         pygame.init(), pygame.mixer.init()  # initialize pygame and pygame mixer
         self.settings: GlobalSettings = settings  # Settings for the game
         if self.settings.music_on:  # Music and Sound Effects
@@ -31,16 +93,54 @@ class Interface:
         self.width_center: int = int(self.settings.width / 2)  # Set the width center
 
     @staticmethod
-    def setWindowTitle(title):  # Set the window title
+    def setWindowTitle(title: str) -> None:  # Set the window title
+        """
+                Set the title of the game window
+
+                Returns
+                -------
+                None
+                """
         pygame.display.set_caption(title)
 
     # Click sound activation
-    def clickSound(self):
+    def clickSound(self) -> None:
+        """
+        Used to play the click sound effect.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
         if self.settings.music_on:
             pygame.mixer.Sound('sound/click_sound.wav').play()
 
     # Draw a rectangle with the specified color and position
-    def drawRect(self, color, width, height, default_size: bool):
+    def drawRect(self, color: tuple, width: float, height: float, default_size: bool) -> pygame.rect:
+        """
+        Draw a rectangle on the game screen for the menu options.
+
+        Parameters
+        ----------
+        color : tuple
+            The color of the rectangle in an RGB tuple.
+        width : float
+            The width of the rectangle.
+        height : float
+            The height of the rectangle.
+        default_size : bool
+            Check if user wants to use the button with its default size or with a smaller size.
+
+        Return
+        ----------
+        pygame.draw.rect : pygame.Rect
+            The rectangle object.
+        """
         if default_size:  # If the size is the default size
             return pygame.draw.rect(self.screen, color,
                                     [width, height, self.settings.button_width, self.settings.button_height],
@@ -52,7 +152,29 @@ class Interface:
                                     border_radius=15)
 
     # Display Return Button
-    def displayReturnButton(self, mouse_pos, return_rect, return_text_rect, return_text):
+    def displayReturnButton(self, mouse_pos: tuple, return_rect: pygame.rect, return_text_rect: pygame.rect,
+                            return_text: pygame.surface.Surface) -> None:
+        """
+        Used to display a return button on Settings and Creators game screen.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+        mouse_pos : tuple
+            Current mouse position as a tuple of integers representing the x and y coordinates.
+        return_rect : pygame.Rect
+            The rectangular region that surrounds the return button.
+        return_text_rect : pygame.Rect
+            The rectangular region that surrounds the return text.
+        return_text : pygame.Surface
+            The text that will be displayed on the return button.
+
+        Return
+        ----------
+        None
+        """
+
         if return_rect.collidepoint(mouse_pos):  # If the mouse is over the return button
             self.drawRect(self.settings.RED, self.settings.width * 0.85,
                           self.settings.height * 0.88, False)
@@ -63,12 +185,50 @@ class Interface:
                          (self.settings.width - return_rect.width - return_text_rect.center[0],
                           self.settings.height * 0.885))  # Display the return button text
 
-    def setTitle(self, title):  # Set the title
+    def setTitle(self, title: str) -> tuple[pygame.font, pygame.rect]:  # Set the title
+        """
+        Set the title of each screen of the game.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+        title : str
+            The title of the screen.
+
+        Return
+        ----------
+        title_text : pygame.font.Font.render
+            The title text object.
+        title_text_rect : pygame.Rect
+            The rectangular region that surrounds the title text, used to center the text.
+        """
+
         text_title = self.default_font.render(title, True, self.settings.RED)  # Set the title text
         title_rect = text_title.get_rect()  # Get the text rectangle
         return text_title, title_rect
 
-    def mainProgramLoop(self, main_loop, return_rect):  # Main program loop
+    def mainProgramLoop(self, main_loop: int, return_rect: pygame.rect) -> tuple[int, tuple]:  # Main program loop
+        """
+        Runs the main loop of the program, it allows to quit the loop and the game.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+        main_loop : int
+            The main loop of the program indicates if the loop should continue to run.
+        return_rect : pygame.Rect
+            The rectangular region representing the return button.
+
+        Return
+        ----------
+        main_loop : int
+            The main loop of the program indicates if the loop should continue to run.
+        mouse_pos : tuple
+            The current position of the mouse as a tuple with x and y coordinates.
+        """
+
         mouse_pos = pygame.mouse.get_pos()  # Get mouse position
 
         if pygame.event.get(pygame.QUIT):  # If the user clicks the close button
@@ -79,7 +239,22 @@ class Interface:
             main_loop = 0 and self.mainMenu()  # Return to the main menu
         return main_loop, mouse_pos
 
-    def getResolutionDict(self):  # Get the resolution dictionary
+    def getResolutionDict(self) -> list:  # Get the resolution dictionary
+        """
+        Get the resolution dictionary.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+
+        Return
+        ----------
+        resolution_rect_list : list
+            A list of tuples with the text of the selected resolution, a text rectangle, button rectangle,
+            the height position, and a tuple with selected resolution.
+        """
+
         resolution_rect_list = []  # List of resolution rectangles
         resolution_pos_height = self.settings.height * 0.18  # Set the resolution height position
         for resolution_name, resolution in Screen_Resolution.items():
@@ -94,7 +269,20 @@ class Interface:
         return resolution_rect_list
 
     # Screen (Main Menu)
-    def mainMenu(self):
+    def mainMenu(self) -> None:  # Main menu
+        """
+        Loads the main menu for the pong game. It shows the game title, the game logo, and the game options.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         # Loop that carries on until the user exits the game
         mainMenuOn: int = 1
 
@@ -215,7 +403,20 @@ class Interface:
             self.clock.tick(30)
 
     # Screen (Creators)
-    def creatorsScreen(self):
+    def creatorsScreen(self) -> None:  # Display the Creators Screen
+        """
+        Loads the creators menu for the pong game. It shows the creators of the game and, the university.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         # Loop that carries on until the user exits the main menu
         creatorsON: int = 1
 
@@ -315,7 +516,20 @@ class Interface:
             self.clock.tick(30)
 
     # Screen (Settings)
-    def settingsScreen(self):
+    def settingsScreen(self) -> None:  # Settings screen
+        """
+        Loads the settings menu for the pong game. The user can change game resolution, and turn on/off the sound.
+
+        Parameters
+        ----------
+        self : Interface
+            The interface object containing the class attributes and game settings.
+
+        Return
+        ----------
+        None
+        """
+
         # Loop that carries on until the user exits the main menu
         settingsOn: int = 1
 
