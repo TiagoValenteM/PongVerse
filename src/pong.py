@@ -440,7 +440,7 @@ class PongVerse:
                 # Choose a random powerup
                 chosen_powerup = choices(PowerUps, PowerUps_Probabilities)[0]
                 # Instantiate the powerup
-                powerup = chosen_powerup(self.ball_owner, self.settings.powerup_width, self.settings.powerup_height,
+                powerup = chosen_powerup(None, self.settings.powerup_width, self.settings.powerup_height,
                                          self.settings)
                 # Powerup added to sprites
                 self.all_sprites_list.add(powerup)
@@ -486,6 +486,7 @@ class PongVerse:
 
         self.powerup_active = self.powerup_visible  # Set powerup active as the powerup visible
         self.powerup_visible.kill()  # Erase powerup icon
+        self.powerup_active.owner = self.powerup_owner  # Set the powerup_active ball owner as the powerup owner
         self.powerup_active.run_powerup(paddleA, paddleB)  # Activate powerup
         self.powerup_active_time = pygame.time.get_ticks()  # Set powerup active timer
 
