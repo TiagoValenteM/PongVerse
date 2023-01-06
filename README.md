@@ -46,9 +46,9 @@ The Interface class displays the game interface, handles events, and loads the s
 PongVerse represents the game itself and controls the instruction, play, and win screens. Each screen runs at 30 frames per second, but the game is expected to run at 60!
 
 <p float="center">
-  <img width="33%" src="img/screenshots/instructionsScreen.png">
-  <img width="33%" src="img/screenshots/pongPlay.png">
-  <img width="33%" src="img/screenshots/winScreen.png">
+  <img width="32%" src="img/screenshots/instructionsScreen.png">
+  <img width="32%" src="img/screenshots/pongPlay.png">
+  <img width="32%" src="img/screenshots/winScreen.png">
 </p>
 <br>
 <br>
