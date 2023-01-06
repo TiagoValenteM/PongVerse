@@ -14,9 +14,13 @@ Nevertheless, in just one month of development, I personally felt I learned a lo
 <br>
 
 ## GUI and Theme ✏️
-The functions of proportions, hover, colors, and structures could've been understood despite Pygame and Python not being primarily visual programming libraries and languages, respectively. We incorporated unique Avengers colors and backdrop pictures, as well as powerup icons that made reference to some of the characters from the film, because Avengers: Civil War was the overarching concept of the game.
+The functions of proportions, hover, colors, and structures could've been understood despite Pygame and Python not being primarily visual programming libraries and languages, respectively. It was incorporated unique Avengers colors and backdrop pictures, as well as powerup icons that made reference to some of the characters from the film, because Avengers: Civil War was the overarching concept of the game.
 
 PongVerse's GUI design is generally straightforward but user-friendly, making it perfect for beginner players.
+
+<p align="center">
+  <img width="50%" src="img/screenshots/mainMenu.png">
+</p>
 <br>
 <br>
 <br>
@@ -25,6 +29,12 @@ PongVerse's GUI design is generally straightforward but user-friendly, making it
 
 ### Interface
 The Interface class displays the game interface, handles events, and loads the settings and creators menu for the pong game. The user can change the game resolution and toggle the sound on and off.
+
+<p float="center">
+  <img width="49%" src="img/screenshots/settingsMenu.png">
+  <img width="49%" src="img/screenshots/creatorsMenu.png">
+</p>
+
 - ### Resolutions Available:
       : 480p 
       : 720p
@@ -33,7 +43,13 @@ The Interface class displays the game interface, handles events, and loads the s
       : 2160p
 
 ### PongVerse
-PongVerse represents the game itself and controls the instruction, play, and win screens. Each screen runs at 30 frames per second, but we expect the game to run at 60!
+PongVerse represents the game itself and controls the instruction, play, and win screens. Each screen runs at 30 frames per second, but the game is expected to run at 60!
+
+<p float="center">
+  <img width="33%" src="img/screenshots/instructionsScreen.png">
+  <img width="33%" src="img/screenshots/pongPlay.png">
+  <img width="33%" src="img/screenshots/winScreen.png">
+</p>
 <br>
 <br>
 
@@ -54,6 +70,11 @@ Class that represents a paddle, which is a rectangular object that bounces the 
 
 ### Powerups
 This class has methods to draw, activate, and deactivate the powerup. It derives from the "Sprite" and "ABC" classes in Pygame. It has six child classes that inherit from it.
+
+<p align="center">
+  <img width="50%" src="img/screenshots/activatedPowerup.png">
+</p>
+
 - ### Ant-Man 🐜
 The AntMan "Power-up" makes the player’s Paddle bigger.
 
