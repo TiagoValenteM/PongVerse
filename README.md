@@ -23,7 +23,6 @@ PongVerse's GUI design is generally straightforward but user-friendly, making it
 </p>
 <br>
 <br>
-<br>
 
 ## Game Structure and Classes 🛠️
 
@@ -50,7 +49,6 @@ PongVerse represents the game itself and controls the instruction, play, and win
   <img width="32%" src="img/screenshots/pongPlay.png">
   <img width="32%" src="img/screenshots/winScreen.png">
 </p>
-<br>
 <br>
 
 ### GlobalSettings
