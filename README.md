@@ -1,6 +1,6 @@
 # The PongVerse 🎮
 
-A new type of Pong game inspired by Marvel World and created with Pygame!
+A brand-new kind of Pong developed with Pygame and inspired by Marvel World!
 
 The PongVerse comes as the result of my final project for my OOP (object-oriented programming) course. The professors provided the source code, and the goal was to improve that code with abstract classes and UI changes. After a month of hard work and lots of research on how classes work in Python, I am sure the outcome is a great prototype.
 
